@@ -1,1 +1,7 @@
 globers-mood-ng
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear

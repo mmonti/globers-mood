@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.sun.jersey</groupId>
+  <artifactId>jersey-server</artifactId>
+  <versioning>
+    <release>1.17.1.r</release>
+    <versions>
+      <version>1.17.1.r</version>
+    </versions>
+    <lastUpdated>20131028020056</lastUpdated>
+  </versioning>
+</metadata>

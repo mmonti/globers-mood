@@ -224,10 +224,19 @@
 			<!--<version>${jersey.version}</version>-->
 		<!--</dependency>-->
 		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server-asm4-comp</artifactId>
-			<version>${jersey.version}</version>
-		</dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>1.17.1.r</version>
+			<!--<groupId>com.sun.jersey</groupId>-->
+			<!--<artifactId>jersey-server</artifactId>-->
+			<!--<version>${jersey.version}</version>-->
+            <exclusions>
+                <exclusion>
+                    <artifactId>asm</artifactId>
+                    <groupId>asm</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
@@ -288,9 +297,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.objectweb.asm3</groupId>
-			<artifactId>asm-asm4-comp</artifactId>
-			<version>3.1</version>
+			<!--<groupId>org.ow2.asm</groupId>-->
+			<!--<artifactId>asm</artifactId>-->
+			<!--<version>4.0</version>-->
+            <groupId>asm.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>3.1r</version>
 		</dependency>
 
 		<dependency>
@@ -398,4 +410,12 @@
 			</plugin>
 		</plugins>
 	</build>
+
+    <repositories>
+        <repository>
+            <id>local-repository</id>
+            <name>Local Maven repository</name>
+            <url>file://${pom.basedir}/../repository</url>
+        </repository>
+    </repositories>
 </project>

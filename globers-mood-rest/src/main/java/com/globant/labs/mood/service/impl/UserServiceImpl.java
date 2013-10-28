@@ -55,9 +55,9 @@ public class UserServiceImpl extends AbstractService implements UserService {
     public User userByEmail(final String email) {
         Preconditions.checkNotNull(email, "email cannot be null");
         final User user = this.userRepository.findByEmail(email);
-        if (user == null) {
-            throw new RuntimeException("");
-        }
+//        if (user == null) {
+//            throw new RuntimeException("");
+//        }
         return user;
     }
 

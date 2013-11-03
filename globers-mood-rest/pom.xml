@@ -380,7 +380,7 @@
         <repository>
             <id>local-repository</id>
             <name>Local Maven repository</name>
-            <url>file://${pom.basedir}/../repository</url>
+            <url>file://${pom.basedir}/repository</url>
         </repository>
     </repositories>
 </project>

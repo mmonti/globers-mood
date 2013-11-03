@@ -23,9 +23,9 @@ public class Feedback extends BaseEntity implements Serializable {
     @OneToOne
     private User user;
 
-    @Unowned
-    @OneToOne
-    private Project project;
+//    @Unowned
+//    @OneToOne
+//    private Project project;
 
     @Enumerated(EnumType.STRING)
     private Mood globerMood;
@@ -45,18 +45,18 @@ public class Feedback extends BaseEntity implements Serializable {
 
     /**
      * @param campaign
-     * @param project
+//     * @param project
      * @param user
      * @param globerMood
      * @param clientMood
      * @param comment
      */
-    public Feedback(final Campaign campaign, final Project project, final User user, final Mood globerMood, final Mood clientMood, final String comment) {
+    public Feedback(final Campaign campaign, /*final Project project,*/ final User user, final Mood globerMood, final Mood clientMood, final String comment) {
         this();
         this.campaign = campaign;
         this.campaign.addFeedback(this);
         this.user = user;
-        this.project = project;
+//        this.project = project;
         this.globerMood = globerMood;
         this.clientMood = clientMood;
         this.comment = comment;
@@ -66,9 +66,9 @@ public class Feedback extends BaseEntity implements Serializable {
         return user;
     }
 
-    public Project getProject() {
-        return project;
-    }
+//    public Project getProject() {
+//        return project;
+//    }
 
     public Campaign getCampaign() {
         return campaign;
@@ -101,7 +101,7 @@ public class Feedback extends BaseEntity implements Serializable {
         if (!created.equals(feedback.created)) return false;
         if (!getKey().equals(feedback.getKey())) return false;
         if (!user.equals(feedback.user)) return false;
-        if (!project.equals(feedback.project)) return false;
+//        if (!project.equals(feedback.project)) return false;
 
         return true;
     }

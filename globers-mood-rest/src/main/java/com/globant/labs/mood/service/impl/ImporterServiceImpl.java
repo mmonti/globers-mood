@@ -140,11 +140,11 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
             final Campaign campaign = storedCampaigns.get(campaignRelation.getCampaign());
             campaign.setTemplate(storedTemplates.get(campaignRelation.getTemplate()));
 
-            List<Integer> projectstIndex = campaignRelation.getProjects();
-            for (int projectIndex : projectstIndex) {
-                final Project project = storedProjects.get(projectIndex);
-                campaign.addProject(project);
-            }
+//            List<Integer> projectstIndex = campaignRelation.getProjects();
+//            for (int projectIndex : projectstIndex) {
+//                final Project project = storedProjects.get(projectIndex);
+//                campaign.addProject(project);
+//            }
         }
         stopWatch.stop();
         results.put("campaigns", storedCampaigns.size());

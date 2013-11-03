@@ -66,7 +66,8 @@ public class FeedbackServiceImplTest {
         final Project storedProject = projectService.store(project);
 
         final Campaign campaign = new Campaign("Campaign");
-        campaign.addProject(storedProject);
+//        campaign.addProject(storedProject);
+        campaign.addTarget(storedUser);
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), project.getId(), storedUser.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
@@ -90,7 +91,8 @@ public class FeedbackServiceImplTest {
         final Project storedProject = projectService.store(project);
 
         final Campaign campaign = new Campaign("Campaign");
-        campaign.addProject(storedProject);
+//        campaign.addProject(storedProject);
+        campaign.addTarget(storedUser);
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), project.getId(), storedUser.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
@@ -114,7 +116,8 @@ public class FeedbackServiceImplTest {
         final Project storedProject = projectService.store(project);
 
         final Campaign campaign = new Campaign("Campaign");
-        campaign.addProject(storedProject);
+//        campaign.addProject(storedProject);
+        campaign.addTarget(storedUser);
 
         final Campaign storedCampaign = campaignService.store(campaign);
 
@@ -140,7 +143,7 @@ public class FeedbackServiceImplTest {
         Campaign campaign = null;
         if (c == null) {
             campaign = new Campaign("Campaign"+i);
-            campaign.addProject(storedProject);
+            campaign.addTarget(storedUser);
             campaign = campaignService.store(campaign);
 
         } else {
@@ -171,7 +174,7 @@ public class FeedbackServiceImplTest {
         final Project storedProject = projectService.store(project);
 
         final Campaign campaign = new Campaign("Campaign");
-        campaign.addProject(storedProject);
+        campaign.addTarget(storedUser);
 
         final Campaign storedCampaign = campaignService.store(campaign);
 

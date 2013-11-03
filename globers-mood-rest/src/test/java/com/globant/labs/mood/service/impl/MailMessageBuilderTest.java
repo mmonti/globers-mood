@@ -74,7 +74,8 @@ public class MailMessageBuilderTest extends TransactionSupport {
         final Template storedTemplate = templateService.store(template);
 
         final Campaign campaign = new Campaign("Campaign");
-        campaign.addProject(storedProject);
+//        campaign.addProject(storedProject);
+        campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
 
         final Preference senderAlias = new Preference(PreferenceKey.SENDER_ALIAS);

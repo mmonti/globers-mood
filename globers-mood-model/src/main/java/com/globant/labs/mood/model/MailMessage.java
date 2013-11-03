@@ -15,7 +15,7 @@ public class MailMessage implements Serializable {
 
     private Sender sender;
     private Campaign campaign;
-    private Project project;
+//    private Project project;
     private User user;
     private MailMessageTemplate mailMessageTemplate;
 
@@ -23,14 +23,14 @@ public class MailMessage implements Serializable {
      *
      * @param sender
      * @param campaign
-     * @param project
+//     * @param project
      * @param user
      * @param mailMessageTemplate
      */
-    public MailMessage(final Sender sender, final Campaign campaign, final Project project, final User user, final MailMessageTemplate mailMessageTemplate) {
+    public MailMessage(final Sender sender, final Campaign campaign, /*final Project project,*/ final User user, final MailMessageTemplate mailMessageTemplate) {
         this.sender = sender;
         this.campaign = campaign;
-        this.project = project;
+//        this.project = project;
         this.user = user;
         this.mailMessageTemplate = mailMessageTemplate;
     }
@@ -43,9 +43,9 @@ public class MailMessage implements Serializable {
         return campaign;
     }
 
-    public Project getProject() {
-        return project;
-    }
+//    public Project getProject() {
+//        return project;
+//    }
 
     public User getUser() {
         return user;

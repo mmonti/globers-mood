@@ -68,7 +68,8 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
         }
 
         publishAfterCommit(new StatsEvent(this, Feedback.class, StatsEntry.FEEDBACK_COUNT));
-        return feedbackRepository.save(new Feedback(campaign, project, user, gmv, cmv, comment));
+//        return feedbackRepository.save(new Feedback(campaign, project, user, gmv, cmv, comment));
+        return feedbackRepository.save(new Feedback(campaign, user, gmv, cmv, comment));
     }
 
     @Transactional(readOnly = true)

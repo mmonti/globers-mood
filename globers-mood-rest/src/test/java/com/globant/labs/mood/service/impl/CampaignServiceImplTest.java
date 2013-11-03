@@ -67,7 +67,8 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final Template storedTemplate = templateService.store(template);
 
         campaign = new Campaign("Campaign");
-        campaign.addProject(storedProject);
+//        campaign.addProject(storedProject);
+        campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
     }
 
@@ -83,7 +84,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
         Assert.notNull(storedCampaign);
         Assert.notNull(storedCampaign.getId());
         Assert.isTrue(storedCampaign.getName().equals(campaign.getName()));
-        Assert.notEmpty(storedCampaign.getProjects());
+        Assert.notEmpty(storedCampaign.getTargets());
         Assert.notNull(storedCampaign.getTemplate());
     }
 
@@ -101,7 +102,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final Campaign result = campaignService.campaign(storedCampaign.getKey().getId());
         Assert.notNull(result);
         Assert.isTrue(storedCampaign.getName().equals(result.getName()));
-        Assert.notEmpty(storedCampaign.getProjects());
+        Assert.notEmpty(storedCampaign.getTargets());
         Assert.notNull(result.getTemplate());
     }
 
@@ -128,10 +129,12 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final Project storedProject2 = projectService.store(project2);
 
         final Campaign campaign1 = new Campaign("Campaign1");
-        campaign1.addProject(storedProject1);
+//        campaign1.addProject(storedProject1);
+        campaign1.addTarget(storedUser1);
 
         final Campaign campaign2 = new Campaign("Campaign2");
-        campaign2.addProject(storedProject2);
+//        campaign2.addProject(storedProject2);
+        campaign2.addTarget(storedUser2);
 
         final Campaign storedCampaign1 = campaignService.store(campaign1);
         final Campaign storedCampaign2 = campaignService.store(campaign2);

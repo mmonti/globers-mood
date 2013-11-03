@@ -34,9 +34,13 @@ public class Campaign extends BaseEntity implements Serializable {
     @OneToOne
     private Template template;
 
+//    @Unowned
+//    @OneToMany(fetch = FetchType.LAZY)
+//    private Set<Project> projects = new HashSet<Project>();
+
     @Unowned
     @OneToMany(fetch = FetchType.LAZY)
-    private Set<Project> projects = new HashSet<Project>();
+    private Set<User> targets = new HashSet<User>();
 
     @Unowned
     @OneToMany(mappedBy =  "campaign", fetch = FetchType.LAZY)
@@ -45,14 +49,18 @@ public class Campaign extends BaseEntity implements Serializable {
     @Basic
     private int feedbackNumber = 0;
 
+//    @Basic
+//    private int projectNumber = 0;
+
     @Basic
-    private int projectNumber = 0;
+    private int targetNumber = 0;
 
     public Campaign() {
         this.created = new Date();
         this.status = CampaignStatus.CREATED;
         this.feedbackNumber = 0;
-        this.projectNumber = 0;
+//        this.projectNumber = 0;
+        this.targetNumber = 0;
     }
 
     /**
@@ -99,19 +107,29 @@ public class Campaign extends BaseEntity implements Serializable {
         this.template = template;
     }
 
-    public Set<Project> getProjects() {
-        return Collections.unmodifiableSet(projects);
+//    public Set<Project> getProjects() {
+//        return Collections.unmodifiableSet(projects);
+//    }
+
+    public Set<User> getTargets() {
+        return Collections.unmodifiableSet(targets);
     }
 
     public Set<Feedback> getFeedbacks() {
         return Collections.unmodifiableSet(feedbacks);
     }
 
-    public void addProject(final Project project) {
-        Preconditions.checkNotNull(project, "project cannot be null");
-        this.projects.add(project);
-        this.projectNumber++;
+    public void addTarget(final User target) {
+        Preconditions.checkNotNull(target, "target cannot be null");
+        this.targets.add(target);
+        this.targetNumber++;
     }
+
+//    public void addProject(final Project project) {
+//        Preconditions.checkNotNull(project, "project cannot be null");
+//        this.projects.add(project);
+//        this.projectNumber++;
+//    }
 
     public void addFeedback(final Feedback feedback) {
         Preconditions.checkNotNull(feedback, "feedback cannot be null");
@@ -123,8 +141,12 @@ public class Campaign extends BaseEntity implements Serializable {
         return feedbackNumber;
     }
 
-    public int getProjectNumber() {
-        return projectNumber;
+//    public int getProjectNumber() {
+//        return projectNumber;
+//    }
+
+    public int getTargetNumber() {
+        return targetNumber;
     }
 
     @Override

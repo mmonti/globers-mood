@@ -40,19 +40,33 @@ public class MailMessageFactory {
         final String mail = preferenceService.preference(PreferenceKey.SENDER_MAIL);
         final Sender sender = new Sender(alias, mail);
 
-        final Set<Project> projects = campaign.getProjects();
+        final Set<User> targets = campaign.getTargets();
         final MailMessageTemplate mailMessageTemplate = getMailTemplate(campaign.getTemplate());
 
-        final Set<MailMessage> messages = new HashSet<MailMessage>();
-        for (final Project currentProject : projects) {
-            final Set<User> users = currentProject.getUsers();
-
-            for (final User currentUser : users) {
-                messages.add(new MailMessage(sender, campaign, currentProject, currentUser, mailMessageTemplate));
-            }
+        final Set<MailMessage> messages = new HashSet();
+        for (final User currentTarget : targets) {
+            messages.add(new MailMessage(sender, campaign, currentTarget, mailMessageTemplate));
         }
         return messages;
     }
+//    public Set<MailMessage> create(final Campaign campaign) {
+//        final String alias = preferenceService.preference(PreferenceKey.SENDER_ALIAS);
+//        final String mail = preferenceService.preference(PreferenceKey.SENDER_MAIL);
+//        final Sender sender = new Sender(alias, mail);
+//
+//        final Set<Project> projects = campaign.getProjects();
+//        final MailMessageTemplate mailMessageTemplate = getMailTemplate(campaign.getTemplate());
+//
+//        final Set<MailMessage> messages = new HashSet<MailMessage>();
+//        for (final Project currentProject : projects) {
+//            final Set<User> users = currentProject.getUsers();
+//
+//            for (final User currentUser : users) {
+//                messages.add(new MailMessage(sender, campaign, currentProject, currentUser, mailMessageTemplate));
+//            }
+//        }
+//        return messages;
+//    }
 
     /**
      *

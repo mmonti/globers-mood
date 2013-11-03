@@ -4,6 +4,8 @@ import com.github.jknack.handlebars.io.TemplateLoader;
 import com.globant.labs.mood.service.PreferenceService;
 import com.globant.labs.mood.service.TemplateService;
 import com.globant.labs.mood.service.mail.MailMessageFactory;
+import com.globant.labs.mood.service.mail.TokenGenerator;
+import com.globant.labs.mood.service.mail.UserTokenGeneratorImpl;
 import com.globant.labs.mood.service.mail.template.handlebars.RepositoryTemplateLoader;
 import com.globant.labs.mood.service.mail.template.TemplateCompiler;
 import com.globant.labs.mood.service.mail.template.handlebars.HBMTemplateCompiler;
@@ -25,6 +27,8 @@ import java.util.Properties;
 @ComponentScan(basePackages = {"com.globant.labs.mood.service..*"})
 public class ServiceConfig {
 
+    public static final String MAIL_TOKEN_SECRET = "mail.token.secret";
+
     @Inject
     private Environment environment;
 
@@ -41,7 +45,7 @@ public class ServiceConfig {
 
     @Bean
     public MailMessageFactory mailMessageBuilder() {
-        return new MailMessageFactory(preferenceService, templateCompiler());
+        return new MailMessageFactory(tokenGenerator(), preferenceService, templateCompiler());
     }
 
     @Bean
@@ -57,6 +61,12 @@ public class ServiceConfig {
     @Bean
     public Session session() {
         return Session.getDefaultInstance(new Properties(), null);
+    }
+
+    @Bean
+    public TokenGenerator tokenGenerator() {
+        final String secret = environment.getProperty(MAIL_TOKEN_SECRET);
+        return new UserTokenGeneratorImpl(secret);
     }
 
 }

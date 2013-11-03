@@ -3,8 +3,13 @@ package com.globant.labs.mood.service.impl;
 import com.globant.labs.mood.events.MailMessageEvent;
 import com.globant.labs.mood.events.StatsEvent;
 import com.globant.labs.mood.model.MailMessage;
+import com.globant.labs.mood.model.Sender;
 import com.globant.labs.mood.model.StatsEntry;
+import com.globant.labs.mood.model.persistent.Preference;
+import com.globant.labs.mood.model.persistent.PreferenceKey;
 import com.globant.labs.mood.model.persistent.Project;
+import com.globant.labs.mood.model.persistent.User;
+import com.globant.labs.mood.repository.data.PreferenceRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.MailingService;
 import com.google.appengine.repackaged.com.google.common.collect.Sets;
@@ -29,6 +34,9 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
 
     @Inject
     private Session session;
+
+    @Inject
+    private PreferenceRepository preferenceRepository;
 
     /**
      *
@@ -64,17 +72,26 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
      * @return
      */
     private Message getMessage(final MailMessage mailMessage) {
+        Sender mailSender = mailMessage.getSender();
+        if (mailSender == null) {
+            throw new RuntimeException();
+        }
+
+        final String senderAlias = mailSender.getAlias();
+        final String senderMail = mailSender.getMail();
+        final String mailSubject = "";
         try {
             final Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(getMessagePart(mailMessage));
 
-            final InternetAddress sender = new InternetAddress("monti.mauro@gmail.com", "Administrator");
-            final InternetAddress target = new InternetAddress(mailMessage.getUser().getEmail(), mailMessage.getUser().getName());
+            final User targetUser = mailMessage.getTarget();
+            final InternetAddress sender = new InternetAddress(senderMail, senderAlias);
+            final InternetAddress target = new InternetAddress(targetUser.getEmail(), targetUser.getName());
 
             final Message message = new MimeMessage(session);
             message.setFrom(sender);
             message.addRecipient(Message.RecipientType.TO, target);
-            message.setSubject("Please tell us how you're doing");
+            message.setSubject(mailSubject);
             message.setContent(multipart);
 
             return message;

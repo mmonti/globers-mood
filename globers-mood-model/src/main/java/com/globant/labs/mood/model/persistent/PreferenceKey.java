@@ -12,7 +12,8 @@ import java.util.Map;
 public enum PreferenceKey {
 
     SENDER_ALIAS("sender.alias"),
-    SENDER_MAIL("sender.mail");
+    SENDER_MAIL("sender.mail"),
+    MAIL_SUBJECT("mail.subject");
 
     private static final Map<String, PreferenceKey> LOOKUP = new HashMap<String, PreferenceKey>();
 

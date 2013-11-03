@@ -5,6 +5,8 @@ import com.globant.labs.mood.model.persistent.Project;
 import com.globant.labs.mood.model.persistent.User;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -16,8 +18,10 @@ public class MailMessage implements Serializable {
     private Sender sender;
     private Campaign campaign;
 //    private Project project;
-    private User user;
+    private User target;
     private MailMessageTemplate mailMessageTemplate;
+
+    private Map<String, Object> context;
 
     /**
      *
@@ -27,12 +31,13 @@ public class MailMessage implements Serializable {
      * @param user
      * @param mailMessageTemplate
      */
-    public MailMessage(final Sender sender, final Campaign campaign, /*final Project project,*/ final User user, final MailMessageTemplate mailMessageTemplate) {
+    public MailMessage(final Sender sender, final Campaign campaign, /*final Project project,*/ final User target, final MailMessageTemplate mailMessageTemplate) {
         this.sender = sender;
         this.campaign = campaign;
 //        this.project = project;
-        this.user = user;
+        this.target = target;
         this.mailMessageTemplate = mailMessageTemplate;
+        this.context = new HashMap<String, Object>();
     }
 
     public Sender getSender() {
@@ -47,8 +52,9 @@ public class MailMessage implements Serializable {
 //        return project;
 //    }
 
-    public User getUser() {
-        return user;
+
+    public User getTarget() {
+        return target;
     }
 
     public MailMessageTemplate getMailMessageTemplate() {

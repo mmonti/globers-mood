@@ -18,17 +18,20 @@ public class MailMessageFactory {
 
     private PreferenceService preferenceService;
     private TemplateCompiler templateCompiler;
+    private TokenGenerator tokenGenerator;
 
     /**
      *
      * @param templateCompiler
      */
-    public MailMessageFactory(final PreferenceService preferenceService, final TemplateCompiler templateCompiler) {
+    public MailMessageFactory(final TokenGenerator tokenGenerator, final PreferenceService preferenceService, final TemplateCompiler templateCompiler) {
         Preconditions.checkNotNull(preferenceService, "preferenceService is null");
         Preconditions.checkNotNull(templateCompiler, "templateCompiler is null");
+        Preconditions.checkNotNull(tokenGenerator, "tokenGenerator is null");
 
         this.templateCompiler = templateCompiler;
         this.preferenceService = preferenceService;
+        this.tokenGenerator = tokenGenerator;
     }
 
     /**
@@ -45,6 +48,8 @@ public class MailMessageFactory {
 
         final Set<MailMessage> messages = new HashSet();
         for (final User currentTarget : targets) {
+
+            final String token = ((UserTokenGenerator) tokenGenerator).getToken(campaign, currentTarget);
             messages.add(new MailMessage(sender, campaign, currentTarget, mailMessageTemplate));
         }
         return messages;

@@ -7,6 +7,7 @@ public enum Measure {
 
     COUNT,
     AVERAGE,
+    ELAPSED_TIME,
     MAX,
     MIN;
 

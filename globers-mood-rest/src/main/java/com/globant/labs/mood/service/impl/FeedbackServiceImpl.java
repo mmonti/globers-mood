@@ -2,6 +2,8 @@ package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.events.StatsEvent;
 import com.globant.labs.mood.exception.EntityNotFoundException;
+import com.globant.labs.mood.exception.InvalidStatusException;
+import com.globant.labs.mood.exception.InvalidTokenException;
 import com.globant.labs.mood.exception.ServiceException;
 import com.globant.labs.mood.model.StatsEntry;
 import com.globant.labs.mood.model.persistent.*;
@@ -11,6 +13,8 @@ import com.globant.labs.mood.repository.data.ProjectRepository;
 import com.globant.labs.mood.repository.data.UserRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.FeedbackService;
+import com.globant.labs.mood.service.mail.token.TokenGenerator;
+import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.google.appengine.api.search.checkers.Preconditions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,13 +37,15 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
     private UserRepository userRepository;
     @Inject
     private ProjectRepository projectRepository;
+    @Inject
+    private TokenGenerator tokenGenerator;
 
     @Transactional
     @Override
-    public Feedback store(final long campaignId, final long projectId, final String email, final Mood gmv, final Mood cmv, final String comment) {
+    public Feedback store(final long campaignId, final String email, final String token, final Mood gmv, final Mood cmv, final String comment) {
         Preconditions.checkNotNull(campaignId, "campaignId cannot be null");
-        Preconditions.checkNotNull(projectId, "projectId cannot be null");
         Preconditions.checkNotNull(email, "email cannot be null");
+        Preconditions.checkNotNull(token, "token cannot be null");
         Preconditions.checkNotNull(gmv, "gmv cannot be null");
         Preconditions.checkNotNull(cmv, "cmv cannot be null");
 
@@ -49,17 +55,17 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
         }
 
         if (CampaignStatus.CLOSED.equals(campaign.getStatus())) {
-//            throw new EntityNotFoundException(Campaign.class, campaignId);
-        }
-
-        final Project project = projectRepository.findOne(projectId);
-        if (project == null) {
-            throw new EntityNotFoundException(Project.class, projectId);
+            throw new InvalidStatusException(campaign);
         }
 
         final User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new EntityNotFoundException("User with email=[" + email + "] not found");
+        }
+
+        final String generatedToken = ((UserTokenGenerator) tokenGenerator).getToken(campaign, user);
+        if (!token.equals(generatedToken)) {
+            throw new InvalidTokenException(token, generatedToken);
         }
 
         final Feedback existentFeedback = feedbackRepository.feedbackAlreadySubmitted(campaign, user);
@@ -68,14 +74,13 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
         }
 
         publishAfterCommit(new StatsEvent(this, Feedback.class, StatsEntry.FEEDBACK_COUNT));
-//        return feedbackRepository.save(new Feedback(campaign, project, user, gmv, cmv, comment));
         return feedbackRepository.save(new Feedback(campaign, user, gmv, cmv, comment));
     }
 
     @Transactional(readOnly = true)
     @Override
     public Set<Feedback> feedbacks() {
-        return new HashSet<Feedback>(feedbackRepository.findAll());
+        return new HashSet(feedbackRepository.findAll());
     }
 
     @Transactional(readOnly = true)
@@ -88,7 +93,7 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
             throw new EntityNotFoundException(Campaign.class, campaignId);
         }
 
-        return new HashSet<Feedback>(feedbackRepository.feedbackOfCampaign(campaign));
+        return new HashSet(feedbackRepository.feedbackOfCampaign(campaign));
     }
 
     @Transactional(readOnly = true)
@@ -101,7 +106,7 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
             throw new EntityNotFoundException(User.class, userId);
         }
 
-        return new HashSet<Feedback>(feedbackRepository.feedbackOfUser(user));
+        return new HashSet(feedbackRepository.feedbackOfUser(user));
     }
 
 }

@@ -19,7 +19,7 @@ public interface FeedbackResource {
      * @param comment
      * @return
      */
-    Response submitFeedback(final long campaignId, final long projectId, final String email, final Mood globerMoodValue, final Mood clientMoodValue, final String comment);
+    Response submitFeedback(final long campaignId, final String email, final String token, final Mood globerMoodValue, final Mood clientMoodValue, final String comment);
 
     /**
      *

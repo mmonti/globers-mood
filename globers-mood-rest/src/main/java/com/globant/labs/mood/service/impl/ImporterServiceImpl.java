@@ -66,46 +66,64 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
 
         // == Customer
         stopWatch.start();
-        final List<Customer> customers = importInformation.getCustomers();
-        for (final Customer customer : customers) {
-            storedCustomers.add(customerRepository.saveAndFlush(customer));
-        }
+        storeCustomers(importInformation);
         stopWatch.stop();
         results.put("customers", storedCustomers.size());
         results.put("customers.elapsed", stopWatch.getTotalTimeMillis());
 
         // == Users
         stopWatch.start();
-        final List<User> users = importInformation.getUsers();
-        for (final User user : users) {
-            storedUsers.add(userRepository.saveAndFlush(user));
-        }
+        storeUsers(importInformation);
         stopWatch.stop();
         results.put("users", storedUsers.size());
         results.put("users.elapsed", stopWatch.getTotalTimeMillis());
 
         // == Templates
         stopWatch.start();
-        final List<Template> templates = importInformation.getTemplates();
-        for (final Template template : templates) {
-            storedTemplates.add(templateRepository.saveAndFlush(template));
-        }
+        storeTemplates(importInformation);
         stopWatch.stop();
         results.put("templates", storedTemplates.size());
         results.put("templates.elapsed", stopWatch.getTotalTimeMillis());
 
         // == Campaigns
         stopWatch.start();
-        final List<Campaign> campaigns = importInformation.getCampaigns();
-        for (final Campaign campaign : campaigns) {
-            storedCampaigns.add(campaignRepository.saveAndFlush(campaign));
-        }
+        storeCampaigns(importInformation);
         stopWatch.stop();
         results.put("campaigns", storedCampaigns.size());
         results.put("campaigns.elapsed", stopWatch.getTotalTimeMillis());
 
         // == Projects
         stopWatch.start();
+        storeProjectRelations(importInformation);
+        stopWatch.stop();
+        results.put("projects", storedProjects.size());
+        results.put("projects.elapsed", stopWatch.getTotalTimeMillis());
+
+        // == Campaigns
+        stopWatch.start();
+        storeCampaignRelations(importInformation);
+        stopWatch.stop();
+        results.put("campaigns", storedCampaigns.size());
+        results.put("campaigns.elapsed", stopWatch.getTotalTimeMillis());
+
+        return results;
+    }
+
+    private void storeCampaignRelations(ImportInformation importInformation) {
+        final List<CampaignRelation> campaignRelations = importInformation.getCampaignRelations();
+        for (final CampaignRelation campaignRelation : campaignRelations) {
+            final Campaign campaign = storedCampaigns.get(campaignRelation.getCampaign());
+            campaign.setTemplate(storedTemplates.get(campaignRelation.getTemplate()));
+
+            List<Integer> usersIndex = campaignRelation.getUsers();
+            for (int userIndex : usersIndex) {
+                final User target = storedUsers.get(userIndex);
+                campaign.addTarget(target);
+            }
+        }
+    }
+
+    private void storeProjectRelations(ImportInformation importInformation) {
         final List<Relation> relations = importInformation.getRelations();
         for (final Relation relation : relations) {
             int projectIndex = relation.getProject();
@@ -126,31 +144,36 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
                 final User user = storedUsers.get(currentUserIndex);
                 projectPrototype.assign(user);
             }
-
             storedProjects.add(projectRepository.saveAndFlush(projectPrototype));
         }
-        stopWatch.stop();
-        results.put("projects", storedProjects.size());
-        results.put("projects.elapsed", stopWatch.getTotalTimeMillis());
+    }
 
-        // == Campaigns
-        stopWatch.start();
-        final List<CampaignRelation> campaignRelations = importInformation.getCampaignRelations();
-        for (final CampaignRelation campaignRelation : campaignRelations) {
-            final Campaign campaign = storedCampaigns.get(campaignRelation.getCampaign());
-            campaign.setTemplate(storedTemplates.get(campaignRelation.getTemplate()));
-
-//            List<Integer> projectstIndex = campaignRelation.getProjects();
-//            for (int projectIndex : projectstIndex) {
-//                final Project project = storedProjects.get(projectIndex);
-//                campaign.addProject(project);
-//            }
+    private void storeCampaigns(ImportInformation importInformation) {
+        final List<Campaign> campaigns = importInformation.getCampaigns();
+        for (final Campaign campaign : campaigns) {
+            storedCampaigns.add(campaignRepository.saveAndFlush(campaign));
         }
-        stopWatch.stop();
-        results.put("campaigns", storedCampaigns.size());
-        results.put("campaigns.elapsed", stopWatch.getTotalTimeMillis());
+    }
 
-        return results;
+    private void storeTemplates(ImportInformation importInformation) {
+        final List<Template> templates = importInformation.getTemplates();
+        for (final Template template : templates) {
+            storedTemplates.add(templateRepository.saveAndFlush(template));
+        }
+    }
+
+    private void storeUsers(ImportInformation importInformation) {
+        final List<User> users = importInformation.getUsers();
+        for (final User user : users) {
+            storedUsers.add(userRepository.saveAndFlush(user));
+        }
+    }
+
+    private void storeCustomers(ImportInformation importInformation) {
+        final List<Customer> customers = importInformation.getCustomers();
+        for (final Customer customer : customers) {
+            storedCustomers.add(customerRepository.saveAndFlush(customer));
+        }
     }
 
     /**

@@ -26,16 +26,16 @@ public class FeedbackResourceImpl extends AbstractResource implements FeedbackRe
     @Override
     public Response submitFeedback(
             @FormParam("campaignId") final long campaignId,
-            @FormParam("projectId") final long projectId,
             @FormParam("email") final String email,
+            @FormParam("token") final String token,
             @FormParam("gmv") final Mood globerMoodValue,
             @FormParam("cmv") final Mood clientMoodValue,
             @FormParam("comment") final String comment) {
 
         Preconditions.checkNotNull(campaignId, "campaignId cannot be null");
-        Preconditions.checkNotNull(projectId, "projectId cannot be null");
         Preconditions.checkNotNull(email, "email cannot be null");
-        return notNullResponse(feedbackService.store(campaignId, projectId, email, globerMoodValue, clientMoodValue, comment));
+        Preconditions.checkNotNull(token, "token cannot be null");
+        return notNullResponse(feedbackService.store(campaignId, token, email, globerMoodValue, clientMoodValue, comment));
     }
 
     @GET

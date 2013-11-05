@@ -11,26 +11,26 @@ public class CampaignRelation implements Serializable {
 
     private static final long serialVersionUID = 8626564472896907364L;
 
-    private List<Integer> projects;
+    private List<Integer> users;
     private int template;
     private int campaign;
 
     public CampaignRelation() {
-        this.projects = new ArrayList<Integer>();
+        this.users = new ArrayList<Integer>();
     }
 
-    public CampaignRelation(final int campaign, final int template, final List<Integer> projects) {
+    public CampaignRelation(final int campaign, final int template, final List<Integer> users) {
         this.campaign = campaign;
-        this.projects = projects;
+        this.users = users;
         this.template = template;
     }
 
-    public List<Integer> getProjects() {
-        return projects;
+    public List<Integer> getUsers() {
+        return users;
     }
 
-    public void setProjects(List<Integer> projects) {
-        this.projects = projects;
+    public void setUsers(List<Integer> users) {
+        this.users = users;
     }
 
     public int getTemplate() {

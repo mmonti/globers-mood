@@ -6,6 +6,8 @@ import com.globant.labs.mood.model.Sender;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.service.PreferenceService;
 import com.globant.labs.mood.service.mail.template.TemplateCompiler;
+import com.globant.labs.mood.service.mail.token.TokenGenerator;
+import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.google.appengine.repackaged.com.google.common.base.Preconditions;
 
 import java.util.HashSet;
@@ -41,6 +43,11 @@ public class MailMessageFactory {
     public Set<MailMessage> create(final Campaign campaign) {
         final String alias = preferenceService.preference(PreferenceKey.SENDER_ALIAS);
         final String mail = preferenceService.preference(PreferenceKey.SENDER_MAIL);
+        final String subject = preferenceService.preference(PreferenceKey.MAIL_SUBJECT);
+
+        Preconditions.checkNotNull(alias, "alias is null");
+        Preconditions.checkNotNull(mail, "mail is null");
+        Preconditions.checkNotNull(subject, "subject is null");
         final Sender sender = new Sender(alias, mail);
 
         final Set<User> targets = campaign.getTargets();
@@ -50,28 +57,10 @@ public class MailMessageFactory {
         for (final User currentTarget : targets) {
 
             final String token = ((UserTokenGenerator) tokenGenerator).getToken(campaign, currentTarget);
-            messages.add(new MailMessage(sender, campaign, currentTarget, mailMessageTemplate));
+            messages.add(new MailMessage(mailMessageTemplate, sender, subject, token, campaign, currentTarget));
         }
         return messages;
     }
-//    public Set<MailMessage> create(final Campaign campaign) {
-//        final String alias = preferenceService.preference(PreferenceKey.SENDER_ALIAS);
-//        final String mail = preferenceService.preference(PreferenceKey.SENDER_MAIL);
-//        final Sender sender = new Sender(alias, mail);
-//
-//        final Set<Project> projects = campaign.getProjects();
-//        final MailMessageTemplate mailMessageTemplate = getMailTemplate(campaign.getTemplate());
-//
-//        final Set<MailMessage> messages = new HashSet<MailMessage>();
-//        for (final Project currentProject : projects) {
-//            final Set<User> users = currentProject.getUsers();
-//
-//            for (final User currentUser : users) {
-//                messages.add(new MailMessage(sender, campaign, currentProject, currentUser, mailMessageTemplate));
-//            }
-//        }
-//        return messages;
-//    }
 
     /**
      *

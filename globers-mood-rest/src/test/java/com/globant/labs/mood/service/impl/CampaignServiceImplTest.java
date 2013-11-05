@@ -3,6 +3,8 @@ package com.globant.labs.mood.service.impl;
 import com.globant.labs.mood.config.RootConfig;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.service.*;
+import com.globant.labs.mood.service.mail.token.TokenGenerator;
+import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.globant.labs.mood.support.TransactionSupport;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -42,6 +44,10 @@ public class CampaignServiceImplTest extends TransactionSupport {
     private TemplateService templateService;
     @Inject
     private FeedbackService feedbackService;
+    @Inject
+    private PreferenceService preferenceService;
+    @Inject
+    private TokenGenerator tokenGenerator;
 
     Campaign campaign = null;
 
@@ -67,9 +73,16 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final Template storedTemplate = templateService.store(template);
 
         campaign = new Campaign("Campaign");
-//        campaign.addProject(storedProject);
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
+
+        final Preference senderAlias = new Preference(PreferenceKey.SENDER_ALIAS, "alias");
+        final Preference senderMail = new Preference(PreferenceKey.SENDER_MAIL, "mail");
+        final Preference mailSubject = new Preference(PreferenceKey.MAIL_SUBJECT, "subject");
+
+        preferenceService.store(senderAlias);
+        preferenceService.store(senderMail);
+        preferenceService.store(mailSubject);
     }
 
     @After
@@ -129,19 +142,21 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final Project storedProject2 = projectService.store(project2);
 
         final Campaign campaign1 = new Campaign("Campaign1");
-//        campaign1.addProject(storedProject1);
         campaign1.addTarget(storedUser1);
 
         final Campaign campaign2 = new Campaign("Campaign2");
-//        campaign2.addProject(storedProject2);
         campaign2.addTarget(storedUser2);
 
         final Campaign storedCampaign1 = campaignService.store(campaign1);
         final Campaign storedCampaign2 = campaignService.store(campaign2);
 
-        final Feedback storedFeedback1 = feedbackService.store(storedCampaign1.getId(), project1.getId(), storedUser1.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "Comments");
-        final Feedback storedFeedback2 = feedbackService.store(storedCampaign2.getId(), project1.getId(), storedUser2.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "Comments");
-        final Feedback storedFeedback3 = feedbackService.store(storedCampaign2.getId(), project1.getId(), storedUser3.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "Comments");
+        final String token1 = ((UserTokenGenerator) tokenGenerator).getToken(storedCampaign1, storedUser1);
+        final String token2 = ((UserTokenGenerator) tokenGenerator).getToken(storedCampaign2, storedUser2);
+        final String token3 = ((UserTokenGenerator) tokenGenerator).getToken(storedCampaign2, storedUser3);
+
+        final Feedback storedFeedback1 = feedbackService.store(storedCampaign1.getId(), storedUser1.getEmail(), token1, Mood.NEUTRAL, Mood.NEUTRAL, "Comments");
+        final Feedback storedFeedback2 = feedbackService.store(storedCampaign2.getId(), storedUser2.getEmail(), token2, Mood.NEUTRAL, Mood.NEUTRAL, "Comments");
+        final Feedback storedFeedback3 = feedbackService.store(storedCampaign2.getId(), storedUser3.getEmail(), token3, Mood.NEUTRAL, Mood.NEUTRAL, "Comments");
 
         Assert.notNull(storedFeedback1);
         Assert.notNull(storedFeedback2);

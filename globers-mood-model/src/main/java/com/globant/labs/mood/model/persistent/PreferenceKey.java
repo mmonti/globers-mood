@@ -20,8 +20,8 @@ public enum PreferenceKey {
     private String value;
 
     static {
-        for (PreferenceKey currentMoodValue : EnumSet.allOf(PreferenceKey.class)) {
-            LOOKUP.put(String.valueOf(currentMoodValue.getValue()), currentMoodValue);
+        for (PreferenceKey preferenceKey : EnumSet.allOf(PreferenceKey.class)) {
+            LOOKUP.put(String.valueOf(preferenceKey.getValue()), preferenceKey);
         }
     }
 

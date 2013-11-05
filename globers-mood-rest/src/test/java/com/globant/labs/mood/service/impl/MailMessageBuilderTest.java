@@ -19,6 +19,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.Set;
 
 
@@ -50,7 +51,8 @@ public class MailMessageBuilderTest extends TransactionSupport {
     @Inject
     private PreferenceService preferenceService;
 
-    private Campaign storedCampaign;
+    private Campaign storedCampaign1;
+    private Campaign storedCampaign2;
 
     @Before
     public void setUp() {
@@ -67,23 +69,35 @@ public class MailMessageBuilderTest extends TransactionSupport {
 
         final Project storedProject = projectService.store(project);
 
-        final Template template = new Template();
-        template.setName("template-1");
-        template.setFile(new Blob("Name=[{{user.name}}]".getBytes()));
+        final Template template1 = new Template();
+        template1.setName("template-1");
+        template1.setFile(new Blob("name=[{{target.name}}]".getBytes()));
 
-        final Template storedTemplate = templateService.store(template);
+        final Template template2 = new Template();
+        template2.setName("template-2");
+        template2.setFile(new Blob("name=[{{target.name}}, date={{context.date}}]".getBytes()));
 
-        final Campaign campaign = new Campaign("Campaign");
-//        campaign.addProject(storedProject);
-        campaign.addTarget(storedUser);
-        campaign.setTemplate(storedTemplate);
+        final Template storedTemplate1 = templateService.store(template1);
+        final Template storedTemplate2 = templateService.store(template2);
 
-        final Preference senderAlias = new Preference(PreferenceKey.SENDER_ALIAS);
-        final Preference senderMail = new Preference(PreferenceKey.SENDER_MAIL);
+        final Campaign campaign1 = new Campaign("Campaign1");
+        campaign1.addTarget(storedUser);
+        campaign1.setTemplate(storedTemplate1);
+
+        final Campaign campaign2 = new Campaign("Campaign2");
+        campaign2.addTarget(storedUser);
+        campaign2.setTemplate(storedTemplate2);
+
+        final Preference senderAlias = new Preference(PreferenceKey.SENDER_ALIAS, "alias");
+        final Preference senderMail = new Preference(PreferenceKey.SENDER_MAIL, "mail");
+        final Preference mailSubject = new Preference(PreferenceKey.MAIL_SUBJECT, "subject");
+
         preferenceService.store(senderAlias);
         preferenceService.store(senderMail);
+        preferenceService.store(mailSubject);
 
-        this.storedCampaign = campaignService.store(campaign);
+        this.storedCampaign1 = campaignService.store(campaign1);
+        this.storedCampaign2 = campaignService.store(campaign2);
     }
 
     @After
@@ -93,18 +107,30 @@ public class MailMessageBuilderTest extends TransactionSupport {
 
     @Test
     public void testMailMessageBuilder() throws Exception {
-        final Set<MailMessage> messages = mailMessageFactory.create(storedCampaign);
+        final Set<MailMessage> messages = mailMessageFactory.create(storedCampaign1);
         Assert.notEmpty(messages);
     }
 
     @Test
     public void testMailMessageContent() throws Exception {
-        final Set<MailMessage> messages = mailMessageFactory.create(storedCampaign);
+        final Set<MailMessage> messages = mailMessageFactory.create(storedCampaign1);
         final MailMessage mailMessage = messages.iterator().next();
         Assert.notNull(mailMessage);
 
         final String content = mailMessage.getContent();
         Assert.notNull(content);
-        Assert.isTrue("Name=[Mauro Monti]".equals(content));
+        Assert.isTrue("name=[Mauro Monti]".equals(content));
+    }
+
+    @Test
+    public void testMailMessageContentContextValues() throws Exception {
+        final Set<MailMessage> messages = mailMessageFactory.create(storedCampaign2);
+        final MailMessage mailMessage = messages.iterator().next();
+        mailMessage.getContext().add("date", new Date());
+
+        Assert.notNull(mailMessage);
+
+        final String content = mailMessage.getContent();
+        Assert.notNull(content);
     }
 }

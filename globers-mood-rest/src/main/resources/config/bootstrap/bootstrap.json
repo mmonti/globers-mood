@@ -25,14 +25,17 @@
     }],
     "campaigns" : [{
         "name" : "campaign-1",
-        "description" : "Test Campaign"
+        "description" : "Test Campaign - 1"
+    },{
+        "name" : "campaign-2",
+        "description" : "Test Campaign - 2"
     }],
     "relations" : [
         { "project" : 0, "customer" : 0, "users" : [1] },
         { "project" : 1, "customer" : 0, "users" : [0] }
     ],
     "campaignRelations" : [
-        { "campaign" : 0, "template" : 0, "projects" : [0, 1] }
+        { "campaign" : 0, "template" : 0, "users" : [0, 1] },
+        { "campaign" : 0, "template" : 0, "users" : [0, 1, 2] }
     ]
-
 }

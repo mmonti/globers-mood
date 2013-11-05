@@ -3,6 +3,7 @@ package com.globant.labs.mood.model.persistent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import org.datanucleus.api.jpa.annotations.Extension;
 
 import javax.persistence.GeneratedValue;

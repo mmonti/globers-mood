@@ -44,7 +44,7 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
      * @return
      */
     public int dispatch(final Set<MailMessage> mailMessages) {
-        final Set<MailMessage> pendingMailMessages = new HashSet<MailMessage>();
+        final Set<MailMessage> pendingMailMessages = new HashSet();
         for (final MailMessage currentMailMessage : mailMessages) {
             final Message message = getMessage(currentMailMessage);
             if (message != null) {
@@ -72,26 +72,22 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
      * @return
      */
     private Message getMessage(final MailMessage mailMessage) {
-        Sender mailSender = mailMessage.getSender();
-        if (mailSender == null) {
-            throw new RuntimeException();
-        }
+        final Sender sender = mailMessage.getSender();
+        final String senderAlias = sender.getAlias();
+        final String senderMail = sender.getMail();
 
-        final String senderAlias = mailSender.getAlias();
-        final String senderMail = mailSender.getMail();
-        final String mailSubject = "";
         try {
             final Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(getMessagePart(mailMessage));
 
             final User targetUser = mailMessage.getTarget();
-            final InternetAddress sender = new InternetAddress(senderMail, senderAlias);
-            final InternetAddress target = new InternetAddress(targetUser.getEmail(), targetUser.getName());
+            final InternetAddress senderAddress = new InternetAddress(senderMail, senderAlias);
+            final InternetAddress targetAddress = new InternetAddress(targetUser.getEmail(), targetUser.getName());
 
             final Message message = new MimeMessage(session);
-            message.setFrom(sender);
-            message.addRecipient(Message.RecipientType.TO, target);
-            message.setSubject(mailSubject);
+            message.setFrom(senderAddress);
+            message.addRecipient(Message.RecipientType.TO, targetAddress);
+            message.setSubject(mailMessage.getSubject());
             message.setContent(multipart);
 
             return message;

@@ -5,6 +5,8 @@ import com.globant.labs.mood.exception.ServiceException;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.repository.data.CampaignRepository;
 import com.globant.labs.mood.service.*;
+import com.globant.labs.mood.service.mail.token.TokenGenerator;
+import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.junit.After;
@@ -42,6 +44,9 @@ public class FeedbackServiceImplTest {
     @Inject
     private CampaignRepository campaignRepository;
 
+    @Inject
+    private TokenGenerator tokenGenerator;
+
     @Before
     public void setUp() {
         localServiceTestHelper.setUp();
@@ -66,11 +71,12 @@ public class FeedbackServiceImplTest {
         final Project storedProject = projectService.store(project);
 
         final Campaign campaign = new Campaign("Campaign");
-//        campaign.addProject(storedProject);
         campaign.addTarget(storedUser);
 
         final Campaign storedCampaign = campaignService.store(campaign);
-        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), project.getId(), storedUser.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
+
+        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
+        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
 
         final Set<Feedback> storedFeedbackOfCampaign = feedbackService.feedbackOfCampaign(storedFeedback.getCampaign().getId());
         Assert.notNull(storedFeedbackOfCampaign);
@@ -91,11 +97,12 @@ public class FeedbackServiceImplTest {
         final Project storedProject = projectService.store(project);
 
         final Campaign campaign = new Campaign("Campaign");
-//        campaign.addProject(storedProject);
         campaign.addTarget(storedUser);
 
         final Campaign storedCampaign = campaignService.store(campaign);
-        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), project.getId(), storedUser.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
+        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
+
+        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
 
         final Set<Feedback> storedFeedbackOfCampaign = feedbackService.feedbackOfUser(storedCampaign.getId(), storedUser.getId());
         Assert.notNull(storedFeedbackOfCampaign);
@@ -120,8 +127,9 @@ public class FeedbackServiceImplTest {
         campaign.addTarget(storedUser);
 
         final Campaign storedCampaign = campaignService.store(campaign);
+        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
 
-        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), project.getId(), storedUser.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "");
+        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "");
         Assert.notNull(storedFeedback);
         Assert.notNull(storedFeedback.getId());
         Assert.isTrue(storedFeedback.getGloberMood().equals(Mood.NEUTRAL));
@@ -150,8 +158,8 @@ public class FeedbackServiceImplTest {
             campaign = campaignService.campaign(c.longValue());
         }
 
-
-        final Feedback storedFeedback = feedbackService.store(campaign.getId(), project.getId(), storedUser.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "");
+        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(campaign, storedUser);
+        final Feedback storedFeedback = feedbackService.store(campaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "");
         Assert.notNull(storedFeedback);
         Assert.notNull(storedFeedback.getId());
         Assert.isTrue(storedFeedback.getGloberMood().equals(Mood.NEUTRAL));
@@ -177,13 +185,11 @@ public class FeedbackServiceImplTest {
         campaign.addTarget(storedUser);
 
         final Campaign storedCampaign = campaignService.store(campaign);
-
-        final Feedback storedFeedbackFirst = feedbackService.store(storedCampaign.getId(), project.getId(), storedUser.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "This is my comment");
-        final Feedback storedFeedbackSecond = feedbackService.store(storedCampaign.getId(), project.getId(), storedUser.getEmail(), Mood.NEUTRAL, Mood.NEUTRAL, "This is my comment");
+        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
+        final Feedback storedFeedbackFirst = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my comment");
+        final Feedback storedFeedbackSecond = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my comment");
 
         Assert.notNull(storedFeedbackFirst);
         Assert.notNull(storedFeedbackSecond);
-
-
     }
 }

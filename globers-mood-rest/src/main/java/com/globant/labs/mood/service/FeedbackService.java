@@ -11,15 +11,16 @@ import java.util.Set;
 public interface FeedbackService {
 
     /**
+     *
      * @param campaignId
-     * @param projectId
      * @param email
+     * @param token
      * @param gmv
      * @param cmv
      * @param comment
      * @return
      */
-    Feedback store(final long campaignId, final long projectId, final String email, final Mood gmv, final Mood cmv, final String comment);
+    Feedback store(final long campaignId, final String email, final String token, final Mood gmv, final Mood cmv, final String comment);
 
     /**
      * @return

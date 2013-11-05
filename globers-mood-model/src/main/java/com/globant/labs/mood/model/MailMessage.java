@@ -16,28 +16,30 @@ public class MailMessage implements Serializable {
     private static final long serialVersionUID = 5114330117273764214L;
 
     private Sender sender;
+    private String subject;
+    private String token;
     private Campaign campaign;
-//    private Project project;
     private User target;
+    private Context context;
     private MailMessageTemplate mailMessageTemplate;
-
-    private Map<String, Object> context;
 
     /**
      *
-     * @param sender
-     * @param campaign
-//     * @param project
-     * @param user
      * @param mailMessageTemplate
+     * @param sender
+     * @param subject
+     * @param token
+     * @param campaign
+     * @param target
      */
-    public MailMessage(final Sender sender, final Campaign campaign, /*final Project project,*/ final User target, final MailMessageTemplate mailMessageTemplate) {
+    public MailMessage(final MailMessageTemplate mailMessageTemplate, final Sender sender, final String subject, final String token, final Campaign campaign, final User target) {
         this.sender = sender;
+        this.subject = subject;
+        this.token = token;
         this.campaign = campaign;
-//        this.project = project;
         this.target = target;
         this.mailMessageTemplate = mailMessageTemplate;
-        this.context = new HashMap<String, Object>();
+        this.context = ContextFactory.getInstance();
     }
 
     public Sender getSender() {
@@ -48,13 +50,20 @@ public class MailMessage implements Serializable {
         return campaign;
     }
 
-//    public Project getProject() {
-//        return project;
-//    }
-
-
     public User getTarget() {
         return target;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getSubject() {
+        return subject;
     }
 
     public MailMessageTemplate getMailMessageTemplate() {

@@ -1,4 +1,4 @@
-package com.globant.labs.mood.service.mail;
+package com.globant.labs.mood.service.mail.token;
 
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.User;

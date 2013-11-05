@@ -150,7 +150,7 @@ public class NodeImpl implements Node, Serializable {
             if (current.getKey().equals(name)) {
                 return current;
             }
-            getMatchingNode(current.getChilds(), name);
+            return getMatchingNode(current.getChilds(), name);
         }
         return null;
     }

@@ -27,7 +27,7 @@ public interface CampaignResource {
      * @param id
      * @return
      */
-    Response campaign(final Long id);
+    Response campaign(final long id);
 
     /**
      *

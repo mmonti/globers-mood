@@ -26,5 +26,5 @@ public interface CustomerResource {
      * @param id
      * @return
      */
-    Response customer(final Long id);
+    Response customer(final long id);
 }

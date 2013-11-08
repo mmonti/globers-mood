@@ -43,7 +43,7 @@ public class UserResourceImpl extends AbstractResource implements UserResource {
     @GET
     @Path("/{id}")
     @Override
-    public Response user(@PathParam("id") final Long id) {
+    public Response user(@PathParam("id") final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
         return notNullResponse(userService.user(id));
     }

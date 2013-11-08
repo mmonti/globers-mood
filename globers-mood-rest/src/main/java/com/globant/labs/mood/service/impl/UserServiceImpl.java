@@ -45,7 +45,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public User user(final Long id) {
+    public User user(final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
         return userRepository.findOne(id);
     }

@@ -81,7 +81,7 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
 
     @Transactional(readOnly = true)
     @Override
-    public <T> T preference(PreferenceKey key, Class<T> type) {
+    public <T> T preference(final PreferenceKey key, final Class<T> type) {
         return preference(key.getValue(), type);
     }
 }

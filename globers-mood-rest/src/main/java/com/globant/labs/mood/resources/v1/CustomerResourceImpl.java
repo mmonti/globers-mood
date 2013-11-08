@@ -41,7 +41,7 @@ public class CustomerResourceImpl extends AbstractResource implements CustomerRe
     @GET
     @Path("/{id}")
     @Override
-    public Response customer(@PathParam("id") final Long id) {
+    public Response customer(@PathParam("id") final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
         return notNullResponse(customerService.customer(id));
     }

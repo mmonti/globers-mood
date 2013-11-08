@@ -15,13 +15,12 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Set;
 
 
 /**
- * @author mauro.monti (monti.mauro@gmail.com)
- */
+* @author mauro.monti (monti.mauro@gmail.com)
+*/
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
 public class UserServiceImplTest {
@@ -29,10 +28,7 @@ public class UserServiceImplTest {
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
     @Inject
-    private UserService service;
-//
-//    @Inject
-//    private UserDAO userDAO;
+    private UserService userService;
 
     @Before
     public void setUp() {
@@ -47,7 +43,7 @@ public class UserServiceImplTest {
     @Test
     public void testAddUser() throws Exception {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
-        final User storedUser = service.store(user);
+        final User storedUser = userService.store(user);
 
         Assert.notNull(storedUser);
         Assert.notNull(storedUser.getId());
@@ -57,9 +53,9 @@ public class UserServiceImplTest {
     @Test
     public void testUsers() throws Exception {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
-        final User storedUser = service.store(user);
+        final User storedUser = userService.store(user);
 
-        final Set<User> users = service.users();
+        final Set<User> users = userService.users();
         Assert.notNull(users);
         Assert.notEmpty(users);
     }
@@ -67,9 +63,9 @@ public class UserServiceImplTest {
     @Test
     public void testUserById() throws Exception {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
-        final User storedUser = service.store(user);
+        final User storedUser = userService.store(user);
 
-        final User result = service.user(storedUser.getKey().getId());
+        final User result = userService.user(storedUser.getId());
         Assert.notNull(result);
         Assert.isTrue(storedUser.getName().equals(result.getName()));
     }
@@ -77,9 +73,9 @@ public class UserServiceImplTest {
     @Test
     public void testUserByEmail() throws Exception {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
-        final User storedUser = service.store(user);
+        final User storedUser = userService.store(user);
 
-        final User result = service.userByEmail("mauro.monti@globant.com");
+        final User result = userService.userByEmail("mauro.monti@globant.com");
         Assert.notNull(result);
         Assert.isTrue(storedUser.getEmail().equals(result.getEmail()));
     }
@@ -91,10 +87,10 @@ public class UserServiceImplTest {
         final User user2 = new User("Juan Sanmarco", "juan.sanmarco@globant.com");
         user2.release();
 
-        final User storedUser1 = service.store(user1);
-        final User storedUser2 = service.store(user2);
+        final User storedUser1 = userService.store(user1);
+        final User storedUser2 = userService.store(user2);
 
-        final Set<User> result = service.assignedUsers();
+        final Set<User> result = userService.assignedUsers();
         Assert.notEmpty(result);
         Assert.isTrue(result.size()==1);
     }

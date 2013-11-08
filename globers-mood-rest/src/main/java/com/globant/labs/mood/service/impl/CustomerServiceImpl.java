@@ -39,7 +39,7 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
 
     @Transactional(readOnly = true)
     @Override
-    public Customer customer(final Long id) {
+    public Customer customer(final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
         return this.customerRepository.findOne(id);
     }

@@ -27,5 +27,5 @@ public interface CustomerService {
      * @param id
      * @return
      */
-    Customer customer(final Long id);
+    Customer customer(final long id);
 }

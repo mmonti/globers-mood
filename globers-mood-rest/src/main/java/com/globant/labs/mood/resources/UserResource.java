@@ -26,7 +26,7 @@ public interface UserResource {
      * @param id
      * @return
      */
-    Response user(final Long id);
+    Response user(final long id);
 
     /**
      *

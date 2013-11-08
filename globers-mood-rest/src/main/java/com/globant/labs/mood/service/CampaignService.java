@@ -25,7 +25,7 @@ public interface CampaignService {
      * @param id
      * @return
      */
-    Campaign campaign(final Long id);
+    Campaign campaign(final long id);
 
     /**
      *

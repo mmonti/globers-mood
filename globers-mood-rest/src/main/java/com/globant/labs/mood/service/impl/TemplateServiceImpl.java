@@ -68,7 +68,7 @@ public class TemplateServiceImpl extends AbstractService implements TemplateServ
 
     @Override
     @Transactional(readOnly = true)
-    public Template template(final Long id) {
+    public Template template(final long id) {
         return templateRepository.findOne(id);
     }
 

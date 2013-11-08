@@ -19,8 +19,8 @@ import java.util.Set;
 
 
 /**
- * @author mauro.monti (monti.mauro@gmail.com)
- */
+* @author mauro.monti (monti.mauro@gmail.com)
+*/
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
 public class CustomerServiceImplTest {
@@ -28,7 +28,7 @@ public class CustomerServiceImplTest {
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
     @Inject
-    private CustomerService service;
+    private CustomerService customerService;
 
     @Before
     public void setUp() {
@@ -43,19 +43,19 @@ public class CustomerServiceImplTest {
     @Test
     public void testAddCustomer() throws Exception {
         final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = service.store(customer);
+        final Customer storedCustomer = customerService.store(customer);
 
         Assert.notNull(storedCustomer);
-        Assert.notNull(storedCustomer.getKey().getId());
+        Assert.notNull(storedCustomer.getId());
         Assert.isTrue(storedCustomer.getName().equals(customer.getName()));
     }
 
     @Test
     public void testCustomers() throws Exception {
         final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = service.store(customer);
+        final Customer storedCustomer = customerService.store(customer);
 
-        final Set<Customer> customers = service.customers();
+        final Set<Customer> customers = customerService.customers();
         Assert.notNull(customers);
         Assert.notEmpty(customers);
     }
@@ -63,9 +63,9 @@ public class CustomerServiceImplTest {
     @Test
     public void testUserById() throws Exception {
         final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = service.store(customer);
+        final Customer storedCustomer = customerService.store(customer);
 
-        final Customer result = service.customer(storedCustomer.getKey().getId());
+        final Customer result = customerService.customer(storedCustomer.getId());
         Assert.notNull(result);
         Assert.isTrue(storedCustomer.getName().equals(result.getName()));
     }

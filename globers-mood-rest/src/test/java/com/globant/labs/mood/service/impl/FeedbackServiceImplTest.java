@@ -7,6 +7,7 @@ import com.globant.labs.mood.repository.data.CampaignRepository;
 import com.globant.labs.mood.service.*;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
 import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
+import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.junit.After;
@@ -40,6 +41,8 @@ public class FeedbackServiceImplTest {
     private ProjectService projectService;
     @Inject
     private CustomerService customerService;
+    @Inject
+    private TemplateService templateService;
 
     @Inject
     private CampaignRepository campaignRepository;
@@ -70,8 +73,15 @@ public class FeedbackServiceImplTest {
 
         final Project storedProject = projectService.store(project);
 
+        final Template template = new Template();
+        template.setName("Template 1");
+        template.setFile(new Blob("This is an array of bytes".getBytes()));
+
+        Template storedTemplate = templateService.store(template);
+
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
+        campaign.setTemplate(storedTemplate);
 
         final Campaign storedCampaign = campaignService.store(campaign);
 
@@ -96,8 +106,15 @@ public class FeedbackServiceImplTest {
 
         final Project storedProject = projectService.store(project);
 
+        final Template template = new Template();
+        template.setName("Template 1");
+        template.setFile(new Blob("This is an array of bytes".getBytes()));
+
+        Template storedTemplate = templateService.store(template);
+
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
+        campaign.setTemplate(storedTemplate);
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
@@ -122,9 +139,15 @@ public class FeedbackServiceImplTest {
 
         final Project storedProject = projectService.store(project);
 
+        final Template template = new Template();
+        template.setName("Template 1");
+        template.setFile(new Blob("This is an array of bytes".getBytes()));
+
+        Template storedTemplate = templateService.store(template);
+
         final Campaign campaign = new Campaign("Campaign");
-//        campaign.addProject(storedProject);
         campaign.addTarget(storedUser);
+        campaign.setTemplate(storedTemplate);
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
@@ -181,8 +204,15 @@ public class FeedbackServiceImplTest {
 
         final Project storedProject = projectService.store(project);
 
+        final Template template = new Template();
+        template.setName("Template 1");
+        template.setFile(new Blob("This is an array of bytes".getBytes()));
+
+        Template storedTemplate = templateService.store(template);
+
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
+        campaign.setTemplate(storedTemplate);
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);

@@ -21,7 +21,7 @@ public interface ProjectResource {
      * @param userId
      * @return
      */
-    Response assignUser(final Long projectId, final Long userId);
+    Response assignUser(final long projectId, final long userId);
 
     /**
      *
@@ -29,7 +29,7 @@ public interface ProjectResource {
      * @param userId
      * @return
      */
-    Response releaseUser(final Long projectId, final Long userId);
+    Response releaseUser(final long projectId, final long userId);
 
     /**
      *

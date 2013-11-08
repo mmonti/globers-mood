@@ -33,7 +33,7 @@ public class TemplateResourceImpl extends AbstractResource implements TemplateRe
     @GET
     @Path("/{id}")
     @Override
-    public Response template(@PathParam("id") final Long id) {
+    public Response template(@PathParam("id") final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
         return notNullResponse(templateService.template(id));
     }

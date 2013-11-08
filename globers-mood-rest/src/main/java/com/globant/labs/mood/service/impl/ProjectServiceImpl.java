@@ -44,7 +44,7 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
 
     @Transactional
     @Override
-    public boolean assign(final Long projectId, final Long userId) {
+    public boolean assign(final long projectId, final long userId) {
         Preconditions.checkNotNull(projectId, "projectId cannot be null");
         Preconditions.checkNotNull(userId, "userId cannot be null");
 
@@ -71,7 +71,7 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
 
     @Transactional
     @Override
-    public boolean release(final Long projectId, final Long userId) {
+    public boolean release(final long projectId, final long userId) {
         Preconditions.checkNotNull(projectId, "projectId cannot be null");
         Preconditions.checkNotNull(userId, "userId cannot be null");
 
@@ -94,14 +94,14 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
 
     @Transactional(readOnly = true)
     @Override
-    public Project project(final Long id) {
+    public Project project(final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
         return projectRepository.findOne(id);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Set<User> usersOfProject(final Long id) {
+    public Set<User> usersOfProject(final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
         Project project = projectRepository.findOne(id);
         return project.getUsers();

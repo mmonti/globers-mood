@@ -24,8 +24,8 @@ import java.util.Set;
 
 
 /**
- * @author mauro.monti (monti.mauro@gmail.com)
- */
+* @author mauro.monti (monti.mauro@gmail.com)
+*/
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
 public class CampaignServiceImplTest extends TransactionSupport {
@@ -112,7 +112,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
     @Test
     public void testCampaignById() throws Exception {
         final Campaign storedCampaign = campaignService.store(campaign);
-        final Campaign result = campaignService.campaign(storedCampaign.getKey().getId());
+        final Campaign result = campaignService.campaign(storedCampaign.getId());
         Assert.notNull(result);
         Assert.isTrue(storedCampaign.getName().equals(result.getName()));
         Assert.notEmpty(storedCampaign.getTargets());
@@ -146,6 +146,14 @@ public class CampaignServiceImplTest extends TransactionSupport {
 
         final Campaign campaign2 = new Campaign("Campaign2");
         campaign2.addTarget(storedUser2);
+
+        final Template template = new Template();
+        template.setName("Template 1");
+        template.setFile(new Blob("This is an array of bytes".getBytes()));
+
+        Template storedTemplate = templateService.store(template);
+        campaign1.setTemplate(storedTemplate);
+        campaign2.setTemplate(storedTemplate);
 
         final Campaign storedCampaign1 = campaignService.store(campaign1);
         final Campaign storedCampaign2 = campaignService.store(campaign2);

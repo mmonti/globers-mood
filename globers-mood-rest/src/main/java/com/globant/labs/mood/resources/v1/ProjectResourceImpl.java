@@ -35,7 +35,7 @@ public class ProjectResourceImpl extends AbstractResource implements ProjectReso
     @POST
     @Path("/{projectId}/assign/{userId}")
     @Override
-    public Response assignUser(@PathParam("projectId") final Long projectId, @PathParam("userId") final Long userId) {
+    public Response assignUser(@PathParam("projectId") final long projectId, @PathParam("userId") final long userId) {
         Preconditions.checkNotNull(projectId, "projectId cannot be null");
         Preconditions.checkNotNull(userId, "userId cannot be null");
         return notNullResponse(projectService.assign(projectId, userId));
@@ -44,7 +44,7 @@ public class ProjectResourceImpl extends AbstractResource implements ProjectReso
     @POST
     @Path("/{projectId}/release/{userId}")
     @Override
-    public Response releaseUser(@PathParam("projectId") final Long projectId, @PathParam("userId") final Long userId) {
+    public Response releaseUser(@PathParam("projectId") final long projectId, @PathParam("userId") final long userId) {
         Preconditions.checkNotNull(projectId, "projectId cannot be null");
         Preconditions.checkNotNull(userId, "userId cannot be null");
         return notNullResponse(projectService.release(projectId, userId));

@@ -24,8 +24,8 @@ import java.util.Set;
 
 
 /**
- * @author mauro.monti (monti.mauro@gmail.com)
- */
+* @author mauro.monti (monti.mauro@gmail.com)
+*/
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
 public class ProjectServiceImplTest {
@@ -35,11 +35,11 @@ public class ProjectServiceImplTest {
     @Inject
     private ProjectService projectService;
     @Inject
-    private ProjectRepository projectRepository;
-    @Inject
     private CustomerService customerService;
     @Inject
     private UserService userService;
+    @Inject
+    private ProjectRepository projectRepository;
 
     @Before
     public void setUp() {
@@ -76,7 +76,7 @@ public class ProjectServiceImplTest {
         final Project storedProject = projectService.store(project);
 
         Assert.notNull(storedProject);
-        Assert.notNull(storedProject.getKey().getId());
+        Assert.notNull(storedProject.getId());
         Assert.isTrue(storedProject.getName().equals(project.getName()));
     }
 
@@ -101,7 +101,7 @@ public class ProjectServiceImplTest {
         final Project project = new Project("Project", storedCustomer);
         final Project storedProject = projectService.store(project);
 
-        final Project result = projectService.project(storedProject.getKey().getId());
+        final Project result = projectService.project(storedProject.getId());
         Assert.notNull(result);
         Assert.isTrue(storedProject.getName().equals(result.getName()));
     }
@@ -118,7 +118,7 @@ public class ProjectServiceImplTest {
         final Project project = new Project("Project", storedCustomer);
         final Project storedProject = projectService.store(project);
 
-        final Boolean result = projectService.assign(storedProject.getKey().getId(), storedUser.getKey().getId());
+        final Boolean result = projectService.assign(storedProject.getId(), storedUser.getId());
         Assert.notNull(result);
         Assert.isTrue(result);
 
@@ -138,7 +138,7 @@ public class ProjectServiceImplTest {
         final Project project = new Project("Project", storedCustomer);
         final Project storedProject = projectService.store(project);
 
-        final Boolean assignResult = projectService.assign(storedProject.getKey().getId(), storedUser.getKey().getId());
+        final Boolean assignResult = projectService.assign(storedProject.getId(), storedUser.getId());
         Assert.notNull(assignResult);
         Assert.isTrue(assignResult);
 
@@ -146,7 +146,7 @@ public class ProjectServiceImplTest {
 //        Assert.notEmpty(assignResultProject.getUsers());
 //        Assert.isTrue(assignResultProject.getUsers().contains(user));
 
-        final Boolean releaseResult = projectService.release(storedProject.getKey().getId(), storedUser.getKey().getId());
+        final Boolean releaseResult = projectService.release(storedProject.getId(), storedUser.getId());
         Assert.notNull(releaseResult);
         Assert.isTrue(releaseResult);
 

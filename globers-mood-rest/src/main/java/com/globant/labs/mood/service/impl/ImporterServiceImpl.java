@@ -44,6 +44,8 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
     private TemplateRepository templateRepository;
     @Inject
     private CampaignRepository campaignRepository;
+    @Inject
+    private PreferenceRepository preferenceRepository;
 
     @Inject
     private ObjectMapper objectMapper;
@@ -53,6 +55,7 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
     private List<Project> storedProjects = new ArrayList<Project>();
     private List<Template> storedTemplates = new ArrayList<Template>();
     private List<Campaign> storedCampaigns = new ArrayList<Campaign>();
+    private List<Preference> storedPreferences = new ArrayList<Preference>();
 
     private Map<String, Object> results = new HashMap<String, Object>();
 
@@ -63,6 +66,13 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
     @Override
     public Map<String, Object> importData(final ImportInformation importInformation) {
         final StopWatch stopWatch = new StopWatch();
+
+        // == Preferences
+        stopWatch.start();
+        storePreferences(importInformation);
+        stopWatch.stop();
+        results.put("preferences", storedPreferences.size());
+        results.put("preferences.elapsed", stopWatch.getTotalTimeMillis());
 
         // == Customer
         stopWatch.start();
@@ -145,6 +155,13 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
                 projectPrototype.assign(user);
             }
             storedProjects.add(projectRepository.saveAndFlush(projectPrototype));
+        }
+    }
+
+    private void storePreferences(ImportInformation importInformation) {
+        final List<Preference> preferences = importInformation.getPreferences();
+        for (final Preference preference : preferences) {
+            storedPreferences.add(preferenceRepository.saveAndFlush(preference));
         }
     }
 

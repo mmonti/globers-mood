@@ -35,7 +35,7 @@ public interface TemplateService {
      * @param id
      * @return
      */
-    Template template(final Long id);
+    Template template(final long id);
 
     /**
      *

@@ -24,7 +24,7 @@ public interface UserService {
      * @param id
      * @return
      */
-    User user(final Long id);
+    User user(final long id);
 
     /**
      *

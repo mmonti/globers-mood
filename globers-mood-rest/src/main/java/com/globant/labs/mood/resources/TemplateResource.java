@@ -21,7 +21,7 @@ public interface TemplateResource {
      * @param id
      * @return
      */
-    Response template(final Long id);
+    Response template(final long id);
 
     /**
      *
@@ -29,5 +29,5 @@ public interface TemplateResource {
      * @param formDataContentDisposition
      * @return
      */
-    Response addTemplate(InputStream inputStream, FormDataContentDisposition formDataContentDisposition);
+    Response addTemplate(final InputStream inputStream, final FormDataContentDisposition formDataContentDisposition);
 }

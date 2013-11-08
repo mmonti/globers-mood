@@ -12,8 +12,8 @@ public interface FeedbackResource {
     /**
      *
      * @param campaignId
-     * @param projectId
      * @param email
+     * @param token
      * @param globerMoodValue
      * @param clientMoodValue
      * @param comment

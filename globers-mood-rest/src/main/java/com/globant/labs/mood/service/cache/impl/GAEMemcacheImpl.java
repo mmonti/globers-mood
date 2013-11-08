@@ -33,7 +33,7 @@ public class GAEMemcacheImpl implements CacheService {
      * @param <T>
      * @return
      */
-    public <T> T get(Serializable key, Class<T> returningObject) {
+    public <T> T get(final Serializable key, final Class<T> returningObject) {
         final Object object = memcacheService.get(key);
         return (T) (object);
     }
@@ -43,7 +43,7 @@ public class GAEMemcacheImpl implements CacheService {
      * @param key
      * @param value
      */
-    public void store(Serializable key, Object value) {
+    public void store(final Serializable key, final Object value) {
         synchronized (lock) {
             memcacheService.put(key, value);
         }

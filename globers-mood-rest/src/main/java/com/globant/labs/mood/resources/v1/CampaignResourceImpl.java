@@ -41,11 +41,11 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
     @GET
     @Path("/{id}")
     @Override
-    public Response campaign(@PathParam("id") final Long id) {
+    public Response campaign(@PathParam("id") final long id) {
         return notNullResponse(campaignService.campaign(id));
     }
 
-    @GET
+    @POST
     @Path("/{id}/start")
     @Override
     public Response startCampaign(@PathParam("id") final long id) {

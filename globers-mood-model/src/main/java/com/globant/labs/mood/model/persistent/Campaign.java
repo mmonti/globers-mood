@@ -31,15 +31,11 @@ public class Campaign extends BaseEntity implements Serializable {
     private CampaignStatus status;
 
     @Unowned
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Template template;
 
-//    @Unowned
-//    @OneToMany(fetch = FetchType.LAZY)
-//    private Set<Project> projects = new HashSet<Project>();
-
     @Unowned
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<User> targets = new HashSet<User>();
 
     @Unowned
@@ -49,9 +45,6 @@ public class Campaign extends BaseEntity implements Serializable {
     @Basic
     private int feedbackNumber = 0;
 
-//    @Basic
-//    private int projectNumber = 0;
-
     @Basic
     private int targetNumber = 0;
 
@@ -59,7 +52,6 @@ public class Campaign extends BaseEntity implements Serializable {
         this.created = new Date();
         this.status = CampaignStatus.CREATED;
         this.feedbackNumber = 0;
-//        this.projectNumber = 0;
         this.targetNumber = 0;
     }
 
@@ -107,10 +99,6 @@ public class Campaign extends BaseEntity implements Serializable {
         this.template = template;
     }
 
-//    public Set<Project> getProjects() {
-//        return Collections.unmodifiableSet(projects);
-//    }
-
     public Set<User> getTargets() {
         return Collections.unmodifiableSet(targets);
     }
@@ -125,12 +113,6 @@ public class Campaign extends BaseEntity implements Serializable {
         this.targetNumber++;
     }
 
-//    public void addProject(final Project project) {
-//        Preconditions.checkNotNull(project, "project cannot be null");
-//        this.projects.add(project);
-//        this.projectNumber++;
-//    }
-
     public void addFeedback(final Feedback feedback) {
         Preconditions.checkNotNull(feedback, "feedback cannot be null");
         this.feedbacks.add(feedback);
@@ -140,10 +122,6 @@ public class Campaign extends BaseEntity implements Serializable {
     public int getFeedbackNumber() {
         return feedbackNumber;
     }
-
-//    public int getProjectNumber() {
-//        return projectNumber;
-//    }
 
     public int getTargetNumber() {
         return targetNumber;
@@ -156,8 +134,8 @@ public class Campaign extends BaseEntity implements Serializable {
 
         Campaign campaign = (Campaign) o;
 
+        if (!getId().equals(campaign.getId())) return false;
         if (!created.equals(campaign.created)) return false;
-        if (!getKey().equals(campaign.getKey())) return false;
         if (!name.equals(campaign.name)) return false;
 
         return true;

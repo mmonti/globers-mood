@@ -24,6 +24,8 @@ public class Template extends BaseEntity implements Serializable {
     @Basic
     private String name;
     @Basic
+    private String description;
+    @Basic
     private Blob file;
 
     @Temporal(TemporalType.DATE)
@@ -62,6 +64,14 @@ public class Template extends BaseEntity implements Serializable {
         return created;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,6 +79,7 @@ public class Template extends BaseEntity implements Serializable {
 
         Template template = (Template) o;
 
+        if (!getId().equals(template.getId())) return false;
         if (!created.equals(template.created)) return false;
         if (!name.equals(template.name)) return false;
 

@@ -96,7 +96,7 @@ public class Project extends BaseEntity implements Serializable {
 
         Project project = (Project) o;
 
-        if (!getKey().equals(project.getKey())) return false;
+        if (!getId().equals(project.getId())) return false;
         if (!name.equals(project.name)) return false;
 
         return true;

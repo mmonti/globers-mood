@@ -13,7 +13,9 @@ public enum PreferenceKey {
 
     SENDER_ALIAS("sender.alias"),
     SENDER_MAIL("sender.mail"),
-    MAIL_SUBJECT("mail.subject");
+    MAIL_SUBJECT("mail.subject"),
+    SERVICES_HOST("services.host"),
+    SERVICES_FEEDBACK_API("services.feedback.api");
 
     private static final Map<String, PreferenceKey> LOOKUP = new HashMap<String, PreferenceKey>();
 

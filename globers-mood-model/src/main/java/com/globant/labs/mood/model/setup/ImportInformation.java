@@ -19,6 +19,7 @@ public class ImportInformation implements Serializable {
     private List<Campaign> campaigns;
     private List<Template> templates;
     private List<Relation> relations;
+    private List<Preference> preferences;
     private List<CampaignRelation> campaignRelations;
 
     /**
@@ -31,19 +32,21 @@ public class ImportInformation implements Serializable {
         this.campaigns = new ArrayList<Campaign>();
         this.templates = new ArrayList<Template>();
         this.relations = new ArrayList<Relation>();
+        this.preferences = new ArrayList<Preference>();
         this.campaignRelations = new ArrayList<CampaignRelation>();
     }
 
     /**
      *
      */
-    public ImportInformation(final List<Project> projects, final List<Customer> customers, final List<User> users, final List<Campaign> campaigns, final List<Template> templates, final List<Relation> relations, final List<CampaignRelation> campaignRelations) {
+    public ImportInformation(final List<Project> projects, final List<Customer> customers, final List<User> users, final List<Campaign> campaigns, final List<Template> templates, final List<Relation> relations, final List<CampaignRelation> campaignRelations, final List<Preference> preferences) {
         this.projects = projects;
         this.customers = customers;
         this.users = users;
         this.campaigns = campaigns;
         this.templates = templates;
         this.relations = relations;
+        this.preferences = preferences;
         this.campaignRelations = campaignRelations;
     }
 
@@ -101,5 +104,13 @@ public class ImportInformation implements Serializable {
 
     public void setCampaignRelations(List<CampaignRelation> campaignRelations) {
         this.campaignRelations = campaignRelations;
+    }
+
+    public List<Preference> getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(List<Preference> preferences) {
+        this.preferences = preferences;
     }
 }

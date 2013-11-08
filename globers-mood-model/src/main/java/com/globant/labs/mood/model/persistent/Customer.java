@@ -10,7 +10,6 @@ import java.util.Date;
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
  */
-
 @Entity
 public class Customer extends BaseEntity implements Serializable {
 
@@ -53,7 +52,7 @@ public class Customer extends BaseEntity implements Serializable {
 
         Customer customer = (Customer) o;
 
-        if (!getKey().equals(customer.getKey())) return false;
+        if (!getId().equals(customer.getId())) return false;
         if (!name.equals(customer.name)) return false;
 
         return true;

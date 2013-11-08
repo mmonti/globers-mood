@@ -80,8 +80,8 @@ public class User extends BaseEntity implements Serializable {
 
         User user = (User) o;
 
+        if (!getId().equals(user.getId())) return false;
         if (!email.equals(user.email)) return false;
-        if (!getKey().equals(user.getKey())) return false;
         if (!name.equals(user.name)) return false;
 
         return true;

@@ -21,7 +21,9 @@ public class Preference extends BaseEntity implements Serializable {
     @Basic
     private String preferenceValue;
 
-    public Preference() {}
+    public Preference() {
+        super();
+    }
 
     /**
      *
@@ -45,6 +47,7 @@ public class Preference extends BaseEntity implements Serializable {
      * @param value
      */
     public Preference(final String key, final String value) {
+        this();
         this.preferenceKey = key;
         this.preferenceValue = value;
     }

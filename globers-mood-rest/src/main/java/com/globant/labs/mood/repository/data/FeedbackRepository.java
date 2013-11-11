@@ -5,6 +5,7 @@ import com.globant.labs.mood.model.persistent.Feedback;
 import com.globant.labs.mood.model.persistent.User;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,5 +37,13 @@ public interface FeedbackRepository extends GenericRepository<Feedback, Long> {
      */
     @Query("select feedback from Feedback feedback where feedback.user = ?1")
     List<Feedback> feedbackOfUser(final User user);
+
+    /**
+     *
+     * @param fromDate
+     * @return
+     */
+    @Query("select feedback from Feedback feedback where feedback.created > ?1")
+    List<Feedback> feedbackFromDate(final Date fromDate);
 
 }

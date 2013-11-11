@@ -1,7 +1,5 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.events.StatsEvent;
-import com.globant.labs.mood.model.StatsEntry;
 import com.globant.labs.mood.model.persistent.Customer;
 import com.globant.labs.mood.repository.data.CustomerRepository;
 import com.globant.labs.mood.service.AbstractService;
@@ -33,7 +31,6 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
     @Override
     public Customer store(final Customer customer) {
         Preconditions.checkNotNull(customer, "customer cannot be null");
-        publishAfterCommit(new StatsEvent(this, Customer.class, StatsEntry.CUSTOMER_COUNT));
         return this.customerRepository.save(customer);
     }
 

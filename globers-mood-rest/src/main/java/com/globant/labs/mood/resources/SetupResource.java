@@ -2,7 +2,6 @@ package com.globant.labs.mood.resources;
 
 import com.globant.labs.mood.model.setup.ImportInformation;
 import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
 
 import javax.ws.rs.core.Response;
 import java.io.InputStream;

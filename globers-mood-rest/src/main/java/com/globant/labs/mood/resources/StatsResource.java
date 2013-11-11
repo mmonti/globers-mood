@@ -21,7 +21,14 @@ public interface StatsResource {
     Response entryStats(final String entity, final String entry);
 
     /**
+     *
+     * @return
+     */
+    Response weeklyFeedback();
+
+    /**
      * Generate the statistics and cache in memcache.
      */
     void generate();
+
 }

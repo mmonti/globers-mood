@@ -1,7 +1,6 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.events.StatsEvent;
-import com.globant.labs.mood.model.StatsEntry;
+import com.globant.labs.mood.exception.EntityAlreadyExistentException;
 import com.globant.labs.mood.model.persistent.User;
 import com.globant.labs.mood.repository.data.UserRepository;
 import com.globant.labs.mood.service.AbstractService;
@@ -36,10 +35,8 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
         final User existentUser = userByEmail(user.getEmail());
         if (existentUser != null) {
-            throw new RuntimeException("");
+            throw new EntityAlreadyExistentException(User.class, user.getEmail());
         }
-
-        publishAfterCommit(new StatsEvent(this, User.class, StatsEntry.USER_COUNT));
         return userRepository.save(user);
     }
 
@@ -55,9 +52,6 @@ public class UserServiceImpl extends AbstractService implements UserService {
     public User userByEmail(final String email) {
         Preconditions.checkNotNull(email, "email cannot be null");
         final User user = this.userRepository.findByEmail(email);
-//        if (user == null) {
-//            throw new RuntimeException("");
-//        }
         return user;
     }
 

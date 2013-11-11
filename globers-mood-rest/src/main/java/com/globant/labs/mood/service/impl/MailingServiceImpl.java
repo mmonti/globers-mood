@@ -1,13 +1,8 @@
 package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.events.MailMessageEvent;
-import com.globant.labs.mood.events.StatsEvent;
 import com.globant.labs.mood.model.MailMessage;
 import com.globant.labs.mood.model.Sender;
-import com.globant.labs.mood.model.StatsEntry;
-import com.globant.labs.mood.model.persistent.Preference;
-import com.globant.labs.mood.model.persistent.PreferenceKey;
-import com.globant.labs.mood.model.persistent.Project;
 import com.globant.labs.mood.model.persistent.User;
 import com.globant.labs.mood.repository.data.PreferenceRepository;
 import com.globant.labs.mood.service.AbstractService;

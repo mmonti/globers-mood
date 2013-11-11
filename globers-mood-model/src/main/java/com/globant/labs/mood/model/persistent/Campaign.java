@@ -1,14 +1,14 @@
 package com.globant.labs.mood.model.persistent;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.globant.labs.mood.jackson.CreationDateDeserializer;
+import com.globant.labs.mood.jackson.TemplateFileDeserializer;
 import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -24,8 +24,13 @@ public class Campaign extends BaseEntity implements Serializable {
     @Basic
     private String description;
 
+    @Column(nullable = true)
     @Temporal(TemporalType.DATE)
-    private Date created;
+    private Date startDate;
+
+    @Column(nullable = true)
+    @Temporal(TemporalType.DATE)
+    private Date endDate;
 
     @Enumerated(EnumType.STRING)
     private CampaignStatus status;
@@ -48,11 +53,16 @@ public class Campaign extends BaseEntity implements Serializable {
     @Basic
     private int targetNumber = 0;
 
-    public Campaign() {
-        this.created = new Date();
-        this.status = CampaignStatus.CREATED;
+    protected Campaign() {
+        this(new Date(), CampaignStatus.CREATED);
         this.feedbackNumber = 0;
         this.targetNumber = 0;
+    }
+
+    protected Campaign(final Date created, final CampaignStatus status) {
+        super();
+        this.created = created;
+        this.status = status;
     }
 
     /**
@@ -71,10 +81,6 @@ public class Campaign extends BaseEntity implements Serializable {
         this.name = name;
     }
 
-    public Date getCreated() {
-        return created;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -87,7 +93,10 @@ public class Campaign extends BaseEntity implements Serializable {
         return status;
     }
 
-    public void setStatus(CampaignStatus status) {
+    private void setStatus(final CampaignStatus status) {
+        if (!status.hasPreviousValidStatus(this.getStatus())) {
+            throw new IllegalStateException("campaign with id=[{}] has not a valid status=[{}]");
+        }
         this.status = status;
     }
 
@@ -125,6 +134,37 @@ public class Campaign extends BaseEntity implements Serializable {
 
     public int getTargetNumber() {
         return targetNumber;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Campaign start() {
+        setStatus(CampaignStatus.STARTED);
+        return this;
+    }
+
+    public Campaign waitForFeedback() {
+        setStatus(CampaignStatus.WAITING_FOR_FEEDBACK);
+        return this;
+    }
+
+    public Campaign close() {
+        setStatus(CampaignStatus.CLOSED);
+        return this;
     }
 
     @Override

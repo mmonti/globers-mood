@@ -1,7 +1,6 @@
 package com.globant.labs.mood.filter;
 
 import com.google.common.base.Joiner;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

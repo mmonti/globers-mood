@@ -1,8 +1,6 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.events.StatsEvent;
 import com.globant.labs.mood.exception.ServiceException;
-import com.globant.labs.mood.model.StatsEntry;
 import com.globant.labs.mood.model.persistent.Template;
 import com.globant.labs.mood.repository.data.TemplateRepository;
 import com.globant.labs.mood.service.AbstractService;
@@ -42,7 +40,6 @@ public class TemplateServiceImpl extends AbstractService implements TemplateServ
     @Transactional
     public Template store(final Template template) {
         Preconditions.checkNotNull(template, "template cannot be null");
-        publishAfterCommit(new StatsEvent(this, Template.class, StatsEntry.TEMPLATE_COUNT));
         return templateRepository.save(template);
     }
 

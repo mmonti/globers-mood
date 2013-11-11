@@ -1,11 +1,9 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.events.StatsEvent;
 import com.globant.labs.mood.exception.EntityNotFoundException;
 import com.globant.labs.mood.exception.InvalidStatusException;
 import com.globant.labs.mood.exception.InvalidTokenException;
 import com.globant.labs.mood.exception.ServiceException;
-import com.globant.labs.mood.model.StatsEntry;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.repository.data.CampaignRepository;
 import com.globant.labs.mood.repository.data.FeedbackRepository;
@@ -73,7 +71,6 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
             throw new ServiceException("Feedback of user=[" + email + "] for campaignId=[" + campaignId + "] was already submitted");
         }
 
-        publishAfterCommit(new StatsEvent(this, Feedback.class, StatsEntry.FEEDBACK_COUNT));
         return feedbackRepository.save(new Feedback(campaign, user, gmv, cmv, comment));
     }
 

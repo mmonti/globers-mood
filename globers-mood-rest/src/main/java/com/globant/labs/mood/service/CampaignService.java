@@ -2,6 +2,7 @@ package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Campaign;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -38,4 +39,21 @@ public interface CampaignService {
      * @param campaignId
      */
     void start(final long campaignId);
+
+    /**
+     *
+     * @param campaignId
+     */
+    void close(final long campaignId);
+
+    /**
+     *
+     * @return
+     */
+    void startScheduledCampaigns();
+
+    /**
+     *
+     */
+    void closeExpiredCampaigns();
 }

@@ -3,7 +3,6 @@ package com.globant.labs.mood.events;
 import com.globant.labs.mood.model.MailMessage;
 import org.springframework.context.ApplicationEvent;
 
-import javax.mail.Message;
 import java.util.Set;
 
 /**

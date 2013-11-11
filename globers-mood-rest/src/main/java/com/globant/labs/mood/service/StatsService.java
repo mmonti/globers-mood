@@ -3,6 +3,9 @@ package com.globant.labs.mood.service;
 import com.globant.labs.mood.model.Node;
 import com.globant.labs.mood.model.Stats;
 import com.globant.labs.mood.model.StatsEntry;
+import com.globant.labs.mood.model.reports.FeedbackCountReport;
+
+import java.util.List;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -34,4 +37,10 @@ public interface StatsService {
      * @return
      */
     Node getStatEntry(final StatsEntry statsEntry);
+
+    /**
+     *
+     * @return
+     */
+    List<FeedbackCountReport> feedbackCountReport();
 }

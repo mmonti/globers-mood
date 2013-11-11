@@ -1,12 +1,9 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.events.StatsEvent;
 import com.globant.labs.mood.exception.EntityNotFoundException;
 import com.globant.labs.mood.model.MailMessage;
-import com.globant.labs.mood.model.StatsEntry;
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.CampaignStatus;
-import com.globant.labs.mood.model.persistent.Template;
 import com.globant.labs.mood.repository.data.CampaignRepository;
 import com.globant.labs.mood.repository.data.FeedbackRepository;
 import com.globant.labs.mood.repository.data.PreferenceRepository;
@@ -19,7 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -50,17 +50,6 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Override
     public Campaign store(final Campaign campaign) {
         Preconditions.checkNotNull(campaign, "campaign cannot be null");
-
-        final Template template = campaign.getTemplate();
-        if (template == null) {
-            throw new IllegalStateException("Template is required to create a Campaign.");
-        }
-
-        // = TODO: Investigate why CASCADES doesnt work with templates and they work with users.
-        final Template storedTemplate = templateRepository.findOne(template.getId());
-        campaign.setTemplate(storedTemplate);
-
-        publishAfterCommit(new StatsEvent(this, Campaign.class, StatsEntry.CAMPAIGN_COUNT));
         return campaignRepository.save(campaign);
     }
 
@@ -85,14 +74,47 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
             throw new EntityNotFoundException(Campaign.class, campaignId);
         }
 
-        if (!CampaignStatus.STARTED.isPreviousStatusValid(campaign.getStatus())) {
+        if (!CampaignStatus.STARTED.hasPreviousValidStatus(campaign.getStatus())) {
             throw new IllegalStateException("campaign with id=[{}] has not a valid status=[{}]");
         }
+        campaignRepository.saveAndFlush(campaign.start());
 
+        // == TODO: Has to be an AsynchTask.
         final Set<MailMessage> messages = mailMessageFactory.create(campaign);
         mailingService.dispatch(messages);
 
-        campaign.setStatus(CampaignStatus.STARTED);
-        campaignRepository.saveAndFlush(campaign);
+        campaignRepository.saveAndFlush(campaign.waitForFeedback());
+    }
+
+    @Transactional
+    @Override
+    public void close(final long campaignId) {
+        final Campaign campaign = this.campaignRepository.findOne(campaignId);
+        if (campaign == null) {
+            throw new EntityNotFoundException(Campaign.class, campaignId);
+        }
+
+        if (!CampaignStatus.CLOSED.hasPreviousValidStatus(campaign.getStatus())) {
+            throw new IllegalStateException("campaign with id=[{}] has not a valid status=[{}]");
+        }
+        campaignRepository.saveAndFlush(campaign.close());
+    }
+
+    @Transactional
+    @Override
+    public void startScheduledCampaigns() {
+        final List<Campaign> scheduledCampaigns = this.campaignRepository.scheduledCampaigns(new Date());
+        for (final Campaign currentScheduledCampaign : scheduledCampaigns) {
+            start(currentScheduledCampaign.getId());
+        }
+    }
+
+    @Transactional
+    @Override
+    public void closeExpiredCampaigns() {
+        final List<Campaign> expiredCampaigns = this.campaignRepository.expiredCampaigns(new Date());
+        for (final Campaign currentExpiredCampaign : expiredCampaigns) {
+            close(currentExpiredCampaign.getId());
+        }
     }
 }

@@ -340,7 +340,12 @@
             <artifactId>lambdaj</artifactId>
             <version>2.3.3</version>
         </dependency>
-	</dependencies>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<finalName>globers-mood-rest</finalName>

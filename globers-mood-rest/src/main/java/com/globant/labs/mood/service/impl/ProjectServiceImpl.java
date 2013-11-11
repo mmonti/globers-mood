@@ -1,8 +1,6 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.events.StatsEvent;
 import com.globant.labs.mood.exception.EntityNotFoundException;
-import com.globant.labs.mood.model.StatsEntry;
 import com.globant.labs.mood.model.persistent.Project;
 import com.globant.labs.mood.model.persistent.User;
 import com.globant.labs.mood.repository.data.ProjectRepository;
@@ -38,7 +36,6 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
     @Override
     public Project store(final Project project) {
         Preconditions.checkNotNull(project, "project cannot be null");
-        publishAfterCommit(new StatsEvent(this, Project.class, StatsEntry.PROJECT_COUNT));
         return projectRepository.save(project);
     }
 

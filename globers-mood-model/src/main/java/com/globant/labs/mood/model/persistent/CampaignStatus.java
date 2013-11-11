@@ -38,14 +38,14 @@ public enum CampaignStatus {
      * @param status
      * @return
      */
-    public boolean isPreviousStatusValid(final CampaignStatus status) {
+    public boolean hasPreviousValidStatus(final CampaignStatus status) {
         switch (this) {
             case CREATED:
                 return status.equals(CREATED);
             case STARTED:
                 return status.equals(STARTED) || status.equals(CREATED);
             case WAITING_FOR_FEEDBACK:
-                return status.equals(WAITING_FOR_FEEDBACK) || status.equals(STARTED);
+                return status.equals(WAITING_FOR_FEEDBACK) || status.equals(CREATED) || status.equals(STARTED);
             case CLOSED:
                 return status.equals(STARTED) || status.equals(CLOSED) || status.equals(WAITING_FOR_FEEDBACK);
             default:

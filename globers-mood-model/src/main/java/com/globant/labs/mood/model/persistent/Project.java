@@ -21,9 +21,6 @@ public class Project extends BaseEntity implements Serializable {
     @Basic
     private String name;
 
-    @Temporal(TemporalType.DATE)
-    private Date created;
-
     @Unowned
     @OneToOne
     private Customer customer;
@@ -36,7 +33,7 @@ public class Project extends BaseEntity implements Serializable {
     private int userNumber = 0;
 
     public Project() {
-        this.created = new Date();
+        super();
     }
 
     /**
@@ -59,16 +56,12 @@ public class Project extends BaseEntity implements Serializable {
 
     public void assign(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
-        user.assign();
-
         this.users.add(user);
         this.userNumber++;
     }
 
     public boolean release(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
-        user.release();;
-
         this.userNumber--;
         return this.users.remove(user);
     }
@@ -79,10 +72,6 @@ public class Project extends BaseEntity implements Serializable {
 
     public Customer getCustomer() {
         return customer;
-    }
-
-    public Date getCreated() {
-        return created;
     }
 
     public int getUserNumber() {

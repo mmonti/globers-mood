@@ -18,11 +18,8 @@ public class Customer extends BaseEntity implements Serializable {
     @Basic
     private String name;
 
-    @Temporal(TemporalType.DATE)
-    private Date created;
-
     public Customer() {
-        this.created = new Date();
+        super();
     }
 
     /**

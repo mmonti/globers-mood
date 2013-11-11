@@ -1,7 +1,6 @@
 package com.globant.labs.mood.resources;
 
 import com.globant.labs.mood.model.persistent.PreferenceKey;
-import com.globant.labs.mood.model.persistent.Project;
 
 import javax.ws.rs.core.Response;
 

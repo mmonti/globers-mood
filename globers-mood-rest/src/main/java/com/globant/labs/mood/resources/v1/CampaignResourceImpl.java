@@ -52,4 +52,5 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
         campaignService.start(id);
         return Response.ok().build();
     }
+
 }

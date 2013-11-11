@@ -4,11 +4,7 @@ import com.globant.labs.mood.model.StatsEntry;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.StatsResource;
-import com.globant.labs.mood.service.*;
-import com.google.appengine.api.memcache.AsyncMemcacheService;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
-import com.google.appengine.api.memcache.Stats;
+import com.globant.labs.mood.service.StatsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -56,4 +52,10 @@ public class StatsResourceImpl extends AbstractResource implements StatsResource
         return notNullResponse(null);
     }
 
+    @GET
+    @Path("/feedback/weekly")
+    @Override
+    public Response weeklyFeedback() {
+        return notEmptyResponse(statsService.feedbackCountReport());
+    }
 }

@@ -23,16 +23,20 @@ public class Template extends BaseEntity implements Serializable {
 
     @Basic
     private String name;
+
     @Basic
     private String description;
+
     @Basic
     private Blob file;
 
-    @Temporal(TemporalType.DATE)
-    private Date created;
-
     public Template() {
-        this.created = new Date();
+        super();
+    }
+
+    public Template(final String name) {
+        this();
+        this.name = name;
     }
 
     public String getName() {
@@ -58,10 +62,6 @@ public class Template extends BaseEntity implements Serializable {
     @JsonDeserialize(using = TemplateFileDeserializer.class)
     public void setFile(Blob file) {
         this.file = file;
-    }
-
-    public Date getCreated() {
-        return created;
     }
 
     public String getDescription() {

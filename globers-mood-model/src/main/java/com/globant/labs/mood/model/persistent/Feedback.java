@@ -32,11 +32,8 @@ public class Feedback extends BaseEntity implements Serializable {
     @Basic
     private String comment;
 
-    @Temporal(TemporalType.DATE)
-    private Date created;
-
     public Feedback() {
-        this.created = new Date();
+        super();
     }
 
     /**
@@ -74,10 +71,6 @@ public class Feedback extends BaseEntity implements Serializable {
 
     public String getComment() {
         return comment;
-    }
-
-    public Date getCreated() {
-        return created;
     }
 
     @Override

@@ -20,14 +20,9 @@ public class User extends BaseEntity implements Serializable {
 
     @Basic
     private String email;
-    @Basic
-    private boolean assigned;
-
-    @Temporal(TemporalType.DATE)
-    private Date created;
 
     public User() {
-        this.created = new Date();
+        super();
     }
 
     /**
@@ -38,7 +33,6 @@ public class User extends BaseEntity implements Serializable {
         this();
         this.name = name;
         this.email = email;
-        this.assigned = false;
     }
 
     public String getName() {
@@ -59,18 +53,6 @@ public class User extends BaseEntity implements Serializable {
 
     public Date getCreated() {
         return created;
-    }
-
-    public boolean isAssigned() {
-        return assigned;
-    }
-
-    public void release() {
-        this.assigned = false;
-    }
-
-    public void assign() {
-        this.assigned = true;
     }
 
     @Override

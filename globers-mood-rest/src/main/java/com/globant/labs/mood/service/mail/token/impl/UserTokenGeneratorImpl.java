@@ -6,8 +6,6 @@ import com.globant.labs.mood.service.mail.token.AbstractBaseTokenGenerator;
 import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
-import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)

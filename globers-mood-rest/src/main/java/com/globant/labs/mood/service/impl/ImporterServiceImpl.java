@@ -2,7 +2,6 @@ package com.globant.labs.mood.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globant.labs.mood.exception.ServiceException;
-import com.globant.labs.mood.model.NodeBuilder;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.model.setup.CampaignRelation;
 import com.globant.labs.mood.model.setup.ImportInformation;
@@ -20,10 +19,7 @@ import org.springframework.util.StopWatch;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -208,5 +204,9 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
             logger.debug("An exception occurred trying to de-serialize Import Information.");
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Date());
     }
 }

@@ -65,6 +65,7 @@ public class StatsServiceImplTest {
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
+        campaign.start().waitForFeedback();
 
         final Campaign storedCampaign = campaignService.store(campaign);
 

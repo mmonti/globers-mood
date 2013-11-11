@@ -38,10 +38,6 @@ public class FeedbackServiceImplTest {
     @Inject
     private CampaignService campaignService;
     @Inject
-    private ProjectService projectService;
-    @Inject
-    private CustomerService customerService;
-    @Inject
     private TemplateService templateService;
 
     @Inject
@@ -65,14 +61,6 @@ public class FeedbackServiceImplTest {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);
 
-        final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project = new Project("Project", storedCustomer);
-        project.assign(storedUser);
-
-        final Project storedProject = projectService.store(project);
-
         final Template template = new Template();
         template.setName("Template 1");
         template.setFile(new Blob("This is an array of bytes".getBytes()));
@@ -82,6 +70,7 @@ public class FeedbackServiceImplTest {
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
+        campaign.start().waitForFeedback();
 
         final Campaign storedCampaign = campaignService.store(campaign);
 
@@ -98,14 +87,6 @@ public class FeedbackServiceImplTest {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);
 
-        final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project = new Project("Project", storedCustomer);
-        project.assign(storedUser);
-
-        final Project storedProject = projectService.store(project);
-
         final Template template = new Template();
         template.setName("Template 1");
         template.setFile(new Blob("This is an array of bytes".getBytes()));
@@ -115,6 +96,7 @@ public class FeedbackServiceImplTest {
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
+        campaign.start().waitForFeedback();
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
@@ -131,14 +113,6 @@ public class FeedbackServiceImplTest {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);
 
-        final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project = new Project("Project", storedCustomer);
-        project.assign(storedUser);
-
-        final Project storedProject = projectService.store(project);
-
         final Template template = new Template();
         template.setName("Template 1");
         template.setFile(new Blob("This is an array of bytes".getBytes()));
@@ -148,6 +122,7 @@ public class FeedbackServiceImplTest {
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
+        campaign.start().waitForFeedback();
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
@@ -159,50 +134,10 @@ public class FeedbackServiceImplTest {
         Assert.isTrue(storedFeedback.getClientMood().equals(Mood.NEUTRAL));
     }
 
-    private Feedback getFeedback(int i, Integer c) {
-        final User user = new User("Mauro Monti"+i, "mauro.monti@globant.com"+i);
-        final User storedUser = userService.store(user);
-
-        final Customer customer = new Customer("Customer"+i);
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project = new Project("Project"+i, storedCustomer);
-        project.assign(storedUser);
-
-        final Project storedProject = projectService.store(project);
-
-        Campaign campaign = null;
-        if (c == null) {
-            campaign = new Campaign("Campaign"+i);
-            campaign.addTarget(storedUser);
-            campaign = campaignService.store(campaign);
-
-        } else {
-            campaign = campaignService.campaign(c.longValue());
-        }
-
-        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(campaign, storedUser);
-        final Feedback storedFeedback = feedbackService.store(campaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "");
-        Assert.notNull(storedFeedback);
-        Assert.notNull(storedFeedback.getId());
-        Assert.isTrue(storedFeedback.getGloberMood().equals(Mood.NEUTRAL));
-        Assert.isTrue(storedFeedback.getClientMood().equals(Mood.NEUTRAL));
-
-        return storedFeedback;
-    }
-
     @Test(expected = ServiceException.class)
     public void testFeedbackAlreadySubmitted() throws Exception {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);
-
-        final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project = new Project("Project", storedCustomer);
-        project.assign(storedUser);
-
-        final Project storedProject = projectService.store(project);
 
         final Template template = new Template();
         template.setName("Template 1");
@@ -213,6 +148,7 @@ public class FeedbackServiceImplTest {
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
+        campaign.start().waitForFeedback();
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);

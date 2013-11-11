@@ -35,10 +35,6 @@ public class CampaignServiceImplTest extends TransactionSupport {
     @Inject
     private CampaignService campaignService;
     @Inject
-    private ProjectService projectService;
-    @Inject
-    private CustomerService customerService;
-    @Inject
     private UserService userService;
     @Inject
     private TemplateService templateService;
@@ -57,14 +53,6 @@ public class CampaignServiceImplTest extends TransactionSupport {
 
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);
-
-        final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project = new Project("Project", storedCustomer);
-        project.assign(storedUser);
-
-        final Project storedProject = projectService.store(project);
 
         final Template template = new Template();
         template.setName("Template 1");
@@ -128,19 +116,6 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final User user3 = new User("user3", "user3@globant.com");
         final User storedUser3 = userService.store(user3);
 
-        final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project1 = new Project("Project1", storedCustomer);
-        project1.assign(storedUser1);
-        project1.assign(storedUser2);
-
-        final Project project2 = new Project("Project2", storedCustomer);
-        project2.assign(storedUser3);
-
-        final Project storedProject1 = projectService.store(project1);
-        final Project storedProject2 = projectService.store(project2);
-
         final Campaign campaign1 = new Campaign("Campaign1");
         campaign1.addTarget(storedUser1);
 
@@ -154,6 +129,9 @@ public class CampaignServiceImplTest extends TransactionSupport {
         Template storedTemplate = templateService.store(template);
         campaign1.setTemplate(storedTemplate);
         campaign2.setTemplate(storedTemplate);
+
+        campaign1.start().waitForFeedback();
+        campaign2.start().waitForFeedback();
 
         final Campaign storedCampaign1 = campaignService.store(campaign1);
         final Campaign storedCampaign2 = campaignService.store(campaign2);

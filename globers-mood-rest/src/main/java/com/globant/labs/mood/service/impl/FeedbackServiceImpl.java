@@ -52,7 +52,7 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
             throw new EntityNotFoundException(Campaign.class, campaignId);
         }
 
-        if (CampaignStatus.CLOSED.equals(campaign.getStatus())) {
+        if (!CampaignStatus.WAITING_FOR_FEEDBACK.equals(campaign.getStatus())) {
             throw new InvalidStatusException(campaign);
         }
 

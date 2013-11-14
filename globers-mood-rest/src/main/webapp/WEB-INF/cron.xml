@@ -3,11 +3,11 @@
     <cron>
         <url>/rest/api/v1/cron/start</url>
         <description>Start the scheduled campaigns</description>
-        <schedule>every 1 minutes</schedule>
+        <schedule>every 5 minutes</schedule>
     </cron>
     <cron>
         <url>/rest/api/v1/cron/close</url>
         <description>Close the expired campaigns</description>
-        <schedule>every 1 minutes</schedule>
+        <schedule>every 5 minutes</schedule>
     </cron>
 </cronentries>

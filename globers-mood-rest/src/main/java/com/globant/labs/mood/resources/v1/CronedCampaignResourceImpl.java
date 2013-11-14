@@ -6,6 +6,7 @@ import com.globant.labs.mood.service.CampaignService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -20,20 +21,33 @@ public class CronedCampaignResourceImpl extends AbstractResource implements Cron
     @Inject
     private CampaignService campaignService;
 
-    @POST
+    @GET
     @Path("/start")
     @Override
-    public Response startScheduledCampaigns() {
-        campaignService.startScheduledCampaigns();
+    public Response scheduledReadyToStart() {
+        campaignService.scheduledReadyToStart();
         return Response.ok().build();
     }
 
-    @POST
+    @GET
+    @Path("/start/pending")
+    @Override
+    public Response scheduledPendingToStart() {
+        return notEmptyResponse(campaignService.scheduledPendingToStart());
+    }
+
+    @GET
     @Path("/close")
     @Override
-    public Response closeExpiredCampaigns() {
-        campaignService.closeExpiredCampaigns();
+    public Response scheduledReadyToClose() {
+        campaignService.scheduledReadyToClose();
         return Response.ok().build();
     }
 
+    @GET
+    @Path("/close/pending")
+    @Override
+    public Response scheduledNextToExpire() {
+        return notEmptyResponse(campaignService.scheduledNextToExpire());
+    }
 }

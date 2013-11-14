@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author mauro.monti (mauro.monti@globant.com)
@@ -30,8 +31,16 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
      * @param fromDate
      * @return
      */
-    @Query("select campaign from Campaign campaign where campaign.startDate is not null and campaign.startDate < ?1 and campaign.status = 'CREATED'")
-    List<Campaign> scheduledCampaigns(final Date fromDate);
+    @Query("select campaign from Campaign campaign where campaign.startDate is not null and campaign.startDate < ?1 and campaign.status in ('CREATED')")
+    List<Campaign> scheduledReadyToStart(final Date fromDate);
+
+    /**
+     *
+     * @param fromDate
+     * @return
+     */
+    @Query("select campaign from Campaign campaign where campaign.startDate is not null and campaign.startDate > :fromDate and campaign.status in ('CREATED')")
+    List<Campaign> scheduledPendingToStart(final Date fromDate);
 
     /**
      *
@@ -39,6 +48,12 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
      * @return
      */
     @Query("select campaign from Campaign campaign where campaign.endDate is not null and campaign.endDate < ?1 and campaign.status in ('CREATED', 'STARTED', 'WAITING_FOR_FEEDBACK')")
-    List<Campaign> expiredCampaigns(final Date fromDate);
+    List<Campaign> scheduledReadyToClose(final Date fromDate);
+
+    /**
+     *
+     */
+    @Query("select campaign from Campaign campaign where campaign.endDate is not null and campaign.endDate > ?1 and campaign.status in ('CREATED', 'STARTED', 'WAITING_FOR_FEEDBACK')")
+    List<Campaign> scheduledNextToExpire(final Date fromDate);
 
 }

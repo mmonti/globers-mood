@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -86,7 +87,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         campaign.setStartDate(calendar.getTime());
 
         Campaign storedCampaign = campaignService.store(campaign);
-        campaignService.startScheduledCampaigns();
+        campaignService.scheduledReadyToStart();
 
         storedCampaign = campaignService.campaign(campaign.getId());
         Assert.isTrue(CampaignStatus.WAITING_FOR_FEEDBACK.equals(storedCampaign.getStatus()));
@@ -101,7 +102,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         campaign.setStartDate(calendar.getTime());
 
         Campaign storedCampaign = campaignService.store(campaign);
-        campaignService.startScheduledCampaigns();
+        campaignService.scheduledReadyToStart();
 
         storedCampaign = campaignService.campaign(campaign.getId());
         Assert.isTrue(CampaignStatus.CREATED.equals(storedCampaign.getStatus()));
@@ -110,7 +111,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
     @Test
     public void testStartScheduledCampaignsWithNullStartDate() throws Exception {
         Campaign storedCampaign = campaignService.store(campaign);
-        campaignService.startScheduledCampaigns();
+        campaignService.scheduledReadyToStart();
 
         storedCampaign = campaignService.campaign(campaign.getId());
         Assert.isTrue(CampaignStatus.CREATED.equals(storedCampaign.getStatus()));
@@ -127,7 +128,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         campaign.waitForFeedback();
 
         Campaign storedCampaign = campaignService.store(campaign);
-        campaignService.closeExpiredCampaigns();
+        campaignService.scheduledReadyToClose();
 
         storedCampaign = campaignService.campaign(campaign.getId());
         Assert.isTrue(CampaignStatus.CLOSED.equals(storedCampaign.getStatus()));
@@ -144,7 +145,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         campaign.waitForFeedback();
 
         Campaign storedCampaign = campaignService.store(campaign);
-        campaignService.closeExpiredCampaigns();
+        campaignService.scheduledReadyToClose();
 
         storedCampaign = campaignService.campaign(campaign.getId());
         Assert.isTrue(CampaignStatus.WAITING_FOR_FEEDBACK.equals(storedCampaign.getStatus()));
@@ -156,9 +157,36 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         campaign.waitForFeedback();
 
         Campaign storedCampaign = campaignService.store(campaign);
-        campaignService.closeExpiredCampaigns();
+        campaignService.scheduledReadyToClose();
 
         storedCampaign = campaignService.campaign(campaign.getId());
         Assert.isTrue(CampaignStatus.WAITING_FOR_FEEDBACK.equals(storedCampaign.getStatus()));
+    }
+
+
+    @Test
+    public void testPendingToStartCampaigns() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 10);
+
+        // = Sets the startDate;
+        campaign.setStartDate(calendar.getTime());
+
+        Campaign storedCampaign = campaignService.store(campaign);
+        Set<Campaign> pendingToStart = campaignService.scheduledPendingToStart();
+        Assert.notEmpty(pendingToStart);
+    }
+
+    @Test
+    public void testNextToExpireCampaigns() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 10);
+
+        // = Sets the startDate;
+        campaign.setEndDate(calendar.getTime());
+
+        Campaign storedCampaign = campaignService.store(campaign);
+        Set<Campaign> nextToExpire = campaignService.scheduledNextToExpire();
+        Assert.notEmpty(nextToExpire);
     }
 }

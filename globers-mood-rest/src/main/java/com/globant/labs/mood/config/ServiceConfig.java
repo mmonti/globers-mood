@@ -58,10 +58,10 @@ public class ServiceConfig {
         return new RepositoryTemplateLoader(templateService);
     }
 
-    @Bean
-    public Session session() {
-        return Session.getDefaultInstance(new Properties(), null);
-    }
+//    @Bean
+//    public Session session() {
+//        return Session.getDefaultInstance(new Properties(), null);
+//    }
 
     @Bean
     public TokenGenerator tokenGenerator() {

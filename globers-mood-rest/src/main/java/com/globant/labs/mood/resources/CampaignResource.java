@@ -34,4 +34,11 @@ public interface CampaignResource {
      * @param id
      */
     Response startCampaign(final long id);
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    Response closeCampaign(final long id);
 }

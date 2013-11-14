@@ -12,20 +12,22 @@ import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.CampaignService;
 import com.globant.labs.mood.service.mail.MailMessageFactory;
 import com.google.appengine.api.search.checkers.Preconditions;
+import com.google.appengine.repackaged.com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
  */
 @Service
 public class CampaignServiceImpl extends AbstractService implements CampaignService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CampaignServiceImpl.class);
 
     @Inject
     private CampaignRepository campaignRepository;
@@ -43,6 +45,7 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Transactional(readOnly = true)
     @Override
     public Set<Campaign> campaigns() {
+        logger.debug("campaigns - querying campaigns");
         return new HashSet<Campaign>(campaignRepository.findAll());
     }
 
@@ -50,6 +53,7 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Override
     public Campaign store(final Campaign campaign) {
         Preconditions.checkNotNull(campaign, "campaign cannot be null");
+        logger.debug("store - storing campaign");
         return campaignRepository.save(campaign);
     }
 
@@ -57,6 +61,7 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Override
     public Campaign campaign(final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
+        logger.debug("campaign - querying campaign by id=[{}]", id);
         return campaignRepository.findOne(id);
     }
 
@@ -71,18 +76,24 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     public void start(final long campaignId) {
         final Campaign campaign = this.campaignRepository.findOne(campaignId);
         if (campaign == null) {
+            logger.error("start - campaign with id=[{}] not found", campaignId);
             throw new EntityNotFoundException(Campaign.class, campaignId);
         }
 
         if (!CampaignStatus.STARTED.hasPreviousValidStatus(campaign.getStatus())) {
-            throw new IllegalStateException("campaign with id=[{}] has not a valid status=[{}]");
+            logger.error("start - campaign with id=[{}] has an invalid status=[{}]", campaignId, campaign.getStatus());
+            throw new IllegalStateException("campaign with id=[{}] is in an invalid state=[{}]");
         }
+
+        logger.debug("start - changing status of campaign with id=[{}] to START.", campaignId);
         campaignRepository.saveAndFlush(campaign.start());
 
         // == TODO: Has to be an AsynchTask.
+        logger.info("start - dispatching emails of campaign id=[{}]", campaignId);
         final Set<MailMessage> messages = mailMessageFactory.create(campaign);
         mailingService.dispatch(messages);
 
+        logger.debug("start - changing status of campaign with id=[{}] to WAITING_FOR_FEEDBACK.", campaignId);
         campaignRepository.saveAndFlush(campaign.waitForFeedback());
     }
 
@@ -91,10 +102,12 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     public void close(final long campaignId) {
         final Campaign campaign = this.campaignRepository.findOne(campaignId);
         if (campaign == null) {
+            logger.debug("close - campaign with id=[{}] not found", campaignId);
             throw new EntityNotFoundException(Campaign.class, campaignId);
         }
 
         if (!CampaignStatus.CLOSED.hasPreviousValidStatus(campaign.getStatus())) {
+            logger.debug("close - campaign with id=[{}] has an invalid status=[{}]", campaignId, campaign.getStatus());
             throw new IllegalStateException("campaign with id=[{}] has not a valid status=[{}]");
         }
         campaignRepository.saveAndFlush(campaign.close());
@@ -102,19 +115,41 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
 
     @Transactional
     @Override
-    public void startScheduledCampaigns() {
-        final List<Campaign> scheduledCampaigns = this.campaignRepository.scheduledCampaigns(new Date());
-        for (final Campaign currentScheduledCampaign : scheduledCampaigns) {
+    public void scheduledReadyToStart() {
+        final Calendar now = Calendar.getInstance();
+        for (final Campaign currentScheduledCampaign : this.campaignRepository.scheduledReadyToStart(now.getTime())) {
+            final Long campaignId = currentScheduledCampaign.getId();
+            logger.debug("startScheduledCampaigns - starting scheduled campaign=[id={}]", campaignId);
             start(currentScheduledCampaign.getId());
         }
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Set<Campaign> scheduledPendingToStart() {
+        final Calendar now = Calendar.getInstance();
+        final Set<Campaign> pendingToStartCampaigns = Sets.newHashSet(this.campaignRepository.scheduledPendingToStart(now.getTime()));
+        logger.debug("scheduledStartPendingCampaigns - size=[{}]", pendingToStartCampaigns.size());
+        return pendingToStartCampaigns;
+    }
+
     @Transactional
     @Override
-    public void closeExpiredCampaigns() {
-        final List<Campaign> expiredCampaigns = this.campaignRepository.expiredCampaigns(new Date());
-        for (final Campaign currentExpiredCampaign : expiredCampaigns) {
-            close(currentExpiredCampaign.getId());
+    public void scheduledReadyToClose() {
+        final Calendar now = Calendar.getInstance();
+        for (final Campaign currentExpiredCampaign : this.campaignRepository.scheduledReadyToClose(now.getTime())) {
+            final Long campaignId = currentExpiredCampaign.getId();
+            logger.debug("closeExpiredCampaings - closing expired campaign=[id={}]", campaignId);
+            close(campaignId);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Set<Campaign> scheduledNextToExpire() {
+        final Calendar now = Calendar.getInstance();
+        final Set<Campaign> nextToExpireCampaigns = Sets.newHashSet(this.campaignRepository.scheduledNextToExpire(now.getTime()));
+        logger.debug("nextToExpireCampaigns - size=[{}]", nextToExpireCampaigns.size());
+        return nextToExpireCampaigns;
     }
 }

@@ -35,7 +35,7 @@ public class FeedbackResourceImpl extends AbstractResource implements FeedbackRe
         Preconditions.checkNotNull(campaignId, "campaignId cannot be null");
         Preconditions.checkNotNull(email, "email cannot be null");
         Preconditions.checkNotNull(token, "token cannot be null");
-        return notNullResponse(feedbackService.store(campaignId, token, email, globerMoodValue, clientMoodValue, comment));
+        return notNullResponse(feedbackService.store(campaignId, email, token, globerMoodValue, clientMoodValue, comment));
     }
 
     @GET

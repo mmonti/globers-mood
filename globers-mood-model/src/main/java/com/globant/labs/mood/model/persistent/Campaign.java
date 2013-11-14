@@ -1,14 +1,14 @@
 package com.globant.labs.mood.model.persistent;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.globant.labs.mood.jackson.CreationDateDeserializer;
-import com.globant.labs.mood.jackson.TemplateFileDeserializer;
 import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -25,11 +25,11 @@ public class Campaign extends BaseEntity implements Serializable {
     private String description;
 
     @Column(nullable = true)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
     @Column(nullable = true)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
     @Enumerated(EnumType.STRING)

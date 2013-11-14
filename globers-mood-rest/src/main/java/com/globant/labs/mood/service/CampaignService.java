@@ -2,6 +2,7 @@ package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Campaign;
 
+import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -50,10 +51,23 @@ public interface CampaignService {
      *
      * @return
      */
-    void startScheduledCampaigns();
+    void scheduledReadyToStart();
+
+    /**
+     *
+     * @return
+     */
+    Set<Campaign> scheduledPendingToStart();
 
     /**
      *
      */
-    void closeExpiredCampaigns();
+    void scheduledReadyToClose();
+
+    /**
+     *
+     * @return
+     */
+    Set<Campaign> scheduledNextToExpire();
+
 }

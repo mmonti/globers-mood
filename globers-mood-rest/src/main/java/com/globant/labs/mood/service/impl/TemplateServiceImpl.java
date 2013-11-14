@@ -1,6 +1,7 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.exception.ServiceException;
+import com.globant.labs.mood.exception.BusinessException;
+import com.globant.labs.mood.exception.TechnicalException;
 import com.globant.labs.mood.model.persistent.Template;
 import com.globant.labs.mood.repository.data.TemplateRepository;
 import com.globant.labs.mood.service.AbstractService;
@@ -18,6 +19,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.RESOURCE_NOT_FOUND;
+import static com.globant.labs.mood.support.StringSupport.on;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -37,19 +42,24 @@ public class TemplateServiceImpl extends AbstractService implements TemplateServ
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public Template store(final Template template) {
         Preconditions.checkNotNull(template, "template cannot be null");
+        final Template storedTemplate = this.templateRepository.findByName(template.getName());
+        if (storedTemplate != null) {
+            logger.debug("store - template with name=[{}] already existent", template.getName());
+            throw new BusinessException(on("template with name=[{}] already existent.", template.getName()), EXPECTATION_FAILED);
+        }
         return templateRepository.save(template);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public Template store(final String name, final InputStream inputStream) {
         Preconditions.checkNotNull(name, "template cannot be null");
         Preconditions.checkNotNull(inputStream, "inputStream cannot be null");
 
-        final Template template;
+        Template template = null;
         try {
             template = new Template();
             template.setName(name);
@@ -59,7 +69,7 @@ public class TemplateServiceImpl extends AbstractService implements TemplateServ
 
         } catch (IOException e) {
             logger.debug("There was an exception trying to create the template file name=[{}]", name);
-            throw new ServiceException("There was an exception trying to create the template file name=[{}]");
+            throw new TechnicalException(on("trying to create template file name=[{}].", name), e);
         }
     }
 
@@ -75,7 +85,7 @@ public class TemplateServiceImpl extends AbstractService implements TemplateServ
         Preconditions.checkNotNull(name, "name cannot be null");
         final Template template = this.templateRepository.findByName(name);
         if (template == null) {
-            throw new ServiceException("There was an exception trying to retrieve the template with name=[{}]");
+            throw new BusinessException(on("template with name=[{}] not found.", template.getName()), RESOURCE_NOT_FOUND);
         }
         return template;
     }

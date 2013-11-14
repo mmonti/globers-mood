@@ -2,8 +2,6 @@ package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Campaign;
 
-import javax.ws.rs.core.Response;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 

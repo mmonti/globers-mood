@@ -1,7 +1,7 @@
 package com.globant.labs.mood.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.globant.labs.mood.exception.ServiceException;
+import com.globant.labs.mood.exception.BusinessException;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.model.setup.CampaignRelation;
 import com.globant.labs.mood.model.setup.ImportInformation;
@@ -20,6 +20,9 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
+import static com.globant.labs.mood.support.StringSupport.on;
 
 
 /**
@@ -137,7 +140,7 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
 
             final Customer storedCustomer = storedCustomers.get(customerIndex);
             if (storedCustomer == null) {
-                throw new ServiceException("Project must have a Customer associated");
+                throw new BusinessException("project must have a customer associated.", EXPECTATION_FAILED);
             }
 
             final Project mappedProject = importInformation.getProjects().get(projectIndex);

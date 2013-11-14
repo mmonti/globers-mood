@@ -15,6 +15,7 @@ import javax.inject.Inject;
 @ComponentScan(basePackages = {
         "com.globant.labs.mood.events",
         "com.globant.labs.mood.aspects",
+        "com.globant.labs.mood.exception.mapping",
         "com.globant.labs.mood.resources"
 })
 @Import({PropertiesConfig.class, RepositoryConfig.class, ServiceConfig.class})

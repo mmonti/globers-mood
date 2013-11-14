@@ -1,13 +1,11 @@
 package com.globant.labs.mood.repository.data;
 
 import com.globant.labs.mood.model.persistent.Campaign;
-import com.globant.labs.mood.model.persistent.CampaignStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author mauro.monti (mauro.monti@globant.com)
@@ -16,6 +14,14 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
 
     @Query("select campaign from Campaign campaign order by campaign.feedbackNumber desc")
     List<Campaign> mostActive();
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    @Query("select campaign from Campaign campaign where campaign.name = ?1")
+    Campaign campaignByName(final String name);
 
     /**
      *

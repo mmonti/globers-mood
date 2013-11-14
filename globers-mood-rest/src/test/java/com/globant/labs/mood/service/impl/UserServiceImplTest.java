@@ -80,17 +80,4 @@ public class UserServiceImplTest {
         Assert.isTrue(storedUser.getEmail().equals(result.getEmail()));
     }
 
-//    @Test
-    public void testAssignedUsers() throws Exception {
-        final User user1 = new User("Mauro Monti", "mauro.monti@globant.com");
-        final User user2 = new User("Juan Sanmarco", "juan.sanmarco@globant.com");
-
-        final User storedUser1 = userService.store(user1);
-        final User storedUser2 = userService.store(user2);
-
-        final Set<User> result = userService.assignedUsers();
-        Assert.notEmpty(result);
-        Assert.isTrue(result.size()==1);
-    }
-
 }

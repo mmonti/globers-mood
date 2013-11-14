@@ -1,10 +1,13 @@
 package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.config.RootConfig;
-import com.globant.labs.mood.exception.ServiceException;
+import com.globant.labs.mood.exception.BusinessException;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.repository.data.CampaignRepository;
-import com.globant.labs.mood.service.*;
+import com.globant.labs.mood.service.CampaignService;
+import com.globant.labs.mood.service.FeedbackService;
+import com.globant.labs.mood.service.TemplateService;
+import com.globant.labs.mood.service.UserService;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
 import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.google.appengine.api.datastore.Blob;
@@ -134,7 +137,7 @@ public class FeedbackServiceImplTest {
         Assert.isTrue(storedFeedback.getClientMood().equals(Mood.NEUTRAL));
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessException.class)
     public void testFeedbackAlreadySubmitted() throws Exception {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);

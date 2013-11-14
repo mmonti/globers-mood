@@ -20,6 +20,8 @@ public class Preference extends BaseEntity implements Serializable {
     private String preferenceKey;
     @Basic
     private String preferenceValue;
+    @Basic
+    private String namespace;
 
     public Preference() {
         super();
@@ -47,7 +49,18 @@ public class Preference extends BaseEntity implements Serializable {
      * @param value
      */
     public Preference(final String key, final String value) {
+        this(null, key, value);
+    }
+
+    /**
+     *
+     * @param namespace
+     * @param key
+     * @param value
+     */
+    public Preference(final String namespace, final String key, final String value) {
         this();
+        this.namespace = namespace;
         this.preferenceKey = key;
         this.preferenceValue = value;
     }
@@ -58,7 +71,17 @@ public class Preference extends BaseEntity implements Serializable {
      * @param value
      */
     public Preference(final PreferenceKey key, final String value) {
-        this(key.getValue(), value);
+        this(null, key, value);
+    }
+
+    /**
+     *
+     * @param namespace
+     * @param key
+     * @param value
+     */
+    public Preference(final String namespace, final PreferenceKey key, final String value) {
+        this(namespace, key.getValue(), value);
     }
 
     public String getPreferenceKey() {
@@ -76,6 +99,14 @@ public class Preference extends BaseEntity implements Serializable {
 
     public void setPreferenceValue(String preferenceValue) {
         this.preferenceValue = preferenceValue;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
     }
 
     @Override

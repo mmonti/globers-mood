@@ -1,24 +1,23 @@
 package com.globant.labs.mood.service.impl;
 
+import com.globant.labs.mood.model.DispatchResult;
 import com.globant.labs.mood.model.MailMessage;
 import com.globant.labs.mood.model.Sender;
 import com.globant.labs.mood.model.persistent.User;
 import com.globant.labs.mood.repository.data.PreferenceRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.MailingService;
-import com.google.appengine.repackaged.com.google.common.collect.Sets;
-import com.google.common.net.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.mail.*;
-import javax.mail.internet.*;
-import javax.ws.rs.core.Response;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -33,16 +32,17 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
 
     @Inject
     private PreferenceRepository preferenceRepository;
-    private Session session = Session.getDefaultInstance(new Properties(), null);
+
+    @Inject
+    private Session session;
 
     /**
      *
      * @param mailMessages
      * @return
      */
-    public int dispatch(final Set<MailMessage> mailMessages) {
-        logger.info("dispatch - session=[{}]", session);
-        final Set<MailMessage> pendingMailMessages = new HashSet();
+    public DispatchResult dispatch(final Set<MailMessage> mailMessages) {
+        final DispatchResult dispatchResult = new DispatchResult(mailMessages);
         for (final MailMessage currentMailMessage : mailMessages) {
             final Message message = getMessage(currentMailMessage);
             if (message != null) {
@@ -52,19 +52,14 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
 
                 } catch (MessagingException e) {
                     logger.info("dispatch - error sending message=[{}]", message);
-                    pendingMailMessages.add(currentMailMessage);
+                    dispatchResult.addAsPendingNotification(currentMailMessage);
                 }
             } else {
                 logger.info("dispatch - message null, adding to pendings. Message=[{}]", currentMailMessage);
-                pendingMailMessages.add(currentMailMessage);
+                dispatchResult.addAsPendingNotification(currentMailMessage);
             }
         }
-
-        final Set<MailMessage> sent = Sets.difference(mailMessages, pendingMailMessages);
-        logger.debug("dispatch - {} message(s) sent", sent.size());
-        logger.debug("dispatch - {} message(s) pending to be sent", pendingMailMessages.size());
-
-        return sent.size();
+        return dispatchResult;
     }
 
     /**

@@ -55,7 +55,7 @@ public class ProjectServiceImplTest {
     public void testFindByCustomer() throws Exception {
         final Customer customer1 = new Customer("Customer1");
         final Customer storedCustomer1 = customerService.store(customer1);
-        final Customer customer2 = new Customer("Customer1");
+        final Customer customer2 = new Customer("Customer2");
         final Customer storedCustomer2 = customerService.store(customer2);
 
         final Project project1 = new Project("Project1", storedCustomer1);

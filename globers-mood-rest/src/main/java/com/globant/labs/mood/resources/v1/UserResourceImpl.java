@@ -47,18 +47,4 @@ public class UserResourceImpl extends AbstractResource implements UserResource {
         Preconditions.checkNotNull(id, "id cannot be null");
         return notNullResponse(userService.user(id));
     }
-
-    @GET
-    @Path("/assigned")
-    @Override
-    public Response assigned() {
-        return notEmptyResponse(userService.assignedUsers());
-    }
-
-    @GET
-    @Path("/unassigned")
-    @Override
-    public Response unassigned() {
-        return notEmptyResponse(userService.unassignedUsers());
-    }
 }

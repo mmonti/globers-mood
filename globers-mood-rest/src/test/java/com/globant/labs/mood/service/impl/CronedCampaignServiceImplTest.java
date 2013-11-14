@@ -2,9 +2,11 @@ package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.config.RootConfig;
 import com.globant.labs.mood.model.persistent.*;
-import com.globant.labs.mood.service.*;
+import com.globant.labs.mood.service.CampaignService;
+import com.globant.labs.mood.service.PreferenceService;
+import com.globant.labs.mood.service.TemplateService;
+import com.globant.labs.mood.service.UserService;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
-import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.globant.labs.mood.support.TransactionSupport;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -20,8 +22,6 @@ import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 

@@ -1,5 +1,6 @@
 package com.globant.labs.mood.model.persistent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
@@ -50,13 +51,9 @@ public class Campaign extends BaseEntity implements Serializable {
     @Basic
     private int feedbackNumber = 0;
 
-    @Basic
-    private int targetNumber = 0;
-
     protected Campaign() {
         this(new Date(), CampaignStatus.CREATED);
         this.feedbackNumber = 0;
-        this.targetNumber = 0;
     }
 
     protected Campaign(final Date created, final CampaignStatus status) {
@@ -100,6 +97,7 @@ public class Campaign extends BaseEntity implements Serializable {
         this.status = status;
     }
 
+    @JsonIgnore
     public Template getTemplate() {
         return template;
     }
@@ -119,7 +117,6 @@ public class Campaign extends BaseEntity implements Serializable {
     public void addTarget(final User target) {
         Preconditions.checkNotNull(target, "target cannot be null");
         this.targets.add(target);
-        this.targetNumber++;
     }
 
     public void addFeedback(final Feedback feedback) {
@@ -130,10 +127,6 @@ public class Campaign extends BaseEntity implements Serializable {
 
     public int getFeedbackNumber() {
         return feedbackNumber;
-    }
-
-    public int getTargetNumber() {
-        return targetNumber;
     }
 
     public Date getEndDate() {

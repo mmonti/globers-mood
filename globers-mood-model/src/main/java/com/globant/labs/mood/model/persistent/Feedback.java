@@ -1,5 +1,6 @@
 package com.globant.labs.mood.model.persistent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.appengine.datanucleus.annotations.Unowned;
 import org.datanucleus.api.jpa.annotations.Extension;
 
@@ -57,6 +58,7 @@ public class Feedback extends BaseEntity implements Serializable {
         return user;
     }
 
+    @JsonIgnore
     public Campaign getCampaign() {
         return campaign;
     }

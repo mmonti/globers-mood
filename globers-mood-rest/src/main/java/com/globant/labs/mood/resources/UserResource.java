@@ -28,15 +28,4 @@ public interface UserResource {
      */
     Response user(final long id);
 
-    /**
-     *
-     * @return
-     */
-    Response assigned();
-
-    /**
-     *
-     * @return
-     */
-    Response unassigned();
 }

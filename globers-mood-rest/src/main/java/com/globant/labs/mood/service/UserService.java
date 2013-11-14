@@ -33,16 +33,4 @@ public interface UserService {
      */
     User userByEmail(final String email);
 
-    /**
-     *
-     * @return
-     */
-    Set<User> assignedUsers();
-
-    /**
-     *
-     * @return
-     */
-    Set<User> unassignedUsers();
-
 }

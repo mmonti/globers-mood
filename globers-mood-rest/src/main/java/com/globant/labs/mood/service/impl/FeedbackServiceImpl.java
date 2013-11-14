@@ -1,9 +1,6 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.exception.EntityNotFoundException;
-import com.globant.labs.mood.exception.InvalidStatusException;
-import com.globant.labs.mood.exception.InvalidTokenException;
-import com.globant.labs.mood.exception.ServiceException;
+import com.globant.labs.mood.exception.BusinessException;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.repository.data.CampaignRepository;
 import com.globant.labs.mood.repository.data.FeedbackRepository;
@@ -20,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.*;
+import static com.globant.labs.mood.support.StringSupport.on;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -49,26 +49,26 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
         final Campaign campaign = campaignRepository.findOne(campaignId);
         if (campaign == null) {
-            throw new EntityNotFoundException(Campaign.class, campaignId);
+            throw new BusinessException(on("campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
         }
 
         if (!CampaignStatus.WAITING_FOR_FEEDBACK.equals(campaign.getStatus())) {
-            throw new InvalidStatusException(campaign);
+            throw new BusinessException(on("campaign with campaignId=[{}] has an illegal state=[{}]", campaignId, campaign.getStatus()), ILLEGAL_STATE);
         }
 
         final User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new EntityNotFoundException("User with email=[" + email + "] not found");
+            throw new BusinessException(on("user with email=[{}] not found.", user.getEmail()), RESOURCE_NOT_FOUND);
         }
 
         final String generatedToken = ((UserTokenGenerator) tokenGenerator).getToken(campaign, user);
         if (!token.equals(generatedToken)) {
-            throw new InvalidTokenException(token, generatedToken);
+            new BusinessException(on("invalid token=[{}]. received token and generated doesnt match.", token), EXPECTATION_FAILED);
         }
 
         final Feedback existentFeedback = feedbackRepository.feedbackAlreadySubmitted(campaign, user);
         if (existentFeedback != null) {
-            throw new ServiceException("Feedback of user=[" + email + "] for campaignId=[" + campaignId + "] was already submitted");
+            throw new BusinessException(on("feedback of user=[{}] for campaignId=[{}] was already submitted", user.getEmail(), campaignId), EXPECTATION_FAILED);
         }
 
         return feedbackRepository.save(new Feedback(campaign, user, gmv, cmv, comment));
@@ -87,7 +87,7 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
         final Campaign campaign = campaignRepository.findOne(campaignId);
         if (campaign == null) {
-            throw new EntityNotFoundException(Campaign.class, campaignId);
+//            throw new EntityNotFoundException(Campaign.class, campaignId);
         }
 
         return new HashSet(feedbackRepository.feedbackOfCampaign(campaign));
@@ -100,7 +100,7 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
         final User user = userRepository.findOne(userId);
         if (user == null) {
-            throw new EntityNotFoundException(User.class, userId);
+//            throw new EntityNotFoundException(User.class, userId);
         }
 
         return new HashSet(feedbackRepository.feedbackOfUser(user));

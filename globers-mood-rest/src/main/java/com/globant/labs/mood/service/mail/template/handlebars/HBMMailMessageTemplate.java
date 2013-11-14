@@ -2,7 +2,7 @@ package com.globant.labs.mood.service.mail.template.handlebars;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Template;
-import com.globant.labs.mood.exception.ServiceException;
+import com.globant.labs.mood.exception.TechnicalException;
 import com.globant.labs.mood.model.MailMessageTemplate;
 
 import java.io.IOException;
@@ -23,9 +23,8 @@ public class HBMMailMessageTemplate implements MailMessageTemplate {
         final Context hbmContext = Context.newContext(context);
         try {
             return this.template.apply(hbmContext);
-
         } catch (IOException e) {
-            throw new ServiceException("An error occured trying to generate template content.");
+            throw new TechnicalException("applying context to template.", e);
         }
     }
 }

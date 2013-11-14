@@ -9,7 +9,20 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface ProjectRepository extends GenericRepository<Project, Long> {
 
-    @Query("select p from Project p where p.customer = (?1)")
-    Project projectByCustomer(Customer customer);
+    /**
+     *
+     * @param customer
+     * @return
+     */
+    @Query("select project from Project project where project.customer = (?1)")
+    Project projectByCustomer(final Customer customer);
+
+    /**
+     *
+     * @param customer
+     * @return
+     */
+    @Query("select project from Project project where project.name = (?1)")
+    Project projectByName(final String name);
 
 }

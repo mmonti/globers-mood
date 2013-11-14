@@ -55,7 +55,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final User storedUser = userService.store(user);
 
         final Template template = new Template();
-        template.setName("Template 1");
+        template.setName("Template");
         template.setFile(new Blob("This is an array of bytes".getBytes()));
 
         final Template storedTemplate = templateService.store(template);
@@ -148,15 +148,15 @@ public class CampaignServiceImplTest extends TransactionSupport {
         Assert.notNull(storedFeedback2);
         Assert.notNull(storedFeedback3);
 
-        Assert.isTrue(storedFeedback1.getCampaign().getFeedbackNumber()==1);
-        Assert.isTrue(storedFeedback2.getCampaign().getFeedbackNumber()==2);
+        Assert.isTrue(storedFeedback1.getCampaign().getFeedbacks().size()==1);
+        Assert.isTrue(storedFeedback2.getCampaign().getFeedbacks().size()==2);
 
         final List<Campaign> campaigns = campaignService.mostActive();
 
         Assert.notEmpty(campaigns);
         Assert.isTrue(campaigns.size()==2);
-        Assert.isTrue(campaigns.get(0).getFeedbackNumber()==2);
-        Assert.isTrue(campaigns.get(1).getFeedbackNumber()==1);
+        Assert.isTrue(campaigns.get(0).getFeedbacks().size()==2);
+        Assert.isTrue(campaigns.get(1).getFeedbacks().size()==1);
     }
 
     @Test

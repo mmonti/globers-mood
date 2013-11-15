@@ -48,8 +48,8 @@ public class MailMessageFactory {
      * @return
      */
     public Set<MailMessage> create(final Campaign campaign) {
-        final String alias = preferenceService.preference(PreferenceKey.SENDER_ALIAS);
-        final String mail = preferenceService.preference(PreferenceKey.SENDER_MAIL);
+        final String alias = preferenceService.preference(PreferenceKey.MAIL_SENDER_ALIAS);
+        final String mail = preferenceService.preference(PreferenceKey.MAIL_SENDER);
         final String subject = preferenceService.preference(PreferenceKey.MAIL_SUBJECT);
 
         logger.debug("create - preferences loaded(alias=[{}], mail=[{}], subject=[{}])", alias, mail, subject);

@@ -51,7 +51,7 @@ public class PreferenceServiceImplTest {
 
     @Test
     public void testAddPreferenceEnumKey() throws Exception {
-        final Preference preference = new Preference(PreferenceKey.SENDER_ALIAS, "Admin");
+        final Preference preference = new Preference(PreferenceKey.MAIL_SENDER_ALIAS, "Admin");
         final Preference storedPreference = service.store(preference);
         Assert.notNull(storedPreference);
         Assert.isTrue(storedPreference.getPreferenceKey().equals(preference.getPreferenceKey()));
@@ -59,7 +59,7 @@ public class PreferenceServiceImplTest {
 
     @Test
     public void testPreferences() throws Exception {
-        final Preference preference1 = new Preference(PreferenceKey.SENDER_ALIAS, "Admin");
+        final Preference preference1 = new Preference(PreferenceKey.MAIL_SENDER_ALIAS, "Admin");
         final Preference storedPreference1 = service.store(preference1);
 
         final Preference preference2 = new Preference("key", "1");
@@ -84,13 +84,13 @@ public class PreferenceServiceImplTest {
 
     @Test
     public void testPreferenceByKey() throws Exception {
-        final Preference preference1 = new Preference(PreferenceKey.SENDER_ALIAS, "Admin");
+        final Preference preference1 = new Preference(PreferenceKey.MAIL_SENDER_ALIAS, "Admin");
         final Preference storedPreference1 = service.store(preference1);
 
         final Preference preference2 = new Preference("key", "1");
         final Preference storedPreference2 = service.store(preference2);
 
-        final String loadedPreference1 = service.preference(PreferenceKey.SENDER_ALIAS);
+        final String loadedPreference1 = service.preference(PreferenceKey.MAIL_SENDER_ALIAS);
         final String loadedPreference2 = service.preference(storedPreference2.getPreferenceKey(), String.class);
 
         Assert.notNull(loadedPreference1);

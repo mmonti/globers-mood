@@ -1,6 +1,8 @@
 package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Campaign;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -14,6 +16,13 @@ public interface CampaignService {
      * @return
      */
     Set<Campaign> campaigns();
+
+    /**
+     *
+     * @param pageable
+     * @return
+     */
+    Page<Campaign> campaigns(final Pageable pageable);
 
     /**
      * @param campaign

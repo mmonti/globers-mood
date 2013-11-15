@@ -64,8 +64,8 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
 
-        final Preference senderAlias = new Preference(PreferenceKey.SENDER_ALIAS, "alias");
-        final Preference senderMail = new Preference(PreferenceKey.SENDER_MAIL, "mail");
+        final Preference senderAlias = new Preference(PreferenceKey.MAIL_SENDER_ALIAS, "alias");
+        final Preference senderMail = new Preference(PreferenceKey.MAIL_SENDER, "mail");
         final Preference mailSubject = new Preference(PreferenceKey.MAIL_SUBJECT, "subject");
 
         preferenceService.store(senderAlias);

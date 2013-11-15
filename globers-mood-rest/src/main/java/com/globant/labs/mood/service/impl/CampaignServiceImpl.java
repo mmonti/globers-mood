@@ -15,6 +15,8 @@ import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.repackaged.com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +56,11 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     public Set<Campaign> campaigns() {
         logger.debug("campaigns - querying campaigns");
         return new HashSet<Campaign>(campaignRepository.findAll());
+    }
+
+    @Override
+    public Page<Campaign> campaigns(final Pageable pageable) {
+        return this.campaignRepository.findAll(pageable);
     }
 
     @Transactional

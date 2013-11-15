@@ -18,9 +18,11 @@ public interface CampaignResource {
 
     /**
      *
+     * @param page
+     * @param size
      * @return
      */
-    Response campaigns();
+    Response campaigns(final Integer page, final Integer size);
 
     /**
      *

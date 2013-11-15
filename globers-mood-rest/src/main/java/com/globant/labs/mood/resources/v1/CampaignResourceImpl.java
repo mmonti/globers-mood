@@ -5,6 +5,7 @@ import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.CampaignResource;
 import com.globant.labs.mood.service.CampaignService;
 import com.google.appengine.api.search.checkers.Preconditions;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -16,10 +17,7 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -43,8 +41,11 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
 
     @GET
     @Override
-    public Response campaigns() {
-        return notEmptyResponse(campaignService.campaigns());
+    public Response campaigns(@QueryParam("page") Integer page, @QueryParam("size") Integer size) {
+        if (page == null || size == null) {
+            return notEmptyResponse(campaignService.campaigns());
+        }
+        return notNullResponse(campaignService.campaigns(new PageRequest(page, size)));
     }
 
     @GET

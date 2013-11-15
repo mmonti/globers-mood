@@ -11,11 +11,15 @@ import java.util.Map;
  */
 public enum PreferenceKey {
 
-    SENDER_ALIAS("sender.alias"),
-    SENDER_MAIL("sender.mail"),
+    MAIL_SENDER_ALIAS("sender.alias"),
+    MAIL_SENDER("sender.mail"),
     MAIL_SUBJECT("mail.subject"),
     SERVICES_HOST("services.host"),
-    SERVICES_FEEDBACK_API("services.feedback.api");
+    SERVICES_FEEDBACK_API("services.feedback.api"),
+    SERVICES_SYNCHRONIZE("services.synchronize"),
+    SERVICES_SYNCHRONIZE_TIME("services.synchronize.time"),
+    DASHBOARD_CAMPAIGNS_REFRESH_TIME("dashboard.campaigns.refresh.time"),
+    DASHBOARD_CAMPAIGNS_ITEMS_SIZE("dashboard.campaigns.items.size");
 
     private static final Map<String, PreferenceKey> LOOKUP = new HashMap<String, PreferenceKey>();
 

@@ -1,6 +1,7 @@
 package com.globant.labs.mood.repository.data;
 
 import com.globant.labs.mood.model.persistent.Preference;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -21,12 +22,5 @@ public interface PreferenceRepository extends GenericRepository<Preference, Long
      * @return
      */
     Preference findByNamespace(final String namespace);
-
-    /**
-     *
-     * @param namespace
-     * @return
-     */
-    Preference findByNamespacePaged(final String namespace, final Pageable pageable);
 
 }

@@ -3,10 +3,7 @@ package com.globant.labs.mood.model.persistent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Basic;
-import javax.persistence.Lob;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -49,7 +46,7 @@ public class Preference extends BaseEntity implements Serializable {
      * @param value
      */
     public Preference(final String key, final String value) {
-        this(null, key, value);
+        this(key, value, null);
     }
 
     /**
@@ -58,7 +55,7 @@ public class Preference extends BaseEntity implements Serializable {
      * @param key
      * @param value
      */
-    public Preference(final String namespace, final String key, final String value) {
+    public Preference(final String key, final String value, final String namespace) {
         this();
         this.namespace = namespace;
         this.preferenceKey = key;
@@ -71,7 +68,7 @@ public class Preference extends BaseEntity implements Serializable {
      * @param value
      */
     public Preference(final PreferenceKey key, final String value) {
-        this(null, key, value);
+        this(key, value, null);
     }
 
     /**
@@ -80,8 +77,8 @@ public class Preference extends BaseEntity implements Serializable {
      * @param key
      * @param value
      */
-    public Preference(final String namespace, final PreferenceKey key, final String value) {
-        this(namespace, key.getValue(), value);
+    public Preference(final PreferenceKey key, final String value, final String namespace) {
+        this(key.getValue(), value, namespace);
     }
 
     public String getPreferenceKey() {

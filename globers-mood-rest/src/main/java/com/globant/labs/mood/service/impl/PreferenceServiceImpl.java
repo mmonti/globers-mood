@@ -9,6 +9,8 @@ import com.globant.labs.mood.service.PreferenceService;
 import com.google.appengine.api.search.checkers.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,11 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
     @Override
     public Set<Preference> preferences() {
         return new HashSet<Preference>(preferenceRepository.findAll());
+    }
+
+    @Override
+    public Page<Preference> preferences(final Pageable pageable) {
+        return preferenceRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = false)

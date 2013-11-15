@@ -2,6 +2,8 @@ package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Preference;
 import com.globant.labs.mood.model.persistent.PreferenceKey;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
 
@@ -14,6 +16,13 @@ public interface PreferenceService {
      * @return
      */
     Set<Preference> preferences();
+
+    /**
+     *
+     * @param pageable
+     * @return
+     */
+    Page<Preference> preferences(final Pageable pageable);
 
     /**
      *

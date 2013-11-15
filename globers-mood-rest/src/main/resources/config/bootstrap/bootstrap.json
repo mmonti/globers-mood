@@ -29,14 +29,14 @@
     ],
     "campaignRelations" : [],
     "preferences" : [
-        { "preferenceKey" : "dashboard.refresh.time", "preferenceValue" : "30000" },
-        { "preferenceKey" : "dashboard.items.size", "preferenceValue" : "5" },
-        { "preferenceKey" : "services.synchronize", "preferenceValue" : "true" },
-        { "preferenceKey" : "services.synchronize.time", "preferenceValue" : "20000" },
-        { "preferenceKey" : "services.host", "preferenceValue" : "http://globers-mood-rest.appspot.com" },
-        { "preferenceKey" : "services.feedback.api", "preferenceValue" : "/rest/api/v1/feedback/submit" },
-        { "preferenceKey" : "sender.alias", "preferenceValue" : "Administrator" },
-        { "preferenceKey" : "sender.mail", "preferenceValue" : "monti.mauro@gmail.com" },
-        { "preferenceKey" : "mail.subject", "preferenceValue" : "Globers Mood" }
+        { "preferenceKey" : "dashboard.refresh.time", "preferenceValue" : "30000", "namespace": "public" },
+        { "preferenceKey" : "dashboard.items.size", "preferenceValue" : "5", "namespace": "public" },
+        { "preferenceKey" : "services.synchronize", "preferenceValue" : "true", "namespace": "services" },
+        { "preferenceKey" : "services.synchronize.time", "preferenceValue" : "20000", "namespace": "services" },
+        { "preferenceKey" : "services.host", "preferenceValue" : "http://globers-mood-rest.appspot.com", "namespace": "services" },
+        { "preferenceKey" : "services.feedback.api", "preferenceValue" : "/rest/api/v1/feedback/submit", "namespace": "services" },
+        { "preferenceKey" : "sender.alias", "preferenceValue" : "Administrator", "namespace": "mail" },
+        { "preferenceKey" : "sender.mail", "preferenceValue" : "monti.mauro@gmail.com", "namespace": "mail" },
+        { "preferenceKey" : "mail.subject", "preferenceValue" : "Globers Mood", "namespace": "mail" }
     ]
 }

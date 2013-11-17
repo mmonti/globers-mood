@@ -8,6 +8,7 @@ import com.globant.labs.mood.service.mail.template.TemplateCompiler;
 import com.google.appengine.repackaged.com.google.common.base.Preconditions;
 
 import java.io.IOException;
+
 import static com.globant.labs.mood.support.StringSupport.on;
 
 /**

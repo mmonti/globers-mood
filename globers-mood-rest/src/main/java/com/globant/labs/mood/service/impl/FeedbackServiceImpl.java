@@ -11,6 +11,8 @@ import com.globant.labs.mood.service.FeedbackService;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
 import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.google.appengine.api.search.checkers.Preconditions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,8 +78,8 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Feedback> feedbacks() {
-        return new HashSet(feedbackRepository.findAll());
+    public Page<Feedback> feedbacks(final Pageable pageable) {
+        return feedbackRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = true)
@@ -87,7 +89,7 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
         final Campaign campaign = campaignRepository.findOne(campaignId);
         if (campaign == null) {
-//            throw new EntityNotFoundException(Campaign.class, campaignId);
+            throw new BusinessException(on("campaign with campaignId=[{}] not found", campaignId), RESOURCE_NOT_FOUND);
         }
 
         return new HashSet(feedbackRepository.feedbackOfCampaign(campaign));
@@ -100,7 +102,7 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
         final User user = userRepository.findOne(userId);
         if (user == null) {
-//            throw new EntityNotFoundException(User.class, userId);
+            throw new BusinessException(on("user with userId=[{}] not found", userId), RESOURCE_NOT_FOUND);
         }
 
         return new HashSet(feedbackRepository.feedbackOfUser(user));

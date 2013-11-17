@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.*;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
-import static com.globant.labs.mood.support.StringSupport.on;
 
 
 /**

@@ -11,13 +11,6 @@ public interface CampaignResource {
 
     /**
      *
-     * @param campaign
-     * @return
-     */
-    Response addCampaign(final Campaign campaign);
-
-    /**
-     *
      * @param page
      * @param size
      * @return
@@ -30,6 +23,13 @@ public interface CampaignResource {
      * @return
      */
     Response campaign(final long id);
+
+    /**
+     *
+     * @param campaign
+     * @return
+     */
+    Response addCampaign(final Campaign campaign);
 
     /**
      *

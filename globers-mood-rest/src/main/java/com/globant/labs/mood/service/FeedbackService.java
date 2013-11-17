@@ -2,6 +2,8 @@ package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Feedback;
 import com.globant.labs.mood.model.persistent.Mood;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
 
@@ -25,7 +27,7 @@ public interface FeedbackService {
     /**
      * @return
      */
-    Set<Feedback> feedbacks();
+    Page<Feedback> feedbacks(final Pageable pageable);
 
     /**
      * @param campaignId

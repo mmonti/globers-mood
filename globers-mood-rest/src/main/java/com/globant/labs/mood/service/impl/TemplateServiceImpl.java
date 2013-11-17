@@ -11,14 +11,14 @@ import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.common.io.ByteStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.RESOURCE_NOT_FOUND;
@@ -37,8 +37,8 @@ public class TemplateServiceImpl extends AbstractService implements TemplateServ
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Template> templates() {
-        return new HashSet<Template>(templateRepository.findAll());
+    public Page<Template> templates(final Pageable pageable) {
+        return templateRepository.findAll(pageable);
     }
 
     @Override

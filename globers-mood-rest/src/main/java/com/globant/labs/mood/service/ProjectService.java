@@ -2,6 +2,8 @@ package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Project;
 import com.globant.labs.mood.model.persistent.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
 
@@ -14,7 +16,7 @@ public interface ProjectService {
      *
      * @return
      */
-    Set<Project> projects();
+    Page<Project> projects(final Pageable pageable);
 
     /**
      *

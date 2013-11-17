@@ -1,9 +1,10 @@
 package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Template;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.io.InputStream;
-import java.util.Set;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -13,7 +14,7 @@ public interface TemplateService {
     /**
      * @return
      */
-    Set<Template> templates();
+    Page<Template> templates(final Pageable pageable);
 
     /**
      *

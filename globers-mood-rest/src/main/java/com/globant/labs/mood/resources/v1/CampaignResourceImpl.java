@@ -42,9 +42,8 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
     @GET
     @Override
     public Response campaigns(@QueryParam("page") Integer page, @QueryParam("size") Integer size) {
-        if (page == null || size == null) {
-            return notEmptyResponse(campaignService.campaigns());
-        }
+        Preconditions.checkArgument(page<0, "page cannot be negative");
+        Preconditions.checkArgument(size<0 || size>100, "size cannot be negative or great");
         return notNullResponse(campaignService.campaigns(new PageRequest(page, size)));
     }
 

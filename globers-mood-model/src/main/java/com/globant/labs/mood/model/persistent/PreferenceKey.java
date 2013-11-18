@@ -18,8 +18,8 @@ public enum PreferenceKey {
     SERVICES_FEEDBACK_API("services.feedback.api"),
     SERVICES_SYNCHRONIZE("services.synchronize"),
     SERVICES_SYNCHRONIZE_TIME("services.synchronize.time"),
-    DASHBOARD_CAMPAIGNS_REFRESH_TIME("dashboard.campaigns.refresh.time"),
-    DASHBOARD_CAMPAIGNS_ITEMS_SIZE("dashboard.campaigns.items.size");
+    DASHBOARD_CAMPAIGN_REFRESH_TIME("dashboard.campaign.refresh.time"),
+    DASHBOARD_CAMPAIGN_ITEMS_SIZE("dashboard.campaign.items.size");
 
     private static final Map<String, PreferenceKey> LOOKUP = new HashMap<String, PreferenceKey>();
 

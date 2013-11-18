@@ -5,6 +5,7 @@ import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.UserResource;
 import com.globant.labs.mood.service.UserService;
 import com.google.appengine.api.search.checkers.Preconditions;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -37,7 +38,7 @@ public class UserResourceImpl extends AbstractResource implements UserResource {
     @GET
     @Override
     public Response users() {
-        return notEmptyResponse(userService.users());
+        return notNullResponse(userService.users(new PageRequest(0, 100)));
     }
 
     @GET

@@ -13,6 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -92,9 +94,9 @@ public class CampaignServiceImplTest extends TransactionSupport {
     @Test
     public void testCampaigns() throws Exception {
         final Campaign storedCampaign = campaignService.store(campaign);
-        final Set<Campaign> campaigns = campaignService.campaigns();
+        final Page<Campaign> campaigns = campaignService.campaigns(new PageRequest(0,100));
         Assert.notNull(campaigns);
-        Assert.notEmpty(campaigns);
+        Assert.notEmpty(campaigns.getContent());
     }
 
     @Test
@@ -130,11 +132,14 @@ public class CampaignServiceImplTest extends TransactionSupport {
         campaign1.setTemplate(storedTemplate);
         campaign2.setTemplate(storedTemplate);
 
-        campaign1.start().waitForFeedback();
-        campaign2.start().waitForFeedback();
-
         final Campaign storedCampaign1 = campaignService.store(campaign1);
         final Campaign storedCampaign2 = campaignService.store(campaign2);
+
+        storedCampaign1.start().waitForFeedback();
+        storedCampaign2.start().waitForFeedback();
+
+        campaignService.store(storedCampaign1);
+        campaignService.store(storedCampaign2);
 
         final String token1 = ((UserTokenGenerator) tokenGenerator).getToken(storedCampaign1, storedUser1);
         final String token2 = ((UserTokenGenerator) tokenGenerator).getToken(storedCampaign2, storedUser2);

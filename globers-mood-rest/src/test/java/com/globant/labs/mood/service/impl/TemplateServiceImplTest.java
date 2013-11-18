@@ -10,6 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -59,10 +61,10 @@ public class TemplateServiceImplTest {
         template.setFile(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = service.store(template);
-        final Set<Template> templates = service.templates();
+        final Page<Template> templates = service.templates(new PageRequest(0,100));
 
         Assert.notNull(templates);
-        Assert.notEmpty(templates);
+        Assert.notEmpty(templates.getContent());
     }
 
     @Test

@@ -17,7 +17,7 @@ public abstract class BaseEntity implements Identity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     protected Date created;
 
     public BaseEntity() {

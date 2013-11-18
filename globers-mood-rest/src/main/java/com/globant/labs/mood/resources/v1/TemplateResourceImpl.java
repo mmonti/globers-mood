@@ -6,6 +6,7 @@ import com.globant.labs.mood.service.TemplateService;
 import com.google.appengine.api.search.checkers.Preconditions;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -27,7 +28,7 @@ public class TemplateResourceImpl extends AbstractResource implements TemplateRe
     @GET
     @Override
     public Response templates() {
-        return notEmptyResponse(templateService.templates());
+        return notNullResponse(templateService.templates(new PageRequest(0, 100)));
     }
 
     @GET

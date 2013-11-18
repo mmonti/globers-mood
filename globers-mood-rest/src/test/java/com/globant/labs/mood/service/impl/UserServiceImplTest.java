@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -55,9 +57,9 @@ public class UserServiceImplTest {
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);
 
-        final Set<User> users = userService.users();
+        final Page<User> users = userService.users(new PageRequest(0, 100));
         Assert.notNull(users);
-        Assert.notEmpty(users);
+        Assert.notEmpty(users.getContent());
     }
 
     @Test

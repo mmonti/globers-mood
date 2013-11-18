@@ -29,8 +29,8 @@
     ],
     "campaignRelations" : [],
     "preferences" : [
-        { "preferenceKey" : "dashboard.refresh.time", "preferenceValue" : "30000", "namespace": "public" },
-        { "preferenceKey" : "dashboard.items.size", "preferenceValue" : "5", "namespace": "public" },
+        { "preferenceKey" : "dashboard.campaign.refresh.time", "preferenceValue" : "30000", "namespace": "public" },
+        { "preferenceKey" : "dashboard.campaign.items.size", "preferenceValue" : "5", "namespace": "public" },
         { "preferenceKey" : "services.synchronize", "preferenceValue" : "true", "namespace": "services" },
         { "preferenceKey" : "services.synchronize.time", "preferenceValue" : "20000", "namespace": "services" },
         { "preferenceKey" : "services.host", "preferenceValue" : "http://globers-mood-rest.appspot.com", "namespace": "services" },

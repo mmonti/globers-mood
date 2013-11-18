@@ -88,7 +88,7 @@ public class Template extends BaseEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
+        int result = this.getId().hashCode();
         result = 31 * result + created.hashCode();
         return result;
     }

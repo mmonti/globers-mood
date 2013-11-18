@@ -1,6 +1,7 @@
 package com.globant.labs.mood.model.persistent;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.globant.labs.mood.jackson.TemplateSerializer;
 import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
@@ -97,7 +98,7 @@ public class Campaign extends BaseEntity implements Serializable {
         this.status = status;
     }
 
-    @JsonIgnore
+    @JsonSerialize(using = TemplateSerializer.class)
     public Template getTemplate() {
         return template;
     }

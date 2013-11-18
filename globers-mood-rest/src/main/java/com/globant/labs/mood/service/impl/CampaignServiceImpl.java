@@ -4,6 +4,7 @@ import com.globant.labs.mood.exception.BusinessException;
 import com.globant.labs.mood.model.DispatchResult;
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.CampaignStatus;
+import com.globant.labs.mood.model.persistent.Template;
 import com.globant.labs.mood.repository.data.CampaignRepository;
 import com.globant.labs.mood.repository.data.FeedbackRepository;
 import com.globant.labs.mood.repository.data.PreferenceRepository;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.ILLEGAL_STATE;
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.RESOURCE_NOT_FOUND;
 import static com.globant.labs.mood.support.StringSupport.on;
 
 /**
@@ -53,12 +55,6 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Campaign> campaigns() {
-        logger.debug("campaigns - querying campaigns");
-        return new HashSet<Campaign>(campaignRepository.findAll());
-    }
-
-    @Override
     public Page<Campaign> campaigns(final Pageable pageable) {
         return this.campaignRepository.findAll(pageable);
     }
@@ -66,12 +62,31 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Transactional
     @Override
     public Campaign store(final Campaign campaign) {
-        Preconditions.checkNotNull(campaign, "campaign cannot be null");
-        final Campaign storedCampaign = this.campaignRepository.campaignByName(campaign.getName());
-        if (storedCampaign != null) {
-            logger.debug("store - campaign with name=[{}] already existent", campaign.getName());
-            throw new BusinessException(on("campaign with name=[{}] already existent.", campaign.getName()), EXPECTATION_FAILED);
+        Preconditions.checkNotNull(campaign, "campaign is null");
+        Preconditions.checkNotNull(campaign.getTargets(), "targets is null");
+        Preconditions.checkNotNull(campaign.getTemplate(), "template is null");
+
+        if (campaign.getId() == null) {
+            final Campaign storedCampaign = this.campaignRepository.campaignByName(campaign.getName());
+            if (storedCampaign != null) {
+                logger.debug("store - campaign with name=[{}] already existent", campaign.getName());
+                throw new BusinessException(on("campaign with name=[{}] already existent.", campaign.getName()), EXPECTATION_FAILED);
+            }
+
+            if (!CampaignStatus.CREATED.hasPreviousValidStatus(campaign.getStatus())) {
+                logger.error("store - campaign with name=[{}] is in an invalid status=[{}]", campaign.getName(), campaign.getStatus());
+                throw new BusinessException(on("campaign with name=[{}] is in an invalid status=[{}]", campaign.getName(), campaign.getStatus()), ILLEGAL_STATE);
+            }
         }
+
+        final Template template = campaign.getTemplate();
+        final Template storedTemplate = templateRepository.findOne(template.getId());
+        if (storedTemplate == null) {
+            logger.error("store - template with id=[{}] not found", template.getId());
+            throw new BusinessException(on("template with id=[{}] not found.", template.getId()), RESOURCE_NOT_FOUND);
+        }
+        campaign.setTemplate(storedTemplate);
+
         return campaignRepository.save(campaign);
     }
 
@@ -95,7 +110,7 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
         final Campaign campaign = this.campaignRepository.findOne(campaignId);
         if (campaign == null) {
             logger.error("start - campaign with id=[{}] not found", campaignId);
-            throw new BusinessException(on("campaign with campaignId=[{}] already existent.", campaignId), EXPECTATION_FAILED);
+            throw new BusinessException(on("campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
         }
 
         if (!CampaignStatus.STARTED.hasPreviousValidStatus(campaign.getStatus())) {

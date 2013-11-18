@@ -124,10 +124,13 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
 
         // = Sets the endDate;
         campaign.setEndDate(calendar.getTime());
-        campaign.start();
-        campaign.waitForFeedback();
-
         Campaign storedCampaign = campaignService.store(campaign);
+
+        storedCampaign.start();
+        storedCampaign.waitForFeedback();
+
+        campaignService.store(storedCampaign);
+
         campaignService.scheduledReadyToClose();
 
         storedCampaign = campaignService.campaign(campaign.getId());
@@ -141,10 +144,12 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
 
         // = Sets the endDate;
         campaign.setEndDate(calendar.getTime());
-        campaign.start();
-        campaign.waitForFeedback();
-
         Campaign storedCampaign = campaignService.store(campaign);
+
+        storedCampaign.start();
+        storedCampaign.waitForFeedback();
+        campaignService.store(storedCampaign);
+
         campaignService.scheduledReadyToClose();
 
         storedCampaign = campaignService.campaign(campaign.getId());
@@ -153,10 +158,12 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
 
     @Test
     public void testCloseExpiredCampaignsWithNullExpirationDates() throws Exception {
-        campaign.start();
-        campaign.waitForFeedback();
-
         Campaign storedCampaign = campaignService.store(campaign);
+
+        storedCampaign.start();
+        storedCampaign.waitForFeedback();
+        campaignService.store(storedCampaign);
+
         campaignService.scheduledReadyToClose();
 
         storedCampaign = campaignService.campaign(campaign.getId());

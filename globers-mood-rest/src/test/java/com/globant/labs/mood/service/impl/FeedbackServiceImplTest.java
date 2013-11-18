@@ -73,9 +73,11 @@ public class FeedbackServiceImplTest {
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
-        campaign.start().waitForFeedback();
 
         final Campaign storedCampaign = campaignService.store(campaign);
+
+        storedCampaign.start().waitForFeedback();
+        campaignService.store(storedCampaign);
 
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
         final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
@@ -99,9 +101,12 @@ public class FeedbackServiceImplTest {
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
-        campaign.start().waitForFeedback();
 
         final Campaign storedCampaign = campaignService.store(campaign);
+
+        storedCampaign.start().waitForFeedback();
+        campaignService.store(storedCampaign);
+
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
 
         final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
@@ -125,9 +130,11 @@ public class FeedbackServiceImplTest {
         final Campaign campaign = new Campaign("Campaign");
         campaign.addTarget(storedUser);
         campaign.setTemplate(storedTemplate);
-        campaign.start().waitForFeedback();
-
         final Campaign storedCampaign = campaignService.store(campaign);
+
+        storedCampaign.start().waitForFeedback();
+        campaignService.store(storedCampaign);
+
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
 
         final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "");

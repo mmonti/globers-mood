@@ -14,6 +14,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -88,9 +90,9 @@ public class ProjectServiceImplTest {
         final Project project = new Project("Project", storedCustomer);
         final Project storedProject = projectService.store(project);
 
-        final Set<Project> projects = projectService.projects();
+        final Page<Project> projects = projectService.projects(new PageRequest(0, 100));
         Assert.notNull(projects);
-        Assert.notEmpty(projects);
+        Assert.notEmpty(projects.getContent());
     }
 
     @Test

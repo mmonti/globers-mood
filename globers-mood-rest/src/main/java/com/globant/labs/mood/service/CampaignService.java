@@ -13,11 +13,6 @@ import java.util.Set;
 public interface CampaignService {
 
     /**
-     * @return
-     */
-    Set<Campaign> campaigns();
-
-    /**
      *
      * @param pageable
      * @return

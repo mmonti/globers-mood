@@ -6,6 +6,7 @@ import com.globant.labs.mood.resources.CampaignResource;
 import com.globant.labs.mood.service.CampaignService;
 import com.google.appengine.api.search.checkers.Preconditions;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -41,10 +42,12 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
 
     @GET
     @Override
-    public Response campaigns(@QueryParam("page") Integer page, @QueryParam("size") Integer size) {
-        Preconditions.checkArgument(page<0, "page cannot be negative");
-        Preconditions.checkArgument(size<0 || size>100, "size cannot be negative or great");
-        return notNullResponse(campaignService.campaigns(new PageRequest(page, size)));
+    public Response campaigns(
+            @QueryParam("page") @DefaultValue("0") Integer page,
+            @QueryParam("size") @DefaultValue("10") Integer size,
+            @QueryParam("property") @DefaultValue("created") String property,
+            @QueryParam("direction") @DefaultValue("ASC") Sort.Direction direction) {
+        return notNullResponse(campaignService.campaigns(new PageRequest(page, size, direction, property)));
     }
 
     @GET
@@ -67,35 +70,6 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
     @Override
     public Response closeCampaign(@PathParam("id") final long id) {
         campaignService.close(id);
-        return Response.ok().build();
-    }
-
-
-    @GET
-    @Path("/test/mail")
-    public Response testMail(@PathParam("id") final long id) {
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
-
-        String msgBody = "Test";
-
-        try {
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("monti.mauro@gmail.com", "Example.com Admin"));
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress("mauro.monti@globant.com", "Mr. User"));
-            msg.setSubject("Your Example.com account has been activated");
-            msg.setText(msgBody);
-            Transport.send(msg);
-
-        } catch (AddressException e) {
-            // ...
-            return Response.serverError().build();
-        } catch (MessagingException e) {
-            // ...
-            return Response.serverError().build();
-        } catch (UnsupportedEncodingException e) {
-            return Response.serverError().build();
-        }
         return Response.ok().build();
     }
 }

@@ -5,6 +5,7 @@ import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.ProjectResource;
 import com.globant.labs.mood.service.ProjectService;
 import com.google.appengine.api.search.checkers.Preconditions;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -53,7 +54,7 @@ public class ProjectResourceImpl extends AbstractResource implements ProjectReso
     @GET
     @Override
     public Response projects() {
-        return notEmptyResponse(projectService.projects());
+        return notNullResponse(projectService.projects(new PageRequest(0, 100)));
     }
 
     @GET

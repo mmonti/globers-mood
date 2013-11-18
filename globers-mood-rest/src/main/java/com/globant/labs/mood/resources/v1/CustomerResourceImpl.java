@@ -5,6 +5,7 @@ import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.CustomerResource;
 import com.globant.labs.mood.service.CustomerService;
 import com.google.appengine.api.search.checkers.Preconditions;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -35,7 +36,7 @@ public class CustomerResourceImpl extends AbstractResource implements CustomerRe
     @GET
     @Override
     public Response customers() {
-        return notEmptyResponse(customerService.customers());
+        return notNullResponse(customerService.customers(new PageRequest(0, 100)));
     }
 
     @GET

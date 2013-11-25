@@ -5,3 +5,6 @@ globers-mood-ng
 *.jar
 *.war
 *.ear
+
+# Mac's trash folder info
+.DS_Store

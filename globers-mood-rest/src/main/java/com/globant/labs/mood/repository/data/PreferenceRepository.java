@@ -2,6 +2,8 @@ package com.globant.labs.mood.repository.data;
 
 import com.globant.labs.mood.model.persistent.Preference;
 
+import java.util.List;
+
 /**
  * @author mauro.monti (mauro.monti@globant.com)
  */
@@ -19,6 +21,6 @@ public interface PreferenceRepository extends GenericRepository<Preference, Long
      * @param namespace
      * @return
      */
-    Preference findByNamespace(final String namespace);
+    List<Preference> findByNamespaceLike(final String namespace);
 
 }

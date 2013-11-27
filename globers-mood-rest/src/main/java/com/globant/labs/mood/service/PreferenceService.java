@@ -61,6 +61,13 @@ public interface PreferenceService {
 
     /**
      *
+     * @param ns
+     * @return
+     */
+    Set<Preference> preferenceByNamespace(final String ns);
+
+    /**
+     *
      * @param key
      * @return
      */

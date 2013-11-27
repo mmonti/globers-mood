@@ -7,6 +7,7 @@ import com.globant.labs.mood.repository.data.PreferenceRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.PreferenceService;
 import com.google.appengine.api.search.checkers.Preconditions;
+import com.google.appengine.repackaged.com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
@@ -91,6 +93,12 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
             return preference.getPreferenceValue();
         }
         return null;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Set<Preference> preferenceByNamespace(final String ns) {
+        return Sets.newHashSet(preferenceRepository.findByNamespaceLike(ns));
     }
 
     @Transactional(readOnly = true)

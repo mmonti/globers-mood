@@ -30,6 +30,13 @@ public class PreferenceResourceImpl extends AbstractResource implements Preferen
         return notNullResponse(preferenceService.preference(preferenceKey));
     }
 
+    @GET
+    @Path("/namespace/{ns}")
+    @Override
+    public Response preferenceByNamespace(@PathParam("ns") final String ns) {
+        return notNullResponse(preferenceService.preferenceByNamespace(ns));
+    }
+
     @POST
     @Path("/{preferenceKey}/update/{value}")
     @Override

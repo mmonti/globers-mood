@@ -29,14 +29,25 @@
     ],
     "campaignRelations" : [],
     "preferences" : [
-        { "preferenceKey" : "dashboard.campaign.refresh.time", "preferenceValue" : "30000", "namespace": "public" },
-        { "preferenceKey" : "dashboard.campaign.items.size", "preferenceValue" : "5", "namespace": "public" },
+        { "preferenceKey" : "dashboard.campaign.refresh.time", "preferenceValue" : "30000", "namespace": "dashboard.campaign" },
+        { "preferenceKey" : "dashboard.campaign.items.size", "preferenceValue" : "5", "namespace": "dashboard.campaign" },
+
+        { "preferenceKey" : "campaign.all.refresh.time", "preferenceValue" : "30000", "namespace": "campaign.all" },
+        { "preferenceKey" : "campaign.all.items.size", "preferenceValue" : "10", "namespace": "campaign.all" },
+
         { "preferenceKey" : "services.synchronize", "preferenceValue" : "true", "namespace": "services" },
         { "preferenceKey" : "services.synchronize.time", "preferenceValue" : "20000", "namespace": "services" },
         { "preferenceKey" : "services.host", "preferenceValue" : "http://globers-mood-rest.appspot.com", "namespace": "services" },
         { "preferenceKey" : "services.feedback.api", "preferenceValue" : "/rest/api/v1/feedback/submit", "namespace": "services" },
+
         { "preferenceKey" : "sender.alias", "preferenceValue" : "Administrator", "namespace": "mail" },
         { "preferenceKey" : "sender.mail", "preferenceValue" : "monti.mauro@gmail.com", "namespace": "mail" },
-        { "preferenceKey" : "mail.subject", "preferenceValue" : "Globers Mood", "namespace": "mail" }
+        { "preferenceKey" : "mail.subject", "preferenceValue" : "Globers Mood", "namespace": "mail" },
+
+        { "preferenceKey" : "application.title", "preferenceValue" : "Glober's Mood", "namespace": "application" },
+        { "preferenceKey" : "application.logo", "preferenceValue" : "http://www.globant.com/sites/all/themes/globantv2/images/logo_globant.png", "namespace": "application" },
+        { "preferenceKey" : "application.version", "preferenceValue" : "0.0.1", "namespace": "application" },
+        { "preferenceKey" : "application.author.name", "preferenceValue" : "mauro monti", "namespace": "application" },
+        { "preferenceKey" : "application.author.mail", "preferenceValue" : "mauro.monti@globant.com", "namespace": "application" }
     ]
 }

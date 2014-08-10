@@ -59,8 +59,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
     @Override
     public User userByEmail(final String email) {
         Preconditions.checkNotNull(email, "email cannot be null");
-        final User user = this.userRepository.findByEmail(email);
-        return user;
+        return userRepository.findByEmail(email);
     }
 
 }

@@ -9,7 +9,6 @@ import com.globant.labs.mood.model.persistent.User;
 public interface UserTokenGenerator {
 
     /**
-     *
      * @param campaign
      * @param target
      * @return

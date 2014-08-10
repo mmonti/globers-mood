@@ -9,6 +9,6 @@ import java.io.Serializable;
  * @author mauro.monti (monti.mauro@gmail.com)
  */
 @NoRepositoryBean
-public interface GenericRepository <T, ID extends Serializable> extends JpaRepository<T, ID> {
+public interface GenericRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
 
 }

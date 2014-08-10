@@ -26,7 +26,6 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
         if (exception == null) {
             return Response.serverError().header(BaseResourceException.HEADER_ERROR_MESSAGE, "unexpected null exception").build();
         }
-
         // == Disable the error level to avoid duplicating exception information on logs.
         if (logger.isErrorEnabled()) {
             logger.error("Jersey exception has been thrown", exception);

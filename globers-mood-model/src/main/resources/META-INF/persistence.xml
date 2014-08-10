@@ -15,6 +15,8 @@
 		<class>com.globant.labs.mood.model.persistent.User</class>
 		<class>com.globant.labs.mood.model.persistent.Template</class>
 		<class>com.globant.labs.mood.model.persistent.Preference</class>
+        <class>com.globant.labs.mood.model.persistent.Attribute</class>
+        <class>com.globant.labs.mood.model.persistent.Metadata</class>
 
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
@@ -26,6 +28,7 @@
 			<property name="datanucleus.appengine.autoCreateDatastoreTxns" value="false" />
 			<property name="datanucleus.appengine.storageVersion" value="WRITE_OWNED_CHILD_KEYS_TO_PARENTS"/>
 			<property name="datanucleus.appengine.query.inMemoryWhenUnsupported" value="true"/>
+            <!--<property name="datanucleus.appengine.ignorableMetaDataBehavior" value="true"/>-->
 
 			<property name="datanucleus.DetachAllOnCommit" value="false"/>
 			<property name="datanucleus.DetachOnClose" value="true"/>

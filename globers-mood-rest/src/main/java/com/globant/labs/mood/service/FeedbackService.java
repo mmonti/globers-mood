@@ -1,7 +1,7 @@
 package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Feedback;
-import com.globant.labs.mood.model.persistent.Mood;
+import com.globant.labs.mood.support.jersey.FeedbackContent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,15 +14,10 @@ public interface FeedbackService {
 
     /**
      *
-     * @param campaignId
-     * @param email
-     * @param token
-     * @param gmv
-     * @param cmv
-     * @param comment
+     * @param container
      * @return
      */
-    Feedback store(final long campaignId, final String email, final String token, final Mood gmv, final Mood cmv, final String comment);
+    Feedback store(final FeedbackContent container);
 
     /**
      * @return
@@ -37,9 +32,17 @@ public interface FeedbackService {
 
     /**
      *
+     * @param userId
+     * @return
+     */
+    Set<Feedback> feedbackOfUser(final long userId);
+
+    /**
+     *
      * @param campaignId
      * @param userId
      * @return
      */
-    Set<Feedback> feedbackOfUser(final long campaignId, final long userId);
+    Set<Feedback> feedbackOfUserCampaign(final long campaignId, final long userId);
+
 }

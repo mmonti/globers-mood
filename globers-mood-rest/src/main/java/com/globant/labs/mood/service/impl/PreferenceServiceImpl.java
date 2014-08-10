@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
@@ -66,7 +65,7 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
         } else {
             preference = new Preference(preferenceKey, value);
         }
-        return store(preference);
+        return preferenceRepository.saveAndFlush(preference);
     }
 
     @Transactional(readOnly = true)

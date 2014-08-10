@@ -15,10 +15,19 @@ public class CampaignRelation implements Serializable {
     private int template;
     private int campaign;
 
+    /**
+     *
+     */
     public CampaignRelation() {
         this.users = new ArrayList<Integer>();
     }
 
+    /**
+     *
+     * @param campaign
+     * @param template
+     * @param users
+     */
     public CampaignRelation(final int campaign, final int template, final List<Integer> users) {
         this.campaign = campaign;
         this.users = users;

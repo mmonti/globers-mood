@@ -39,18 +39,18 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
     @Override
     public Customer store(final Customer customer) {
         Preconditions.checkNotNull(customer, "customer cannot be null");
-        final Customer storedCustomer = this.customerRepository.findByName(customer.getName());
+        final Customer storedCustomer = customerRepository.findByName(customer.getName());
         if (storedCustomer != null) {
             logger.debug("store - customer with name=[{}] already existent", customer.getName());
             throw new BusinessException(on("customer with name=[{}] already existent.", customer.getName()), EXPECTATION_FAILED);
         }
-        return this.customerRepository.save(customer);
+        return customerRepository.save(customer);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Customer customer(final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
-        return this.customerRepository.findOne(id);
+        return customerRepository.findOne(id);
     }
 }

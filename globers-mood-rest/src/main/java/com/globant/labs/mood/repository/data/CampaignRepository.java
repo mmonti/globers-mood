@@ -16,7 +16,6 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
     List<Campaign> mostActive();
 
     /**
-     *
      * @param name
      * @return
      */
@@ -24,7 +23,6 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
     Campaign campaignByName(final String name);
 
     /**
-     *
      * @param fromDate
      * @param pageable
      * @return
@@ -33,7 +31,6 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
     List<Campaign> campaignFromDate(final Date fromDate, final Pageable pageable);
 
     /**
-     *
      * @param fromDate
      * @return
      */
@@ -41,7 +38,6 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
     List<Campaign> scheduledReadyToStart(final Date fromDate);
 
     /**
-     *
      * @param fromDate
      * @return
      */
@@ -49,7 +45,6 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
     List<Campaign> scheduledPendingToStart(final Date fromDate);
 
     /**
-     *
      * @param fromDate
      * @return
      */

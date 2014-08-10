@@ -3,7 +3,7 @@ package com.globant.labs.mood.service.mail.template.handlebars;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Template;
 import com.globant.labs.mood.exception.TechnicalException;
-import com.globant.labs.mood.model.MailMessageTemplate;
+import com.globant.labs.mood.model.mail.MailMessageTemplate;
 
 import java.io.IOException;
 

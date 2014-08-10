@@ -1,16 +1,14 @@
 package com.globant.labs.mood.model.persistent;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.globant.labs.mood.jackson.TemplateSerializer;
+import com.globant.labs.mood.support.jackson.TemplateSerializer;
 import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.datanucleus.annotations.Unowned;
+import com.google.common.collect.Lists;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -34,11 +32,19 @@ public class Campaign extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
+    @Column(nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date scheduleDate;
+
+    @Column(nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expirationDate;
+
     @Enumerated(EnumType.STRING)
     private CampaignStatus status;
 
     @Unowned
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Template template;
 
     @Unowned
@@ -52,8 +58,15 @@ public class Campaign extends BaseEntity implements Serializable {
     @Basic
     private int feedbackNumber = 0;
 
+    @Enumerated(EnumType.STRING)
+    private Frequency frequency;
+
+    @Basic
+    private int index = 0;
+
     protected Campaign() {
         this(new Date(), CampaignStatus.CREATED);
+        this.frequency = Frequency.ONCE;
         this.feedbackNumber = 0;
     }
 
@@ -61,6 +74,25 @@ public class Campaign extends BaseEntity implements Serializable {
         super();
         this.created = created;
         this.status = status;
+    }
+
+    public Campaign(final Campaign parent) {
+        this();
+        this.setName(parent.getName());
+        this.setDescription(parent.getDescription());
+        this.addTargets(parent.getTargets());
+        this.setTemplate(parent.getTemplate());
+        this.setScheduleDate(frequency.getScheduleDate(parent.getStartDate()));
+        this.setExpirationDate(frequency.getExpirationDate(parent.getExpirationDate()));
+        this.setIndex(parent.getIndex() + 1);
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    private void setIndex(int index) {
+        this.index = index;
     }
 
     /**
@@ -120,10 +152,30 @@ public class Campaign extends BaseEntity implements Serializable {
         this.targets.add(target);
     }
 
+    public void addTargets(final Collection<User> targets) {
+        Preconditions.checkNotNull(targets, "targets cannot be null");
+        if (targets.isEmpty()) {
+            return;
+        }
+        this.targets.addAll(targets);
+    }
+
     public void addFeedback(final Feedback feedback) {
         Preconditions.checkNotNull(feedback, "feedback cannot be null");
         this.feedbacks.add(feedback);
         this.feedbackNumber++;
+    }
+
+    public void setFrequency(final Frequency frequency) {
+        this.frequency = frequency;
+    }
+
+    public Frequency getFrequency() {
+        return frequency;
+    }
+
+    public boolean isRecursive() {
+        return !getFrequency().equals(Frequency.ONCE);
     }
 
     public int getFeedbackNumber() {
@@ -146,6 +198,26 @@ public class Campaign extends BaseEntity implements Serializable {
         this.startDate = startDate;
     }
 
+    public Date getScheduleDate() {
+        return scheduleDate;
+    }
+
+    public void setScheduleDate(Date scheduleDate) {
+        this.scheduleDate = scheduleDate;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public boolean isCampaignComplete() {
+        return (this.targets.size() == this.feedbackNumber);
+    }
+
     public Campaign start() {
         setStatus(CampaignStatus.STARTED);
         return this;
@@ -153,12 +225,25 @@ public class Campaign extends BaseEntity implements Serializable {
 
     public Campaign waitForFeedback() {
         setStatus(CampaignStatus.WAITING_FOR_FEEDBACK);
+        setStartDate(new Date());
         return this;
     }
 
     public Campaign close() {
         setStatus(CampaignStatus.CLOSED);
+        setEndDate(new Date());
         return this;
+    }
+
+    public <T> List<T> collect(final String key, final Class<T> type) {
+        final List<T> values = Lists.newArrayList();
+        for (final Feedback feedback : feedbacks) {
+            T value = feedback.as(key, type);
+            if (value != null) {
+                values.add(value);
+            }
+        }
+        return values;
     }
 
     @Override

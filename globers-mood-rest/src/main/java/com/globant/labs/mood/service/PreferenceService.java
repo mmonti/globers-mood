@@ -18,21 +18,18 @@ public interface PreferenceService {
     Set<Preference> preferences();
 
     /**
-     *
      * @param pageable
      * @return
      */
     Page<Preference> preferences(final Pageable pageable);
 
     /**
-     *
      * @param preference
      * @return
      */
     Preference store(final Preference preference);
 
     /**
-     *
      * @param preferenceKey
      * @param value
      * @return
@@ -46,35 +43,30 @@ public interface PreferenceService {
     Preference preference(final long id);
 
     /**
-     *
      * @param key
      * @return
      */
     <T> T preference(final String key, Class<T> type);
 
     /**
-     *
      * @param key
      * @return
      */
     String preference(final String key);
 
     /**
-     *
      * @param ns
      * @return
      */
     Set<Preference> preferenceByNamespace(final String ns);
 
     /**
-     *
      * @param key
      * @return
      */
     String preference(final PreferenceKey key);
 
     /**
-     *
      * @param key
      * @return
      */

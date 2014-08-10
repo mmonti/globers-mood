@@ -10,14 +10,12 @@ import java.util.List;
 public interface PreferenceRepository extends GenericRepository<Preference, Long> {
 
     /**
-     *
      * @param preferenceKey
      * @return
      */
     Preference findByPreferenceKey(final String preferenceKey);
 
     /**
-     *
      * @param namespace
      * @return
      */

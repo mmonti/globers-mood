@@ -26,10 +26,10 @@ import java.util.Set;
 
 
 /**
-* @author mauro.monti (monti.mauro@gmail.com)
-*/
+ * @author mauro.monti (monti.mauro@gmail.com)
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = RootConfig.class, loader = AnnotationConfigContextLoader.class)
 public class CronedCampaignServiceImplTest extends TransactionSupport {
 
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -118,7 +118,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
     }
 
     @Test
-     public void testCloseExpiredCampaigns() throws Exception {
+    public void testCloseExpiredCampaigns() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -1);
 

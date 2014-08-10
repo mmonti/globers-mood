@@ -3,10 +3,12 @@ package com.globant.labs.mood.model.persistent;
 import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,10 +56,12 @@ public class Project extends BaseEntity implements Serializable {
         this.name = name;
     }
 
-    public void assign(User user) {
+    public boolean assign(final User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
-        this.users.add(user);
+        final boolean userAdded = this.users.add(user);
         this.userNumber++;
+
+        return userAdded;
     }
 
     public boolean release(User user) {

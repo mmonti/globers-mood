@@ -58,25 +58,21 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
         Preconditions.checkNotNull(projectId, "projectId cannot be null");
         Preconditions.checkNotNull(userId, "userId cannot be null");
 
-        final User user = userRepository.findOne(userId);
-        if (user == null) {
-//            throw new EntityNotFoundException(User.class, userId);
-        }
-
         final Project project = projectRepository.findOne(projectId);
         if (project == null) {
-//            throw new EntityNotFoundException(Project.class, projectId);
+            throw new BusinessException(on("project with id=[{}] not found", projectId), BusinessException.ErrorCode.RESOURCE_NOT_FOUND);
         }
 
-        project.assign(user);
+        final User user = userRepository.findOne(userId);
+        if (user == null) {
+            throw new BusinessException(on("user with id=[{}] not found", userId), BusinessException.ErrorCode.RESOURCE_NOT_FOUND);
+        }
 
-        try {
+        if (project.assign(user)) {
             projectRepository.saveAndFlush(project);
             return Boolean.TRUE;
-
-        } catch (Exception e) {
-            return Boolean.FALSE;
         }
+        return Boolean.FALSE;
     }
 
     @Transactional
@@ -87,12 +83,12 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
 
         final Project project = projectRepository.findOne(projectId);
         if (project == null) {
-//            throw new EntityNotFoundException(Project.class, projectId);
+            throw new BusinessException(on("project with id=[{}] not found", projectId), BusinessException.ErrorCode.RESOURCE_NOT_FOUND);
         }
 
         final User user = userRepository.findOne(userId);
         if (user == null) {
-//            throw new EntityNotFoundException(User.class, userId);
+            throw new BusinessException(on("user with id=[{}] not found", userId), BusinessException.ErrorCode.RESOURCE_NOT_FOUND);
         }
 
         if (project.release(user)) {
@@ -113,7 +109,7 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
     @Override
     public Set<User> usersOfProject(final long id) {
         Preconditions.checkNotNull(id, "id cannot be null");
-        Project project = projectRepository.findOne(id);
+        final Project project = projectRepository.findOne(id);
         return project.getUsers();
     }
 }

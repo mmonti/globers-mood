@@ -1,12 +1,14 @@
 package com.globant.labs.mood.resources.v1;
 
-import com.globant.labs.mood.model.setup.ImportInformation;
+import com.globant.labs.mood.model.setup.ImportContent;
 import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.SetupResource;
 import com.globant.labs.mood.service.ImporterService;
 import com.google.common.base.Preconditions;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -25,12 +27,14 @@ import java.io.InputStream;
 @Path("/api/v1/setup")
 public class SetupResourceImpl extends AbstractResource implements SetupResource {
 
+    private static final Logger logger = LoggerFactory.getLogger(SetupResourceImpl.class);
+
     @Inject
     private ImporterService importerService;
 
     @POST
     @Override
-    public Response importData(@RequestBody final ImportInformation importInformation) {
+    public Response importData(@RequestBody final ImportContent importInformation) {
         return notNullResponse(importerService.importData(importInformation));
     }
 
@@ -44,5 +48,12 @@ public class SetupResourceImpl extends AbstractResource implements SetupResource
 
         Preconditions.checkNotNull(inputStream, "inputStream is null");
         return notNullResponse(importerService.importData(inputStream));
+    }
+
+    @POST
+    @Path("/wipe-out")
+    @Override
+    public Response wipeOut() {
+        return notNullResponse(null);
     }
 }

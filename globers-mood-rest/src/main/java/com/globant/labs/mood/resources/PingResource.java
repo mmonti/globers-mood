@@ -8,7 +8,6 @@ import javax.ws.rs.core.Response;
 public interface PingResource {
 
     /**
-     *
      * @return
      */
     Response ping();

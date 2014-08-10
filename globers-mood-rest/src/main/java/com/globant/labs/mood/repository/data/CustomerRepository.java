@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface CustomerRepository extends GenericRepository<Customer, Long> {
 
     /**
-     *
      * @param name
      * @return
      */

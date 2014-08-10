@@ -13,7 +13,6 @@ import com.google.common.hash.Hashing;
 public class UserTokenGeneratorImpl extends AbstractBaseTokenGenerator implements UserTokenGenerator {
 
     /**
-     *
      * @param secret
      */
     public UserTokenGeneratorImpl(final String secret) {
@@ -21,7 +20,6 @@ public class UserTokenGeneratorImpl extends AbstractBaseTokenGenerator implement
     }
 
     /**
-     *
      * @param campaign
      * @param target
      * @return

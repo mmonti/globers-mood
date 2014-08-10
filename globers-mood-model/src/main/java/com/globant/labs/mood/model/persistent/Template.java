@@ -2,16 +2,13 @@ package com.globant.labs.mood.model.persistent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.globant.labs.mood.jackson.TemplateFileDeserializer;
+import com.globant.labs.mood.support.jackson.TemplateFileDeserializer;
 import com.google.appengine.api.datastore.Blob;
 import com.google.common.base.Charsets;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)

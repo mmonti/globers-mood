@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface UserRepository extends GenericRepository<User, Long> {
 
     /**
-     *
      * @param email
      * @return
      */

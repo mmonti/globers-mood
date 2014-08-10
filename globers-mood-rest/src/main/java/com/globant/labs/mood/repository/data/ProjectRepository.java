@@ -19,7 +19,7 @@ public interface ProjectRepository extends GenericRepository<Project, Long> {
 
     /**
      *
-     * @param customer
+     * @param name
      * @return
      */
     @Query("select project from Project project where project.name = (?1)")

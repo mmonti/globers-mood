@@ -17,13 +17,12 @@ public class PerformanceMetrics {
     private static String exitMsgPrefix = "exiting method";
 
     /**
-     *
      * @param proceedingJoinPoint
      * @return
      * @throws Throwable
      */
     @Around("within(com.globant.labs.mood.service..*) && execution(public * *(..))")
-    public Object log(final ProceedingJoinPoint proceedingJoinPoint) throws Throwable  {
+    public Object log(final ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -34,7 +33,7 @@ public class PerformanceMetrics {
         stopWatch.stop();
 
         long elapsedTime = stopWatch.getTotalTimeMillis();
-        if(logger.isInfoEnabled()){
+        if (logger.isInfoEnabled()) {
             if (elapsedTime > 500) {
                 logger.info("slow call - more than 500ms [{}] executionTime=[{}]", proceedingJoinPoint.toShortString(), elapsedTime);
             }
@@ -45,7 +44,6 @@ public class PerformanceMetrics {
     }
 
     /**
-     *
      * @param logger
      * @param entry
      * @param call

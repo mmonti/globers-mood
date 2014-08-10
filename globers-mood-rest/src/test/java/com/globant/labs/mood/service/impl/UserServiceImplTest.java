@@ -17,14 +17,13 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
-import java.util.Set;
 
 
 /**
-* @author mauro.monti (monti.mauro@gmail.com)
-*/
+ * @author mauro.monti (monti.mauro@gmail.com)
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = RootConfig.class, loader = AnnotationConfigContextLoader.class)
 public class UserServiceImplTest {
 
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());

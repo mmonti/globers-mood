@@ -2,7 +2,6 @@ package com.globant.labs.mood.resources;
 
 import com.globant.labs.mood.model.persistent.PreferenceKey;
 
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 /**

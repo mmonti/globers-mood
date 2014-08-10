@@ -1,10 +1,9 @@
 package com.globant.labs.mood.resources;
 
 import com.globant.labs.mood.model.persistent.Campaign;
+import com.globant.labs.mood.model.persistent.Frequency;
 import org.springframework.data.domain.Sort;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 /**
@@ -16,6 +15,8 @@ public interface CampaignResource {
      *
      * @param page
      * @param size
+     * @param property
+     * @param direction
      * @return
      */
     Response campaigns(final Integer page, final Integer size, final String property, final Sort.Direction direction);
@@ -37,6 +38,7 @@ public interface CampaignResource {
     /**
      *
      * @param id
+     * @return
      */
     Response startCampaign(final long id);
 

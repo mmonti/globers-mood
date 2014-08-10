@@ -2,11 +2,17 @@ package com.globant.labs.mood.model.persistent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.appengine.datanucleus.annotations.Unowned;
-import org.datanucleus.api.jpa.annotations.Extension;
+import com.google.appengine.repackaged.com.google.common.base.Optional;
+import com.google.appengine.repackaged.com.google.common.base.Predicate;
+import org.apache.commons.beanutils.BeanUtilsBean2;
+import org.apache.commons.beanutils.ConvertUtilsBean;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.google.appengine.repackaged.com.google.common.collect.Iterables.tryFind;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -16,6 +22,11 @@ public class Feedback extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -4177075439722820274L;
 
+    /**
+     * Create an static instance to of the converter.
+     */
+    private static final ConvertUtilsBean converter = BeanUtilsBean2.getInstance().getConvertUtils();
+
     @Unowned
     @ManyToOne
     private Campaign campaign;
@@ -24,34 +35,26 @@ public class Feedback extends BaseEntity implements Serializable {
     @OneToOne
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    private Mood globerMood;
-
-    @Enumerated(EnumType.STRING)
-    private Mood clientMood;
-
-    @Basic
-    private String comment;
+    @Unowned
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Attribute> attributes = new HashSet<Attribute>();
 
     public Feedback() {
         super();
     }
 
     /**
+     *
      * @param campaign
      * @param user
-     * @param globerMood
-     * @param clientMood
-     * @param comment
+     * @param attributes
      */
-    public Feedback(final Campaign campaign, final User user, final Mood globerMood, final Mood clientMood, final String comment) {
+    public Feedback(final Campaign campaign, final User user, final Set<Attribute> attributes) {
         this();
         this.campaign = campaign;
         this.campaign.addFeedback(this);
         this.user = user;
-        this.globerMood = globerMood;
-        this.clientMood = clientMood;
-        this.comment = comment;
+        this.attributes = attributes;
     }
 
     public User getUser() {
@@ -63,16 +66,33 @@ public class Feedback extends BaseEntity implements Serializable {
         return campaign;
     }
 
-    public Mood getGloberMood() {
-        return globerMood;
+    public Set<Attribute> getAttributes() {
+        return attributes;
     }
 
-    public Mood getClientMood() {
-        return clientMood;
+    public void addAttribute(final Attribute attribute) {
+        this.attributes.add(attribute);
     }
 
-    public String getComment() {
-        return comment;
+    public void addAttribute(final String key, final String value) {
+        addAttribute(new Attribute(key, value));
+    }
+
+    public <T> T as(final String key, Class<T> type) {
+        return getValue(key, type, null);
+    }
+
+    public <T> T getValue(final String key, Class<T> type, Object defaultValue) {
+        final Optional<Attribute> attribute = tryFind(this.attributes, new Predicate<Attribute>() {
+            @Override
+            public boolean apply(Attribute attribute) {
+                return attribute.getKey().equals(key);
+            }
+        });
+        if (attribute.isPresent()) {
+            return (T) converter.convert(attribute.get().getValue(), type);
+        }
+        return (T) defaultValue;
     }
 
     @Override
@@ -96,5 +116,6 @@ public class Feedback extends BaseEntity implements Serializable {
         result = 31 * result + created.hashCode();
         return result;
     }
+
 
 }

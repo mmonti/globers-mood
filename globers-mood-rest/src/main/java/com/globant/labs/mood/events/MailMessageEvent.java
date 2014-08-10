@@ -1,6 +1,6 @@
 package com.globant.labs.mood.events;
 
-import com.globant.labs.mood.model.MailMessage;
+import com.globant.labs.mood.model.mail.MailMessage;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Set;

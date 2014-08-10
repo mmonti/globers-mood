@@ -1,6 +1,6 @@
 package com.globant.labs.mood.resources;
 
-import com.globant.labs.mood.model.persistent.Mood;
+import com.globant.labs.mood.support.jersey.FeedbackContent;
 
 import javax.ws.rs.core.Response;
 
@@ -11,15 +11,17 @@ public interface FeedbackResource {
 
     /**
      *
-     * @param campaignId
-     * @param email
-     * @param token
-     * @param globerMoodValue
-     * @param clientMoodValue
-     * @param comment
+     * @param feedbackContainer
      * @return
      */
-    Response submitFeedback(final long campaignId, final String email, final String token, final Mood globerMoodValue, final Mood clientMoodValue, final String comment);
+    Response submitFeedback(final FeedbackContent feedbackContainer);
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    Response feedbackOfUser(final long userId);
 
     /**
      *
@@ -27,7 +29,7 @@ public interface FeedbackResource {
      * @param userId
      * @return
      */
-    Response feedbackOfUser(final long campaignId, final long userId);
+    Response feedbackOfUserCampaign(final long campaignId, final long userId);
 
     /**
      *

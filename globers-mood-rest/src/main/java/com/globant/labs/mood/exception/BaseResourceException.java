@@ -13,55 +13,98 @@ public class BaseResourceException extends WebApplicationException {
     public static final String HEADER_ERROR_MESSAGE = "Error-Message";
     public static final String HEADER_ERROR_TRACE = "Error-Trace";
 
+    /**
+     *
+     */
     public BaseResourceException() {
         super();
     }
 
+    /**
+     *
+     * @param status
+     */
     public BaseResourceException(final int status) {
         super(status);
     }
 
+    /**
+     *
+     * @param response
+     */
     public BaseResourceException(final Response response) {
         super(response);
     }
 
+    /**
+     *
+     * @param status
+     */
     public BaseResourceException(final Response.Status status) {
         super(status);
     }
 
+    /**
+     *
+     * @param cause
+     * @param status
+     */
     public BaseResourceException(final Throwable cause, final int status) {
         super(cause, createResponse(Response.Status.fromStatusCode(status), cause));
     }
 
+    /**
+     *
+     * @param cause
+     * @param response
+     */
     public BaseResourceException(final Throwable cause, final Response response) {
         super(cause, response);
     }
 
+    /**
+     *
+     * @param cause
+     * @param status
+     */
     public BaseResourceException(final Throwable cause, final Response.Status status) {
         super(cause, status);
     }
 
+    /**
+     *
+     * @param cause
+     */
     public BaseResourceException(final Throwable cause) {
         super(cause);
-    }
-
-    public BaseResourceException(final int status, final Throwable throwable) {
-        this(Response.Status.fromStatusCode(status), throwable);
-    }
-
-    public BaseResourceException(final Response.Status status, final Throwable throwable) {
-        super(createResponse(status, throwable));
     }
 
     /**
      *
      * @param status
      * @param throwable
+     */
+    public BaseResourceException(final int status, final Throwable throwable) {
+        this(Response.Status.fromStatusCode(status), throwable);
+    }
+
+    /**
+     *
+     * @param status
+     * @param throwable
+     */
+    public BaseResourceException(final Response.Status status, final Throwable throwable) {
+        super(createResponse(status, throwable));
+    }
+
+    /**
+     * @param status
+     * @param throwable
      * @return
      */
     public static Response createResponse(final Response.Status status, final Throwable throwable) {
         Preconditions.checkNotNull(status, "status is null");
-        Response.ResponseBuilder builder = Response.status(status);
+        final Response.ResponseBuilder builder = Response.status(status);
         if (throwable != null) {
             addErrorHeaders(builder, throwable);
         }
@@ -69,7 +112,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param builder
      * @param throwable
      * @return

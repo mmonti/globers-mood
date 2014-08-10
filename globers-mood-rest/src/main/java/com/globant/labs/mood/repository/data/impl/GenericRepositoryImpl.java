@@ -40,7 +40,7 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
      * @param entityInformation
      * @param entityManager
      */
-    public GenericRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager, Class<?> springDataRepositoryInterface) {
+    public GenericRepositoryImpl(final JpaEntityInformation<T, ?> entityInformation, final EntityManager entityManager, final Class<?> springDataRepositoryInterface) {
         super(entityInformation, entityManager);
         this.entityInformation = entityInformation;
         this.em = entityManager;
@@ -54,13 +54,19 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
      * @param domainClass
      * @param em
      */
-    public GenericRepositoryImpl(Class<T> domainClass, EntityManager em) {
+    public GenericRepositoryImpl(final Class<T> domainClass, final EntityManager em) {
         this(JpaEntityInformationSupport.getMetadata(domainClass, em), em, null);
     }
 
+    /**
+     *
+     * @param entity
+     * @param <S>
+     * @return
+     */
     public <S extends T> S save(S entity) {
-        if (this.entityInformation.isNew(entity)) {
-            this.em.persist(entity);
+        if (entityInformation.isNew(entity)) {
+            em.persist(entity);
             flush();
             return entity;
         }
@@ -69,17 +75,26 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
         return entity;
     }
 
+    /**
+     *
+     * @param entity
+     * @return
+     */
     public T saveWithoutFlush(T entity) {
         return super.save(entity);
     }
 
-    public List<T> saveWithoutFlush(Iterable<? extends T> entities) {
-        List<T> result = new ArrayList<T>();
+    /**
+     *
+     * @param entities
+     * @return
+     */
+    public List<T> saveWithoutFlush(final Iterable<? extends T> entities) {
+        final List<T> result = new ArrayList<T>();
         if (entities == null) {
             return result;
         }
-
-        for (T entity : entities) {
+        for (final T entity : entities) {
             result.add(saveWithoutFlush(entity));
         }
         return result;

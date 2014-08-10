@@ -10,21 +10,29 @@ import javax.persistence.EntityManager;
 import java.io.Serializable;
 
 /**
- * @author mauro.monti (monti.mauro@gmail.com)
- *
  * @param <M>
  * @param <ID>
+ * @author mauro.monti (monti.mauro@gmail.com)
  */
 public class GenericRepositoryFactory<M, ID extends Serializable> extends JpaRepositoryFactory {
 
     private EntityManager entityManager;
 
-    public GenericRepositoryFactory(EntityManager entityManager) {
+    /**
+     *
+     * @param entityManager
+     */
+    public GenericRepositoryFactory(final EntityManager entityManager) {
         super(entityManager);
         this.entityManager = entityManager;
     }
 
-    protected Object getTargetRepository(RepositoryMetadata metadata) {
+    /**
+     *
+     * @param metadata
+     * @return
+     */
+    protected Object getTargetRepository(final RepositoryMetadata metadata) {
         final Class<?> repositoryInterface = metadata.getRepositoryInterface();
         if (isBaseRepository(repositoryInterface)) {
             return new GenericRepositoryImpl<M, ID>((Class<M>) metadata.getDomainType(), entityManager);
@@ -32,19 +40,34 @@ public class GenericRepositoryFactory<M, ID extends Serializable> extends JpaRep
         return super.getTargetRepository(metadata);
     }
 
-    protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
+    /**
+     *
+     * @param metadata
+     * @return
+     */
+    protected Class<?> getRepositoryBaseClass(final RepositoryMetadata metadata) {
         if (isBaseRepository(metadata.getRepositoryInterface())) {
             return GenericRepository.class;
         }
         return super.getRepositoryBaseClass(metadata);
     }
 
-    private boolean isBaseRepository(Class<?> repositoryInterface) {
+    /**
+     *
+     * @param repositoryInterface
+     * @return
+     */
+    private boolean isBaseRepository(final Class<?> repositoryInterface) {
         return GenericRepository.class.isAssignableFrom(repositoryInterface);
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     @Override
-    protected QueryLookupStrategy getQueryLookupStrategy(QueryLookupStrategy.Key key) {
+    protected QueryLookupStrategy getQueryLookupStrategy(final QueryLookupStrategy.Key key) {
         return super.getQueryLookupStrategy(key);
     }
 }

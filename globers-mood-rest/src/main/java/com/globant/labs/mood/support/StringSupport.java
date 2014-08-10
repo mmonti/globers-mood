@@ -16,7 +16,7 @@ public class StringSupport {
      * @param parameters
      * @return
      */
-    public static String on(final String placeHolder, final Object ... parameters) {
+    public static String on(final String placeHolder, final Object... parameters) {
         final StringBuffer buffer = new StringBuffer();
         final Matcher matcher = pattern.matcher(placeHolder);
 

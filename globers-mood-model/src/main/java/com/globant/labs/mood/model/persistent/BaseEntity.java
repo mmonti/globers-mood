@@ -3,6 +3,7 @@ package com.globant.labs.mood.model.persistent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -28,7 +29,7 @@ public abstract class BaseEntity implements Identity {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -36,7 +37,7 @@ public abstract class BaseEntity implements Identity {
         return created;
     }
 
-    public Date getCreated(CreatedDateType createdDateType) {
+    public Date getCreated(final CreatedDateType createdDateType) {
         if (CreatedDateType.DATE.equals(createdDateType)) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(this.created);
@@ -47,5 +48,10 @@ public abstract class BaseEntity implements Identity {
             return calendar.getTime();
         }
         return created;
+    }
+
+    public String getCreated(final CreatedDateType createdDateType, final String format) {
+        final SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(getCreated(createdDateType));
     }
 }

@@ -3,7 +3,7 @@ package com.globant.labs.mood.service.mail.template.handlebars;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.globant.labs.mood.exception.TechnicalException;
-import com.globant.labs.mood.model.MailMessageTemplate;
+import com.globant.labs.mood.model.mail.MailMessageTemplate;
 import com.globant.labs.mood.service.mail.template.TemplateCompiler;
 import com.google.appengine.repackaged.com.google.common.base.Preconditions;
 

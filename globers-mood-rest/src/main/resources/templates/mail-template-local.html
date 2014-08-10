@@ -1,0 +1,157 @@
+<html>
+<head>
+    <title>Glober Mood</title>
+    <meta charset="utf-8">
+</head>
+
+<body style="background-color: #EEEEEE;font-family:Arial, 'Liberation Sans', 'DejaVu Sans', sans-serif;">
+
+<div id="content"
+     style="background-color: #EEE;border: 1px solid #666;width: 500px;margin-top: 50px;margin-right: auto;margin-left: auto;font-size: 14px;color: #4F4F4F;-moz-box-shadow: inset 0 -2px 6px #888f8f;-webkit-box-shadow: inset 0 -2px 6px #888f8f;box-shadow: inset 0 -2px 6px #888f8f;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;">
+
+    <div class="header" align="center">
+        <p style="-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;width: 350px;border: 1px solid #888f8f;text-align: center;padding: 15px;color: #FFF;text-shadow: 0px -1px 1px #333333;background: linear-gradient(to bottom, rgba(198,230,95,1) 0%, rgba(117,137,12,1) 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c6e65f', endColorstr='#75890c', GradientType=0 );">
+            Hello <strong>{{target.email}}</strong>, please take a moment to tell us how you're doing
+        </p>
+    </div>
+
+    <form action="http://localhost:8080/rest/api/v1/feedback/submit" method="post" style="margin-top: 30px;">
+
+        <input type="text" name="campaignId" value="24">
+        <input type="text" name="email" value="mauro.monti@globant.com">
+        <input type="text" name="token" value="5e0b448236b1e23ba179c893cf8b7c73">
+
+        <div class="mensaje" align="center" style="font-size: 14px;padding: 0 14px 20px 14px;">
+            <p>Because we want to have a direct communication to know your relationship with your current project, we
+                ask you to complete the following survey:</p>
+        </div>
+
+        <div class="label" style="padding-left: 30px;padding-bottom: 10px;">
+            <label>What's your feeling about your <strong>current project</strong>?</label></div>
+        <fieldset
+                style="padding-left: 30px;background-color: #FFF;border-top: 1px solid #bdbdbd;border-bottom: 1px solid #bdbdbd;border-left: none;border-right: none;-moz-box-shadow: inset 0 2px 4px #CCC;-webkit-box-shadow: inset 0 2px 4px #CCC;box-shadow: inset 0 2px 4px #CCC;">
+            <table align="center" cellpadding="0" cellspacing="0">
+                <thead>
+                <tr align="center">
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;"></td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">1</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">2</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">3</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">4</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">5</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;"></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="lblLeft"
+                        style="border-top: 1px solid #999;padding-top: 3px;color: #444;text-align: left;padding-right: 15px;text-transform: capitalize;font-size: 12px;font-weight: bold;">
+                        bad
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="own1" name="attribute-1" type="radio"
+                                                                                    value="-2"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="own2" name="attribute-1" type="radio"
+                                                                                    value="-1"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="own3" name="attribute-1" type="radio"
+                                                                                    value="0"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="own4" name="attribute-1" type="radio"
+                                                                                    value="1"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="own5" name="attribute-1" type="radio"
+                                                                                    value="2"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td class="lblRight"
+                        style="border-top: 1px solid #999;padding-top: 3px;text-align: right;padding-left: 15px;text-transform: capitalize;color: #444;font-size: 12px;font-weight: bold;">
+                        very well
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </fieldset>
+
+        <br>
+
+        <div class="label" style="padding-left: 30px;padding-bottom: 10px;">
+            <label>How satisfied would you say your client is with your <strong>current project</strong>?</label>
+        </div>
+
+        <fieldset
+                style="padding-left: 30px;background-color: #FFF;border-top: 1px solid #bdbdbd;border-bottom: 1px solid #bdbdbd;border-left: none;border-right: none;-moz-box-shadow: inset 0 2px 4px #CCC;-webkit-box-shadow: inset 0 2px 4px #CCC;box-shadow: inset 0 2px 4px #CCC;">
+            <table align="center" cellpadding="0" cellspacing="0">
+                <thead>
+                <tr align="center">
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;"></td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">1</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">2</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">3</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">4</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;">5</td>
+                    <td style="color: #444;padding-bottom: 5px;font-size: 12px;font-weight: bold;"></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="lblLeft"
+                        style="border-top: 1px solid #999;padding-top: 3px;color: #444;text-align: left;padding-right: 15px;text-transform: capitalize;font-size: 12px;font-weight: bold;">
+                        bad
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="cli1" name="attribute-2" type="radio"
+                                                                                    value="-2"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="cli2" name="attribute-2" type="radio"
+                                                                                    value="-1"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="cli3" name="attribute-2" type="radio"
+                                                                                    value="0"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="cli4" name="attribute-2" type="radio"
+                                                                                    value="1"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td style="border-top: 1px solid #999;padding-top: 3px;"><input id="cli5" name="attribute-2" type="radio"
+                                                                                    value="2"
+                                                                                    style="padding: 4px 1px;color: #999;clear: right;">
+                    </td>
+                    <td class="lblRight"
+                        style="border-top: 1px solid #999;padding-top: 3px;text-align: right;padding-left: 15px;text-transform: capitalize;color: #444;font-size: 12px;font-weight: bold;">
+                        very well
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </fieldset>
+
+        <br>
+
+        <div class="label" style="padding-left: 30px;padding-bottom: 10px;">
+            <label for="commentText">Is there something you would like to add?</label>
+        </div>
+
+        <div class="divTxtArea"
+             style="margin-left: 29px;background-color: #FFF;border: 1px solid #666;width: 450px;padding: 2px;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;">
+            <textarea cols="75" id="commentText" name="attribute-3" rows="3"
+                      style="color: #444;border: none;background-color: #FFF;width: 100%;padding: 3px;"></textarea>
+            <br>
+        </div>
+
+        <br>
+
+        <div align="center">
+            <input type="submit" value="Submit your review"
+                   style="text-align: center;padding: 15px;color: #FFF;text-shadow: 0px -1px 1px #333333;background: linear-gradient(to bottom, rgba(198,230,95,1) 0%, rgba(117,137,12,1) 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c6e65f', endColorstr='#75890c', GradientType=0 );z-index: 10;border: none;font-size: 14px;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;">&nbsp;
+        </div>
+    </form>
+</div>
+</body>
+</html>

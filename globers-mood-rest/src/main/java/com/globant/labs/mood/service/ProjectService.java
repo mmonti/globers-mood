@@ -13,19 +13,16 @@ import java.util.Set;
 public interface ProjectService {
 
     /**
-     *
      * @return
      */
     Page<Project> projects(final Pageable pageable);
 
     /**
-     *
      * @param project
      */
     Project store(final Project project);
 
     /**
-     *
      * @param projectId
      * @param userId
      * @return
@@ -33,7 +30,6 @@ public interface ProjectService {
     boolean assign(final long projectId, final long userId);
 
     /**
-     *
      * @param projectId
      * @param userId
      * @return
@@ -41,14 +37,12 @@ public interface ProjectService {
     boolean release(final long projectId, final long userId);
 
     /**
-     *
      * @param id
      * @return
      */
     Project project(final long id);
 
     /**
-     *
      * @param id
      * @return
      */

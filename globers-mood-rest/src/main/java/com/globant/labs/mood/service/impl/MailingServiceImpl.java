@@ -1,10 +1,9 @@
 package com.globant.labs.mood.service.impl;
 
-import com.globant.labs.mood.model.DispatchResult;
-import com.globant.labs.mood.model.MailMessage;
-import com.globant.labs.mood.model.Sender;
+import com.globant.labs.mood.model.mail.DispatchResult;
+import com.globant.labs.mood.model.mail.MailMessage;
+import com.globant.labs.mood.model.mail.Sender;
 import com.globant.labs.mood.model.persistent.User;
-import com.globant.labs.mood.repository.data.PreferenceRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.MailingService;
 import org.slf4j.Logger;
@@ -29,9 +28,6 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
     private static final Logger logger = LoggerFactory.getLogger(MailingServiceImpl.class);
 
     private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
-
-    @Inject
-    private PreferenceRepository preferenceRepository;
 
     @Inject
     private Session session;
@@ -100,7 +96,6 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
     }
 
     /**
-     *
      * @param currentMailMessage
      * @return
      */
@@ -110,7 +105,7 @@ public class MailingServiceImpl extends AbstractService implements MailingServic
             bodyPart.setContent(currentMailMessage.getContent(), CONTENT_TYPE_TEXT_HTML);
 
         } catch (MessagingException e) {
-
+            logger.debug("get-message-part - error creating mail part", e);
         }
         return bodyPart;
     }

@@ -36,10 +36,10 @@ public class RepositoryConfig {
     private Environment environment;
 
     /**
-     *
      * @return
      */
-    @Bean @Lazy
+    @Bean
+    @Lazy
     public PlatformTransactionManager transactionManager() {
         final AbstractEntityManagerFactoryBean abstractEntityManagerFactoryBean = entityManagerFactory();
         final EntityManagerFactory entityManagerFactory = abstractEntityManagerFactoryBean.getObject();
@@ -51,10 +51,10 @@ public class RepositoryConfig {
     }
 
     /**
-     *
      * @return
      */
-    @Bean @Lazy
+    @Bean
+    @Lazy
     public LocalEntityManagerFactoryBean entityManagerFactory() {
         final String persistentUnit = environment.getProperty(PERSISTENT_UNIT);
         final LocalEntityManagerFactoryBean factory = new LocalEntityManagerFactoryBean();
@@ -63,7 +63,6 @@ public class RepositoryConfig {
     }
 
     /**
-     *
      * @return
      */
     @Bean

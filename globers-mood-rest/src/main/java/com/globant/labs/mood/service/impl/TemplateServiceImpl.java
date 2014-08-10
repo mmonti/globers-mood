@@ -59,7 +59,7 @@ public class TemplateServiceImpl extends AbstractService implements TemplateServ
         Preconditions.checkNotNull(name, "template cannot be null");
         Preconditions.checkNotNull(inputStream, "inputStream cannot be null");
 
-        Template template = null;
+        Template template;
         try {
             template = new Template();
             template.setName(name);

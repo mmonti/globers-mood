@@ -2,6 +2,8 @@ package com.globant.labs.mood.service.cache.impl;
 
 import com.globant.labs.mood.service.cache.CacheService;
 import com.google.appengine.api.memcache.MemcacheService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -13,12 +15,12 @@ import java.io.Serializable;
 @Component
 public class GAEMemcacheImpl implements CacheService {
 
-    private Object lock = new Object();
+    private static final Logger logger = LoggerFactory.getLogger(GAEMemcacheImpl.class);
 
+    private Object lock = new Object();
     private MemcacheService memcacheService;
 
     /**
-     *
      * @param memcacheService
      */
     @Inject
@@ -27,7 +29,6 @@ public class GAEMemcacheImpl implements CacheService {
     }
 
     /**
-     *
      * @param key
      * @param returningObject
      * @param <T>
@@ -39,7 +40,6 @@ public class GAEMemcacheImpl implements CacheService {
     }
 
     /**
-     *
      * @param key
      * @param value
      */
@@ -50,7 +50,6 @@ public class GAEMemcacheImpl implements CacheService {
     }
 
     /**
-     *
      * @param key
      * @param value
      */

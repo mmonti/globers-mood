@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 public interface CustomerResource {
 
     /**
+     *
      * @param customer
      * @return
      */

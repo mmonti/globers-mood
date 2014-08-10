@@ -10,7 +10,9 @@ import com.globant.labs.mood.service.TemplateService;
 import com.globant.labs.mood.service.UserService;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
 import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
+import com.globant.labs.mood.support.jersey.FeedbackContent;
 import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.labs.repackaged.com.google.common.collect.Sets;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.junit.After;
@@ -26,10 +28,10 @@ import javax.inject.Inject;
 import java.util.Set;
 
 /**
-* @author mauro.monti (monti.mauro@gmail.com)
-*/
+ * @author mauro.monti (monti.mauro@gmail.com)
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = RootConfig.class, loader = AnnotationConfigContextLoader.class)
 public class FeedbackServiceImplTest {
 
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -80,7 +82,8 @@ public class FeedbackServiceImplTest {
         campaignService.store(storedCampaign);
 
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
-        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
+        final FeedbackContent feedbackContainer = new FeedbackContent(storedCampaign.getId(), storedUser.getEmail(), token, Sets.newHashSet(new Attribute("key", "value")));
+        final Feedback storedFeedback = feedbackService.store(feedbackContainer);
 
         final Set<Feedback> storedFeedbackOfCampaign = feedbackService.feedbackOfCampaign(storedFeedback.getCampaign().getId());
         Assert.notNull(storedFeedbackOfCampaign);
@@ -109,9 +112,41 @@ public class FeedbackServiceImplTest {
 
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
 
-        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
+//        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
+        final FeedbackContent feedbackContainer = new FeedbackContent(storedCampaign.getId(), storedUser.getEmail(), token, Sets.newHashSet(new Attribute("key", "value")));
+        final Feedback storedFeedback = feedbackService.store(feedbackContainer);
 
-        final Set<Feedback> storedFeedbackOfCampaign = feedbackService.feedbackOfUser(storedCampaign.getId(), storedUser.getId());
+        final Set<Feedback> storedFeedbackOfCampaign = feedbackService.feedbackOfUser(storedUser.getId());
+        Assert.notNull(storedFeedbackOfCampaign);
+        Assert.notEmpty(storedFeedbackOfCampaign);
+    }
+
+    @Test
+    public void testFeedbackOfUserCampaign() throws Exception {
+        final User user = new User("Mauro Monti", "mauro.monti@globant.com");
+        final User storedUser = userService.store(user);
+
+        final Template template = new Template();
+        template.setName("Template 1");
+        template.setFile(new Blob("This is an array of bytes".getBytes()));
+
+        Template storedTemplate = templateService.store(template);
+
+        final Campaign campaign = new Campaign("Campaign");
+        campaign.addTarget(storedUser);
+        campaign.setTemplate(storedTemplate);
+
+        final Campaign storedCampaign = campaignService.store(campaign);
+
+        storedCampaign.start().waitForFeedback();
+        campaignService.store(storedCampaign);
+
+        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
+
+        final FeedbackContent feedbackContainer = new FeedbackContent(storedCampaign.getId(), storedUser.getEmail(), token, Sets.newHashSet(new Attribute("key", "value")));
+        final Feedback storedFeedback = feedbackService.store(feedbackContainer);
+
+        final Set<Feedback> storedFeedbackOfCampaign = feedbackService.feedbackOfUserCampaign(storedCampaign.getId(), storedUser.getId());
         Assert.notNull(storedFeedbackOfCampaign);
         Assert.notEmpty(storedFeedbackOfCampaign);
     }
@@ -136,12 +171,13 @@ public class FeedbackServiceImplTest {
         campaignService.store(storedCampaign);
 
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
+        final FeedbackContent feedbackContainer = new FeedbackContent(storedCampaign.getId(), storedUser.getEmail(), token, Sets.newHashSet(new Attribute("key", "value")));
+        final Feedback storedFeedback = feedbackService.store(feedbackContainer);
 
-        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "");
+
         Assert.notNull(storedFeedback);
         Assert.notNull(storedFeedback.getId());
-        Assert.isTrue(storedFeedback.getGloberMood().equals(Mood.NEUTRAL));
-        Assert.isTrue(storedFeedback.getClientMood().equals(Mood.NEUTRAL));
+        Assert.notNull(storedFeedback.getAttributes());
     }
 
     @Test(expected = BusinessException.class)
@@ -162,8 +198,10 @@ public class FeedbackServiceImplTest {
 
         final Campaign storedCampaign = campaignService.store(campaign);
         final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
-        final Feedback storedFeedbackFirst = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my comment");
-        final Feedback storedFeedbackSecond = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my comment");
+
+        final FeedbackContent feedbackContainer = new FeedbackContent(storedCampaign.getId(), storedUser.getEmail(), token, Sets.newHashSet(new Attribute("key", "value")));
+        final Feedback storedFeedbackFirst = feedbackService.store(feedbackContainer);
+        final Feedback storedFeedbackSecond = feedbackService.store(feedbackContainer);
 
         Assert.notNull(storedFeedbackFirst);
         Assert.notNull(storedFeedbackSecond);

@@ -4,6 +4,8 @@ import com.globant.labs.mood.model.persistent.PreferenceKey;
 import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.PreferenceResource;
 import com.globant.labs.mood.service.PreferenceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -20,8 +22,16 @@ import javax.ws.rs.core.Response;
 @Path("/api/v1/preference")
 public class PreferenceResourceImpl extends AbstractResource implements PreferenceResource {
 
+    private static final Logger logger = LoggerFactory.getLogger(PreferenceResourceImpl.class);
+
     @Inject
     private PreferenceService preferenceService;
+
+    @GET
+    @Override
+    public Response preferences() {
+        return notEmptyResponse(preferenceService.preferences());
+    }
 
     @GET
     @Path("/{preferenceKey}")
@@ -44,9 +54,4 @@ public class PreferenceResourceImpl extends AbstractResource implements Preferen
         return notNullResponse(preferenceService.update(preferenceKey, value));
     }
 
-    @GET
-    @Override
-    public Response preferences() {
-        return notEmptyResponse(preferenceService.preferences());
-    }
 }

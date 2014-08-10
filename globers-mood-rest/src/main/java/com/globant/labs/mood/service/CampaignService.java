@@ -13,7 +13,6 @@ import java.util.Set;
 public interface CampaignService {
 
     /**
-     *
      * @param pageable
      * @return
      */
@@ -32,31 +31,26 @@ public interface CampaignService {
     Campaign campaign(final long id);
 
     /**
-     *
      * @return
      */
     List<Campaign> mostActive();
 
     /**
-     *
      * @param campaignId
      */
     void start(final long campaignId);
 
     /**
-     *
      * @param campaignId
      */
     void close(final long campaignId);
 
     /**
-     *
      * @return
      */
     void scheduledReadyToStart();
 
     /**
-     *
      * @return
      */
     Set<Campaign> scheduledPendingToStart();
@@ -67,7 +61,6 @@ public interface CampaignService {
     void scheduledReadyToClose();
 
     /**
-     *
      * @return
      */
     Set<Campaign> scheduledNextToExpire();

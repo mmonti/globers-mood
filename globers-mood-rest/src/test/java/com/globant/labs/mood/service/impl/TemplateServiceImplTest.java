@@ -18,14 +18,13 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
-import java.util.Set;
 
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = RootConfig.class, loader = AnnotationConfigContextLoader.class)
 public class TemplateServiceImplTest {
 
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -61,7 +60,7 @@ public class TemplateServiceImplTest {
         template.setFile(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = service.store(template);
-        final Page<Template> templates = service.templates(new PageRequest(0,100));
+        final Page<Template> templates = service.templates(new PageRequest(0, 100));
 
         Assert.notNull(templates);
         Assert.notEmpty(templates.getContent());

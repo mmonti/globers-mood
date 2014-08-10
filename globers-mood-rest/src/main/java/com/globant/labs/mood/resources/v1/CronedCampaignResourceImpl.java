@@ -3,6 +3,8 @@ package com.globant.labs.mood.resources.v1;
 import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.CronedCampaignResource;
 import com.globant.labs.mood.service.CampaignService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -16,6 +18,8 @@ import javax.ws.rs.core.Response;
 @Component
 @Path("/api/v1/cron")
 public class CronedCampaignResourceImpl extends AbstractResource implements CronedCampaignResource {
+
+    private static final Logger logger = LoggerFactory.getLogger(CronedCampaignResourceImpl.class);
 
     @Inject
     private CampaignService campaignService;

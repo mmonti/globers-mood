@@ -27,7 +27,6 @@ public interface UserService {
     User user(final long id);
 
     /**
-     *
      * @param email
      * @return
      */

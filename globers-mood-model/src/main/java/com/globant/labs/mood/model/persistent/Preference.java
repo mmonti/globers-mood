@@ -19,6 +19,8 @@ public class Preference extends BaseEntity implements Serializable {
     private String preferenceValue;
     @Basic
     private String namespace;
+    @Basic
+    private boolean readOnly = false;
 
     public Preference() {
         super();
@@ -66,6 +68,18 @@ public class Preference extends BaseEntity implements Serializable {
      *
      * @param key
      * @param value
+     * @param namespace
+     * @param readOnly
+     */
+    public Preference(final String key, final String value, final String namespace, final boolean readOnly) {
+        this(key, value, namespace);
+        this.setReadOnly(readOnly);
+    }
+
+    /**
+     *
+     * @param key
+     * @param value
      */
     public Preference(final PreferenceKey key, final String value) {
         this(key, value, null);
@@ -104,6 +118,14 @@ public class Preference extends BaseEntity implements Serializable {
 
     public void setNamespace(String namespace) {
         this.namespace = namespace;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     @Override

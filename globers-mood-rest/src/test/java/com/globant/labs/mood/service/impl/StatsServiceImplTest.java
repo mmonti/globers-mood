@@ -2,12 +2,13 @@ package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.config.RootConfig;
 import com.globant.labs.mood.model.persistent.*;
-import com.globant.labs.mood.model.reports.FeedbackCountReport;
-import com.globant.labs.mood.repository.data.CampaignRepository;
+import com.globant.labs.mood.model.stats.WeeklyFeedback;
 import com.globant.labs.mood.service.*;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
 import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
+import com.globant.labs.mood.support.jersey.FeedbackContent;
 import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.labs.repackaged.com.google.common.collect.Sets;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.junit.After;
@@ -24,10 +25,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
-* @author mauro.monti (monti.mauro@gmail.com)
-*/
+ * @author mauro.monti (monti.mauro@gmail.com)
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = RootConfig.class, loader = AnnotationConfigContextLoader.class)
 public class StatsServiceImplTest {
 
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -42,10 +43,6 @@ public class StatsServiceImplTest {
     private TemplateService templateService;
     @Inject
     private StatsService statsService;
-
-    @Inject
-    private CampaignRepository campaignRepository;
-
     @Inject
     private TokenGenerator tokenGenerator;
 
@@ -55,28 +52,61 @@ public class StatsServiceImplTest {
 
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);
+        final User user1 = new User("Mauro Monti", "monti.mauro@gmail.com");
+        final User storedUser1 = userService.store(user1);
+        final User user2 = new User("Mauro Monti", "mauro_monti@hotmail.com");
+        final User storedUser2 = userService.store(user2);
 
         final Template template = new Template();
-        template.setName("Template 1");
+        template.setName("Template");
         template.setFile(new Blob("This is an array of bytes".getBytes()));
+        final Template storedTemplate = templateService.store(template);
 
-        Template storedTemplate = templateService.store(template);
+        final Campaign campaign1 = new Campaign("Campaign1");
+        campaign1.setTemplate(storedTemplate);
+        campaign1.addTarget(storedUser);
+        campaign1.addTarget(storedUser1);
+        campaign1.addTarget(storedUser2);
+        final Campaign storedCampaign1 = campaignService.store(campaign1);
 
-        final Campaign campaign = new Campaign("Campaign");
-        campaign.addTarget(storedUser);
-        campaign.setTemplate(storedTemplate);
+        storedCampaign1.start().waitForFeedback();
+        campaignService.store(storedCampaign1);
 
-        final Campaign storedCampaign = campaignService.store(campaign);
+        final Campaign campaign2 = new Campaign("Campaign");
+        campaign2.setTemplate(storedTemplate);
+        campaign2.addTarget(storedUser);
+        campaign2.addTarget(storedUser1);
+        campaign2.addTarget(storedUser2);
+        final Campaign storedCampaign2 = campaignService.store(campaign2);
 
-        storedCampaign.start().waitForFeedback();
-        campaignService.store(storedCampaign);
+        storedCampaign2.start().waitForFeedback();
+        campaignService.store(storedCampaign2);
 
-        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign, storedUser);
-        final Feedback storedFeedback = feedbackService.store(storedCampaign.getId(), storedUser.getEmail(), token, Mood.NEUTRAL, Mood.NEUTRAL, "This is my Comment");
+        final Set<Attribute> attributes = Sets.newHashSet(new Attribute("key", "value"));
 
-        final Set<Feedback> storedFeedbackOfCampaign = feedbackService.feedbackOfCampaign(storedFeedback.getCampaign().getId());
-        Assert.notNull(storedFeedbackOfCampaign);
-        Assert.notEmpty(storedFeedbackOfCampaign);
+        final String token = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign1, storedUser);
+        final FeedbackContent feedbackContent = new FeedbackContent(storedCampaign1.getId(), storedUser.getEmail(), token, attributes);
+        final Feedback storedFeedback = feedbackService.store(feedbackContent);
+
+        final String token1 = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign1, storedUser1);
+        final FeedbackContent feedbackContent1 = new FeedbackContent(storedCampaign1.getId(), storedUser1.getEmail(), token1, attributes);
+        final Feedback storedFeedback1 = feedbackService.store(feedbackContent1);
+
+        final String token2 = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign1, storedUser2);
+        final FeedbackContent feedbackContent2 = new FeedbackContent(storedCampaign1.getId(), storedUser2.getEmail(), token2, attributes);
+        final Feedback storedFeedback2 = feedbackService.store(feedbackContent2);
+
+        final String token3 = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign2, storedUser);
+        final FeedbackContent feedbackContent3 = new FeedbackContent(storedCampaign2.getId(), storedUser.getEmail(), token3, attributes);
+        final Feedback storedFeedback3 = feedbackService.store(feedbackContent3);
+
+        final String token4 = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign2, storedUser1);
+        final FeedbackContent feedbackContent4 = new FeedbackContent(storedCampaign2.getId(), storedUser1.getEmail(), token4, attributes);
+        final Feedback storedFeedback4 = feedbackService.store(feedbackContent4);
+
+        final String token5 = UserTokenGenerator.class.cast(tokenGenerator).getToken(storedCampaign2, storedUser2);
+        final FeedbackContent feedbackContent5 = new FeedbackContent(storedCampaign2.getId(), storedUser2.getEmail(), token5, attributes);
+        final Feedback storedFeedback5 = feedbackService.store(feedbackContent5);
     }
 
     @After
@@ -85,8 +115,8 @@ public class StatsServiceImplTest {
     }
 
     @Test
-    public void testFeedbackCountReport() throws Exception {
-        final List<FeedbackCountReport> weeklyFeedbackReport = statsService.feedbackCountReport();
+    public void testWeeklyFeedback() throws Exception {
+        final List<WeeklyFeedback> weeklyFeedbackReport = statsService.weeklyFeedback();
         Assert.notNull(weeklyFeedbackReport);
         Assert.notEmpty(weeklyFeedbackReport);
     }

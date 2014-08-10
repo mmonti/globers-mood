@@ -1,6 +1,6 @@
 package com.globant.labs.mood.service.mail.template;
 
-import com.globant.labs.mood.model.MailMessageTemplate;
+import com.globant.labs.mood.model.mail.MailMessageTemplate;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -8,7 +8,6 @@ import com.globant.labs.mood.model.MailMessageTemplate;
 public interface TemplateCompiler {
 
     /**
-     *
      * @param name
      * @return
      */

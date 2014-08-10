@@ -8,27 +8,19 @@ import javax.ws.rs.core.Response;
 public interface StatsResource {
 
     /**
-     * Returns the statistics of all the entities in the dataStore.
-     * It just returns what is cached.
+     *
+     * @return
      */
     Response statistics();
 
     /**
-     * @param entity
-     * @param entry
      * @return
      */
-    Response entryStats(final String entity, final String entry);
+    Response metadata();
 
     /**
-     *
      * @return
      */
     Response weeklyFeedback();
-
-    /**
-     * Generate the statistics and cache in memcache.
-     */
-    void generate();
 
 }

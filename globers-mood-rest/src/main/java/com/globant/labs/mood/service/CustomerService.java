@@ -10,20 +10,17 @@ import org.springframework.data.domain.Pageable;
 public interface CustomerService {
 
     /**
-     *
      * @return
      */
     Page<Customer> customers(final Pageable pageable);
 
     /**
-     *
      * @param customer
      * @return
      */
     Customer store(final Customer customer);
 
     /**
-     *
      * @param id
      * @return
      */

@@ -1,7 +1,7 @@
 package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.config.RootConfig;
-import com.globant.labs.mood.model.MailMessage;
+import com.globant.labs.mood.model.mail.MailMessage;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.service.*;
 import com.globant.labs.mood.service.mail.MailMessageFactory;
@@ -27,12 +27,13 @@ import java.util.Set;
  * @author mauro.monti (monti.mauro@gmail.com)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = RootConfig.class, loader = AnnotationConfigContextLoader.class)
 public class MailMessageBuilderTest extends TransactionSupport {
 
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-    public MailMessageBuilderTest() {    }
+    public MailMessageBuilderTest() {
+    }
 
     @Inject
     private CampaignService campaignService;

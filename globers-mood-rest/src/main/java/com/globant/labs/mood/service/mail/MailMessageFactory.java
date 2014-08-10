@@ -1,8 +1,8 @@
 package com.globant.labs.mood.service.mail;
 
-import com.globant.labs.mood.model.MailMessage;
-import com.globant.labs.mood.model.MailMessageTemplate;
-import com.globant.labs.mood.model.Sender;
+import com.globant.labs.mood.model.mail.MailMessage;
+import com.globant.labs.mood.model.mail.MailMessageTemplate;
+import com.globant.labs.mood.model.mail.Sender;
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.PreferenceKey;
 import com.globant.labs.mood.model.persistent.Template;
@@ -31,6 +31,8 @@ public class MailMessageFactory {
 
     /**
      *
+     * @param tokenGenerator
+     * @param preferenceService
      * @param templateCompiler
      */
     public MailMessageFactory(final TokenGenerator tokenGenerator, final PreferenceService preferenceService, final TemplateCompiler templateCompiler) {
@@ -44,6 +46,7 @@ public class MailMessageFactory {
     }
 
     /**
+     *
      * @param campaign
      * @return
      */

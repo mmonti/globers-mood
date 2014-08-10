@@ -8,25 +8,21 @@ import javax.ws.rs.core.Response;
 public interface CronedCampaignResource {
 
     /**
-     *
      * @return
      */
     Response scheduledReadyToStart();
 
     /**
-     *
      * @return
      */
     Response scheduledPendingToStart();
 
     /**
-     *
      * @return
      */
     Response scheduledReadyToClose();
 
     /**
-     *
      * @return
      */
     Response scheduledNextToExpire();

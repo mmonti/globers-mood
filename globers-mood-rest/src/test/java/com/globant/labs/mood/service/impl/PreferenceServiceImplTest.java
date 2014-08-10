@@ -23,7 +23,7 @@ import java.util.Set;
  * @author mauro.monti (monti.mauro@gmail.com)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=RootConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = RootConfig.class, loader = AnnotationConfigContextLoader.class)
 public class PreferenceServiceImplTest {
 
     private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -69,7 +69,7 @@ public class PreferenceServiceImplTest {
 
         Assert.notNull(preferences);
         Assert.notEmpty(preferences);
-        Assert.isTrue(preferences.size()==2);
+        Assert.isTrue(preferences.size() == 2);
     }
 
     @Test

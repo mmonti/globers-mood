@@ -17,14 +17,12 @@ public interface TemplateService {
     Page<Template> templates(final Pageable pageable);
 
     /**
-     *
      * @param template
      * @return
      */
     Template store(final Template template);
 
     /**
-     *
      * @param name
      * @param inputStream
      * @return
@@ -32,14 +30,12 @@ public interface TemplateService {
     Template store(final String name, final InputStream inputStream);
 
     /**
-     *
      * @param id
      * @return
      */
     Template template(final long id);
 
     /**
-     *
      * @param name
      * @return
      */

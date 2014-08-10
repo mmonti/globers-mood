@@ -1,9 +1,7 @@
 package com.globant.labs.mood.service;
 
-import com.globant.labs.mood.model.Node;
-import com.globant.labs.mood.model.Stats;
-import com.globant.labs.mood.model.StatsEntry;
-import com.globant.labs.mood.model.reports.FeedbackCountReport;
+import com.globant.labs.mood.model.stats.WeeklyFeedback;
+import com.google.appengine.api.datastore.Entity;
 
 import java.util.List;
 
@@ -13,34 +11,17 @@ import java.util.List;
 public interface StatsService {
 
     /**
-     *
-     * @param statsEntry
-     */
-    void executeStatEntryHandler(final StatsEntry statsEntry);
-
-    /**
-     *
-     * @param statsEntry
-     * @param entity
-     */
-    <T> void executeStatEntryHandler(final StatsEntry statsEntry, Class<T> entity);
-
-    /**
-     *
      * @return
      */
-    Stats getStats();
+    List<Entity> getMetaData();
 
     /**
-     *
-     * @param statsEntry
      * @return
      */
-    Node getStatEntry(final StatsEntry statsEntry);
+    Entity getGlobalStatistics();
 
     /**
-     *
      * @return
      */
-    List<FeedbackCountReport> feedbackCountReport();
+    List<WeeklyFeedback> weeklyFeedback();
 }

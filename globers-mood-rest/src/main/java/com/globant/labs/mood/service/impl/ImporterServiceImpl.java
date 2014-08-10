@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globant.labs.mood.exception.BusinessException;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.model.setup.CampaignRelation;
-import com.globant.labs.mood.model.setup.ImportInformation;
-import com.globant.labs.mood.model.setup.Relation;
+import com.globant.labs.mood.model.setup.ImportContent;
+import com.globant.labs.mood.model.setup.ProjectRelation;
 import com.globant.labs.mood.repository.data.*;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.ImporterService;
@@ -19,7 +19,10 @@ import org.springframework.util.StopWatch;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
 
@@ -62,7 +65,7 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
      * @return
      */
     @Override
-    public Map<String, Object> importData(final ImportInformation importInformation) {
+    public Map<String, Object> importData(final ImportContent importInformation) {
         final StopWatch stopWatch = new StopWatch();
 
         // == Preferences
@@ -117,7 +120,11 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
         return results;
     }
 
-    private void storeCampaignRelations(ImportInformation importInformation) {
+    /**
+     *
+     * @param importInformation
+     */
+    private void storeCampaignRelations(ImportContent importInformation) {
         final List<CampaignRelation> campaignRelations = importInformation.getCampaignRelations();
         for (final CampaignRelation campaignRelation : campaignRelations) {
             final Campaign campaign = storedCampaigns.get(campaignRelation.getCampaign());
@@ -131,9 +138,13 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
         }
     }
 
-    private void storeProjectRelations(ImportInformation importInformation) {
-        final List<Relation> relations = importInformation.getRelations();
-        for (final Relation relation : relations) {
+    /**
+     *
+     * @param importInformation
+     */
+    private void storeProjectRelations(ImportContent importInformation) {
+        final List<ProjectRelation> relations = importInformation.getRelations();
+        for (final ProjectRelation relation : relations) {
             int projectIndex = relation.getProject();
             int customerIndex = relation.getCustomer();
 
@@ -156,35 +167,55 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
         }
     }
 
-    private void storePreferences(ImportInformation importInformation) {
+    /**
+     *
+     * @param importInformation
+     */
+    private void storePreferences(ImportContent importInformation) {
         final List<Preference> preferences = importInformation.getPreferences();
         for (final Preference preference : preferences) {
             storedPreferences.add(preferenceRepository.saveAndFlush(preference));
         }
     }
 
-    private void storeCampaigns(ImportInformation importInformation) {
+    /**
+     *
+     * @param importInformation
+     */
+    private void storeCampaigns(ImportContent importInformation) {
         final List<Campaign> campaigns = importInformation.getCampaigns();
         for (final Campaign campaign : campaigns) {
             storedCampaigns.add(campaignRepository.saveAndFlush(campaign));
         }
     }
 
-    private void storeTemplates(ImportInformation importInformation) {
+    /**
+     *
+     * @param importInformation
+     */
+    private void storeTemplates(ImportContent importInformation) {
         final List<Template> templates = importInformation.getTemplates();
         for (final Template template : templates) {
             storedTemplates.add(templateRepository.saveAndFlush(template));
         }
     }
 
-    private void storeUsers(ImportInformation importInformation) {
+    /**
+     *
+     * @param importInformation
+     */
+    private void storeUsers(ImportContent importInformation) {
         final List<User> users = importInformation.getUsers();
         for (final User user : users) {
             storedUsers.add(userRepository.saveAndFlush(user));
         }
     }
 
-    private void storeCustomers(ImportInformation importInformation) {
+    /**
+     *
+     * @param importInformation
+     */
+    private void storeCustomers(ImportContent importInformation) {
         final List<Customer> customers = importInformation.getCustomers();
         for (final Customer customer : customers) {
             storedCustomers.add(customerRepository.saveAndFlush(customer));
@@ -192,6 +223,7 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
     }
 
     /**
+     *
      * @param inputStream
      * @return
      */
@@ -200,7 +232,7 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
         final byte[] bytes;
         try {
             bytes = ByteStreams.toByteArray(inputStream);
-            return importData(objectMapper.readValue(new String(bytes, Charsets.UTF_8), ImportInformation.class));
+            return importData(objectMapper.readValue(new String(bytes, Charsets.UTF_8), ImportContent.class));
 
         } catch (IOException e) {
             logger.debug("An exception occurred trying to de-serialize Import Information.");
@@ -208,7 +240,4 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
         return null;
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Date());
-    }
 }

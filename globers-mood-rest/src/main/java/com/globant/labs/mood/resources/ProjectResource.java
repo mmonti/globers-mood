@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 public interface ProjectResource {
 
     /**
+     *
      * @param project
      * @return
      */
@@ -39,6 +40,7 @@ public interface ProjectResource {
 
     /**
      *
+     * @param projectId
      * @return
      */
     Response usersOfProject(final long projectId);

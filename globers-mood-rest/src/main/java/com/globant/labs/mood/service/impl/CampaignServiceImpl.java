@@ -1,13 +1,11 @@
 package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.exception.BusinessException;
-import com.globant.labs.mood.model.DispatchResult;
+import com.globant.labs.mood.model.mail.DispatchResult;
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.CampaignStatus;
 import com.globant.labs.mood.model.persistent.Template;
 import com.globant.labs.mood.repository.data.CampaignRepository;
-import com.globant.labs.mood.repository.data.FeedbackRepository;
-import com.globant.labs.mood.repository.data.PreferenceRepository;
 import com.globant.labs.mood.repository.data.TemplateRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.CampaignService;
@@ -23,13 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
-import static com.globant.labs.mood.exception.BusinessException.ErrorCode.ILLEGAL_STATE;
-import static com.globant.labs.mood.exception.BusinessException.ErrorCode.RESOURCE_NOT_FOUND;
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.*;
 import static com.globant.labs.mood.support.StringSupport.on;
 
 /**
@@ -45,10 +40,6 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Inject
     private TemplateRepository templateRepository;
     @Inject
-    private FeedbackRepository feedbackRepository;
-    @Inject
-    private PreferenceRepository preferenceRepository;
-    @Inject
     private MailingServiceImpl mailingService;
     @Inject
     private MailMessageFactory mailMessageFactory;
@@ -56,7 +47,7 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Transactional(readOnly = true)
     @Override
     public Page<Campaign> campaigns(final Pageable pageable) {
-        return this.campaignRepository.findAll(pageable);
+        return campaignRepository.findAll(pageable);
     }
 
     @Transactional
@@ -67,7 +58,7 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
         Preconditions.checkNotNull(campaign.getTemplate(), "template is null");
 
         if (campaign.getId() == null) {
-            final Campaign storedCampaign = this.campaignRepository.campaignByName(campaign.getName());
+            final Campaign storedCampaign = campaignRepository.campaignByName(campaign.getName());
             if (storedCampaign != null) {
                 logger.debug("store - campaign with name=[{}] already existent", campaign.getName());
                 throw new BusinessException(on("campaign with name=[{}] already existent.", campaign.getName()), EXPECTATION_FAILED);
@@ -101,13 +92,13 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Transactional(readOnly = true)
     @Override
     public List<Campaign> mostActive() {
-        return this.campaignRepository.mostActive();
+        return campaignRepository.mostActive();
     }
 
     @Transactional
     @Override
     public void start(final long campaignId) {
-        final Campaign campaign = this.campaignRepository.findOne(campaignId);
+        final Campaign campaign = campaignRepository.findOne(campaignId);
         if (campaign == null) {
             logger.error("start - campaign with id=[{}] not found", campaignId);
             throw new BusinessException(on("campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
@@ -116,6 +107,13 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
         if (!CampaignStatus.STARTED.hasPreviousValidStatus(campaign.getStatus())) {
             logger.error("start - campaign with id=[{}] has an invalid status=[{}]", campaignId, campaign.getStatus());
             throw new BusinessException(on("campaign with campaignId=[{}] has an illegal state=[{}]", campaignId, campaign.getStatus()), ILLEGAL_STATE);
+        }
+
+        // == Recursive Campaign Handling.
+        if (campaign.isRecursive()) {
+            logger.debug("campaign with id=[{}] is recursive - creating child.", campaignId);
+            final Campaign recursiveCampaign = new Campaign(campaign);
+            campaignRepository.saveAndFlush(recursiveCampaign);
         }
 
         logger.debug("start - changing status of campaign with id=[{}] to START.", campaignId);
@@ -134,7 +132,7 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Transactional
     @Override
     public void close(final long campaignId) {
-        final Campaign campaign = this.campaignRepository.findOne(campaignId);
+        final Campaign campaign = campaignRepository.findOne(campaignId);
         if (campaign == null) {
             logger.debug("close - campaign with id=[{}] not found", campaignId);
             throw new BusinessException(on("campaign with campaignId=[{}] already exist.", campaignId), EXPECTATION_FAILED);
@@ -151,9 +149,9 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Override
     public void scheduledReadyToStart() {
         final Calendar now = Calendar.getInstance();
-        for (final Campaign currentScheduledCampaign : this.campaignRepository.scheduledReadyToStart(now.getTime())) {
+        for (final Campaign currentScheduledCampaign : campaignRepository.scheduledReadyToStart(now.getTime())) {
             final long campaignId = currentScheduledCampaign.getId();
-            logger.debug("startScheduledCampaigns - starting scheduled campaign=[id={}]", campaignId);
+            logger.debug("scheduledReadyToStart - starting scheduled campaign=[id={}]", campaignId);
             start(currentScheduledCampaign.getId());
         }
     }
@@ -162,8 +160,8 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Override
     public Set<Campaign> scheduledPendingToStart() {
         final Calendar now = Calendar.getInstance();
-        final Set<Campaign> pendingToStartCampaigns = Sets.newHashSet(this.campaignRepository.scheduledPendingToStart(now.getTime()));
-        logger.debug("scheduledStartPendingCampaigns - size=[{}]", pendingToStartCampaigns.size());
+        final Set<Campaign> pendingToStartCampaigns = Sets.newHashSet(campaignRepository.scheduledPendingToStart(now.getTime()));
+        logger.debug("scheduledPendingToStart - size=[{}]", pendingToStartCampaigns.size());
         return pendingToStartCampaigns;
     }
 
@@ -171,9 +169,9 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Override
     public void scheduledReadyToClose() {
         final Calendar now = Calendar.getInstance();
-        for (final Campaign currentExpiredCampaign : this.campaignRepository.scheduledReadyToClose(now.getTime())) {
+        for (final Campaign currentExpiredCampaign : campaignRepository.scheduledReadyToClose(now.getTime())) {
             final long campaignId = currentExpiredCampaign.getId();
-            logger.debug("closeExpiredCampaings - closing expired campaign=[id={}]", campaignId);
+            logger.debug("scheduledReadyToClose - closing expired campaign=[id={}]", campaignId);
             close(campaignId);
         }
     }
@@ -183,7 +181,7 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     public Set<Campaign> scheduledNextToExpire() {
         final Calendar now = Calendar.getInstance();
         final Set<Campaign> nextToExpireCampaigns = Sets.newHashSet(this.campaignRepository.scheduledNextToExpire(now.getTime()));
-        logger.debug("nextToExpireCampaigns - size=[{}]", nextToExpireCampaigns.size());
+        logger.debug("scheduledNextToExpire - size=[{}]", nextToExpireCampaigns.size());
         return nextToExpireCampaigns;
     }
 }

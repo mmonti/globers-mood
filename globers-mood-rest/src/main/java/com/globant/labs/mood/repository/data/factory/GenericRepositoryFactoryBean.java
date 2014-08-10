@@ -18,7 +18,6 @@ public class GenericRepositoryFactoryBean<R extends JpaRepository<M, ID>, M, ID 
     public GenericRepositoryFactoryBean() {}
 
     /**
-     *
      * @param entityManager
      * @return
      */

@@ -1,6 +1,6 @@
 package com.globant.labs.mood.service;
 
-import com.globant.labs.mood.model.setup.ImportInformation;
+import com.globant.labs.mood.model.setup.ImportContent;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -13,10 +13,9 @@ public interface ImporterService {
     /**
      *
      */
-    Map<String, Object> importData(final ImportInformation importInformation);
+    Map<String, Object> importData(final ImportContent importInformation);
 
     /**
-     *
      * @param inputStream
      * @return
      */

@@ -62,7 +62,7 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
     @GET
     @Path("/{campaignId}")
     @Override
-    public Response campaign(@PathParam("id") final Long campaignId) {
+    public Response campaign(@PathParam("campaignId") final Long campaignId) {
         Preconditions.checkNotNull(campaignId, "campaignId is null");
 
         logger.info("method=campaign(), args=[campaignId={}]", campaignId);

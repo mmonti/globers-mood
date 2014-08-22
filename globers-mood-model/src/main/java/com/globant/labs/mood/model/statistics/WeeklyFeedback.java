@@ -1,4 +1,4 @@
-package com.globant.labs.mood.model.stats;
+package com.globant.labs.mood.model.statistics;
 
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 
@@ -19,6 +19,12 @@ public class WeeklyFeedback {
     private Date toDate;
     private Map<String, Integer> entries;
 
+    /**
+     *
+     * @param campaignId
+     * @param fromDate
+     * @param toDate
+     */
     public WeeklyFeedback(final Long campaignId, final Date fromDate, final Date toDate) {
         this.campaignId = campaignId;
         this.fromDate = fromDate;
@@ -27,6 +33,10 @@ public class WeeklyFeedback {
         initialize(this.entries);
     }
 
+    /**
+     *
+     * @param entries
+     */
     private void initialize(final Map<String, Integer> entries) {
         final SimpleDateFormat sdf = new SimpleDateFormat(DAY_PATTERN);
         final DateTime from = new DateTime(fromDate);

@@ -10,23 +10,20 @@ import javax.ws.rs.core.Response;
 public interface UserResource {
 
     /**
-     *
      * @param user
      * @return
      */
     Response addUser(final User user);
 
     /**
-     *
      * @return
      */
     Response users();
 
     /**
-     *
      * @param id
      * @return
      */
-    Response user(final long id);
+    Response user(final Long id);
 
 }

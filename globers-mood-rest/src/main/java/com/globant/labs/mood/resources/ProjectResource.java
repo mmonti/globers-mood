@@ -10,38 +10,33 @@ import javax.ws.rs.core.Response;
 public interface ProjectResource {
 
     /**
-     *
      * @param project
      * @return
      */
     Response addProject(final Project project);
 
     /**
-     *
      * @param projectId
      * @param userId
      * @return
      */
-    Response assignUser(final long projectId, final long userId);
+    Response assignUser(final Long projectId, final Long userId);
 
     /**
-     *
      * @param projectId
      * @param userId
      * @return
      */
-    Response releaseUser(final long projectId, final long userId);
+    Response releaseUser(final Long projectId, final Long userId);
 
     /**
-     *
      * @return
      */
     Response projects();
 
     /**
-     *
      * @param projectId
      * @return
      */
-    Response usersOfProject(final long projectId);
+    Response usersOfProject(final Long projectId);
 }

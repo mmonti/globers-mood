@@ -11,7 +11,6 @@ public interface Identity {
     Long getId();
 
     /**
-     *
      * @param id
      */
     void setId(final Long id);

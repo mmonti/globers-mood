@@ -34,19 +34,21 @@ public interface PreferenceService {
      * @param value
      * @return
      */
-    Preference update(final PreferenceKey preferenceKey, String value);
+    Preference update(final PreferenceKey preferenceKey, final String value);
 
     /**
-     * @param id
+     * @param preferenceId
      * @return
      */
-    Preference preference(final long id);
+    Preference preference(final Long preferenceId);
 
     /**
      * @param key
+     * @param type
+     * @param <T>
      * @return
      */
-    <T> T preference(final String key, Class<T> type);
+    <T> T preference(final String key, final Class<T> type);
 
     /**
      * @param key
@@ -68,7 +70,9 @@ public interface PreferenceService {
 
     /**
      * @param key
+     * @param type
+     * @param <T>
      * @return
      */
-    <T> T preference(final PreferenceKey key, Class<T> type);
+    <T> T preference(final PreferenceKey key, final Class<T> type);
 }

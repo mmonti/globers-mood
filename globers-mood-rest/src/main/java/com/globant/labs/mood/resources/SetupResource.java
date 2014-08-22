@@ -12,14 +12,12 @@ import java.io.InputStream;
 public interface SetupResource {
 
     /**
-     *
      * @param importInformation
      * @return
      */
     Response importData(final ImportContent importInformation);
 
     /**
-     *
      * @param inputStream
      * @param formDataContentDisposition
      * @return
@@ -27,7 +25,6 @@ public interface SetupResource {
     Response importData(final InputStream inputStream, final FormDataContentDisposition formDataContentDisposition);
 
     /**
-     *
      * @return
      */
     Response wipeOut();

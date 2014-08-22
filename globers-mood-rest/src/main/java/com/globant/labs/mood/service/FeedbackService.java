@@ -13,7 +13,6 @@ import java.util.Set;
 public interface FeedbackService {
 
     /**
-     *
      * @param container
      * @return
      */
@@ -28,21 +27,19 @@ public interface FeedbackService {
      * @param campaignId
      * @return
      */
-    Set<Feedback> feedbackOfCampaign(final long campaignId);
+    Set<Feedback> feedbackOfCampaign(final Long campaignId);
 
     /**
-     *
      * @param userId
      * @return
      */
-    Set<Feedback> feedbackOfUser(final long userId);
+    Set<Feedback> feedbackOfUser(final Long userId);
 
     /**
-     *
      * @param campaignId
      * @param userId
      * @return
      */
-    Set<Feedback> feedbackOfUserCampaign(final long campaignId, final long userId);
+    Feedback feedbackOfUser(final Long campaignId, final Long userId);
 
 }

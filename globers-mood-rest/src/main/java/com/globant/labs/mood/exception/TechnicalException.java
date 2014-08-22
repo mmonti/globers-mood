@@ -6,7 +6,6 @@ package com.globant.labs.mood.exception;
 public class TechnicalException extends RuntimeException {
 
     /**
-     *
      * @param message
      * @param cause
      */
@@ -15,7 +14,6 @@ public class TechnicalException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      */
     public TechnicalException(final String message) {
@@ -23,7 +21,6 @@ public class TechnicalException extends RuntimeException {
     }
 
     /**
-     *
      * @param cause
      */
     public TechnicalException(final Throwable cause) {

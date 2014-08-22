@@ -24,7 +24,6 @@ public class Attribute extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      */
     public Attribute(final String key) {
@@ -32,7 +31,6 @@ public class Attribute extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      * @param value
      */

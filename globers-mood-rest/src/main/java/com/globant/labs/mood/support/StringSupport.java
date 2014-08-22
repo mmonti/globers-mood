@@ -11,7 +11,6 @@ public class StringSupport {
     private static final Pattern pattern = Pattern.compile("\\{(.*?)\\}");
 
     /**
-     *
      * @param placeHolder
      * @param parameters
      * @return

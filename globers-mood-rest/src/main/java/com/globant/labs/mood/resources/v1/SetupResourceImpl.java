@@ -4,6 +4,7 @@ import com.globant.labs.mood.model.setup.ImportContent;
 import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.SetupResource;
 import com.globant.labs.mood.service.ImporterService;
+import com.globant.labs.mood.service.SetupService;
 import com.google.common.base.Preconditions;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -32,9 +33,14 @@ public class SetupResourceImpl extends AbstractResource implements SetupResource
     @Inject
     private ImporterService importerService;
 
+    @Inject
+    private SetupService setupService;
+
     @POST
     @Override
     public Response importData(@RequestBody final ImportContent importInformation) {
+        logger.info("method=importData()");
+
         return notNullResponse(importerService.importData(importInformation));
     }
 
@@ -47,6 +53,10 @@ public class SetupResourceImpl extends AbstractResource implements SetupResource
             @FormDataParam("file") final FormDataContentDisposition formDataContentDisposition) {
 
         Preconditions.checkNotNull(inputStream, "inputStream is null");
+        Preconditions.checkNotNull(formDataContentDisposition, "formDataContentDisposition is null");
+
+        logger.info("method=importData(), args=[inputStream={}, formDataContentDisposition={}]", inputStream, formDataContentDisposition);
+
         return notNullResponse(importerService.importData(inputStream));
     }
 
@@ -54,6 +64,8 @@ public class SetupResourceImpl extends AbstractResource implements SetupResource
     @Path("/wipe-out")
     @Override
     public Response wipeOut() {
-        return notNullResponse(null);
+        logger.info("method=wipeOut()");
+
+        return notNullResponse(setupService.wipeDataStore());
     }
 }

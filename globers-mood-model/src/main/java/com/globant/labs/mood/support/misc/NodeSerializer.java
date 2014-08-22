@@ -19,7 +19,6 @@ public class NodeSerializer extends JsonSerializer<NodeImpl> {
     }
 
     /**
-     *
      * @param generator
      * @param node
      * @throws IOException
@@ -47,7 +46,6 @@ public class NodeSerializer extends JsonSerializer<NodeImpl> {
     }
 
     /**
-     *
      * @param node
      * @return
      */
@@ -57,7 +55,6 @@ public class NodeSerializer extends JsonSerializer<NodeImpl> {
     }
 
     /**
-     *
      * @param nodes
      * @return
      */

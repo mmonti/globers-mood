@@ -56,49 +56,58 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
     @Transactional
     @Override
-    public Feedback store(final FeedbackContent feedbackContainer) {
-        Preconditions.checkNotNull(feedbackContainer.getCampaignId(), "campaignId cannot be null");
-        Preconditions.checkNotNull(feedbackContainer.getEmail(), "email cannot be null");
-        Preconditions.checkNotNull(feedbackContainer.getToken(), "token cannot be null");
+    public Feedback store(final FeedbackContent feedbackContent) {
+        Preconditions.checkNotNull(feedbackContent, "feedbackContent is null");
+        Preconditions.checkNotNull(feedbackContent.getCampaignId(), "campaignId is null");
+        Preconditions.checkNotNull(feedbackContent.getEmail(), "email is null");
+        Preconditions.checkNotNull(feedbackContent.getToken(), "token is null");
 
-        final Long campaignId = feedbackContainer.getCampaignId();
-        final String email = feedbackContainer.getEmail();
-        final String token = feedbackContainer.getToken();
+        logger.info("method=store(), args=[feedbackContent={}]", feedbackContent);
+
+        final Long campaignId = feedbackContent.getCampaignId();
+        final String email = feedbackContent.getEmail();
+        final String token = feedbackContent.getToken();
 
         final Campaign campaign = campaignRepository.findOne(campaignId);
         if (campaign == null) {
-            throw new BusinessException(on("campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
+            logger.error("method=store() - campaignId=[{}] not found", campaignId);
+            throw new BusinessException(on("Campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
         }
 
+        // = TODO : Review the status check.
         if (!CampaignStatus.WAITING_FOR_FEEDBACK.equals(campaign.getStatus())) {
-            final String message = on("campaign with campaignId=[{}] has an illegal state=[{}]", campaignId, campaign.getStatus());
-            throw new BusinessException(message, CAMPAIGN_ALREADY_CLOSED, true);
+            logger.error("method=store() - campaignId=[{}] is in invalid state=[{}]", campaignId, campaign.getStatus());
+            throw new BusinessException(on("Campaign with campaignId=[{}] is in invalid state=[{}]", campaignId, campaign.getStatus()), CAMPAIGN_ALREADY_CLOSED, true);
         }
 
         final User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new BusinessException(on("user with email=[{}] not found.", email), RESOURCE_NOT_FOUND);
+            logger.error("method=store() - user mail=[{}] not found", email);
+            throw new BusinessException(on("User with email=[{}] not found.", email), RESOURCE_NOT_FOUND);
         }
 
         // = Check for token validation (false for DEV / true for PROD).
         if (shouldValidateToken()) {
             final String generatedToken = ((UserTokenGenerator) tokenGenerator).getToken(campaign, user);
             if (!token.equals(generatedToken)) {
-                throw new BusinessException(on("invalid token=[{}]. received token and generated doesn't match.", token), EXPECTATION_FAILED);
+                logger.error("method=store() - invalid token=[{}]", token);
+                throw new BusinessException(on("Token invalid=[{}]", token), EXPECTATION_FAILED);
             }
         }
 
-        final Feedback existentFeedback = feedbackRepository.feedbackAlreadySubmitted(campaign, user);
+        final Feedback existentFeedback = feedbackRepository.feedbackOfUser(campaign, user);
         if (existentFeedback != null) {
             // = TODO: Look for a more elegant way to handle this exception.
-            final String message = on("feedback of user=[{}] for campaignId=[{}] was already submitted", user.getEmail(), campaignId);
-            throw new BusinessException(message, FEEDBACK_ALREADY_SUBMITTED, true);
+            logger.error("method=store() - feedback already submitted for email=[{}] of campaignId=[{}]", email, campaignId);
+            throw new BusinessException(on("Feedback of user email=[{}] for campaign with id=[{}] was already submitted", email, campaignId), FEEDBACK_ALREADY_SUBMITTED, true);
         }
 
-        final Feedback feedback = feedbackRepository.save(new Feedback(campaign, user, feedbackContainer.getAttributes()));
+        logger.info("method=store(), storing feedback of user=[{}] into campaignId=[{}]", email, campaignId);
+        final Feedback feedback = feedbackRepository.save(new Feedback(campaign, user, feedbackContent.getAttributes()));
 
         // = Check if we should close the campaign.
-        if (campaign.isCampaignComplete()) {
+        if (campaign.isComplete()) {
+            logger.info("method=store(), campaignId=[{}] is complete.", campaignId);
             campaign.close();
         }
 
@@ -108,17 +117,22 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
     @Transactional(readOnly = true)
     @Override
     public Page<Feedback> feedbacks(final Pageable pageable) {
+        logger.info("method=feedbacks(), args=[pageable={}]", pageable);
+
         return feedbackRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Feedback> feedbackOfCampaign(final long campaignId) {
-        Preconditions.checkNotNull(campaignId, "campaignId cannot be null");
+    public Set<Feedback> feedbackOfCampaign(final Long campaignId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+
+        logger.info("method=feedbackOfCampaign(), args=[campaignId={}]", campaignId);
 
         final Campaign campaign = campaignRepository.findOne(campaignId);
         if (campaign == null) {
-            throw new BusinessException(on("campaign with campaignId=[{}] not found", campaignId), RESOURCE_NOT_FOUND);
+            logger.error("method=feedbackOfCampaign() - campaignId=[{}] not found", campaignId);
+            throw new BusinessException(on("Campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
         }
 
         return new HashSet(feedbackRepository.feedbackOfCampaign(campaign));
@@ -126,32 +140,43 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Feedback> feedbackOfUserCampaign(final long campaignId, final long userId) {
-        Preconditions.checkNotNull(userId, "userId cannot be null");
+    public Feedback feedbackOfUser(final Long campaignId, final Long userId) {
+        Preconditions.checkNotNull(userId, "userId is null");
+
+        logger.info("method=feedbackOfUser(), args=[campaignId={}, userId=[{}]]", campaignId, userId);
+
         final User user = userRepository.findOne(userId);
         if (user == null) {
-            throw new BusinessException(on("user with userId=[{}] not found", userId), RESOURCE_NOT_FOUND);
+            logger.error("method=feedbackOfUser() - userId=[{}] not found", userId);
+            throw new BusinessException(on("User with userId=[{}] not found.", userId), RESOURCE_NOT_FOUND);
         }
+
         final Campaign campaign = campaignRepository.findOne(campaignId);
         if (campaign == null) {
-            throw new BusinessException(on("campaign with campaignId=[{}] not found", campaignId), RESOURCE_NOT_FOUND);
+            logger.error("method=feedbackOfUser() - campaignId=[{}] not found", campaignId);
+            throw new BusinessException(on("Campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
         }
-        return new HashSet(feedbackRepository.feedbackOfUserCampaign(campaign, user));
+
+        return feedbackRepository.feedbackOfUser(campaign, user);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Feedback> feedbackOfUser(final long userId) {
-        Preconditions.checkNotNull(userId, "userId cannot be null");
+    public Set<Feedback> feedbackOfUser(final Long userId) {
+        Preconditions.checkNotNull(userId, "userId is null");
+
+        logger.info("method=feedbackOfUser(), args=[userId=[{}]]", userId);
+
         final User user = userRepository.findOne(userId);
         if (user == null) {
-            throw new BusinessException(on("user with userId=[{}] not found", userId), RESOURCE_NOT_FOUND);
+            logger.error("method=feedbackOfUser() - userId=[{}] not found", userId);
+            throw new BusinessException(on("User with userId=[{}] not found.", userId), RESOURCE_NOT_FOUND);
         }
+
         return new HashSet(feedbackRepository.feedbackOfUser(user));
     }
 
     /**
-     *
      * @return
      */
     public boolean shouldValidateToken() {

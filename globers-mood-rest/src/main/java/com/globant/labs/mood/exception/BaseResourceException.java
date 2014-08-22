@@ -21,7 +21,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param status
      */
     public BaseResourceException(final int status) {
@@ -29,7 +28,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param response
      */
     public BaseResourceException(final Response response) {
@@ -37,7 +35,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param status
      */
     public BaseResourceException(final Response.Status status) {
@@ -45,7 +42,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param cause
      * @param status
      */
@@ -54,7 +50,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param cause
      * @param response
      */
@@ -63,7 +58,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param cause
      * @param status
      */
@@ -72,7 +66,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param cause
      */
     public BaseResourceException(final Throwable cause) {
@@ -80,7 +73,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param status
      * @param throwable
      */
@@ -89,7 +81,6 @@ public class BaseResourceException extends WebApplicationException {
     }
 
     /**
-     *
      * @param status
      * @param throwable
      */

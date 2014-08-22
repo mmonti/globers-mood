@@ -6,6 +6,7 @@ import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.google.appengine.repackaged.com.google.common.base.Predicate;
 import org.apache.commons.beanutils.BeanUtilsBean2;
 import org.apache.commons.beanutils.ConvertUtilsBean;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,12 +24,12 @@ public class Feedback extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -4177075439722820274L;
 
     /**
-     * Create an static instance to of the converter.
+     * static instance to of the converter.
      */
     private static final ConvertUtilsBean converter = BeanUtilsBean2.getInstance().getConvertUtils();
 
     @Unowned
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Campaign campaign;
 
     @Unowned
@@ -44,7 +45,6 @@ public class Feedback extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param campaign
      * @param user
      * @param attributes
@@ -116,6 +116,5 @@ public class Feedback extends BaseEntity implements Serializable {
         result = 31 * result + created.hashCode();
         return result;
     }
-
 
 }

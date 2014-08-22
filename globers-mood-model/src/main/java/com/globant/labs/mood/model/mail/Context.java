@@ -6,14 +6,12 @@ package com.globant.labs.mood.model.mail;
 public interface Context {
 
     /**
-     *
      * @param key
      * @param value
      */
     void add(final String key, final Object value);
 
     /**
-     *
      * @param key
      * @return
      */

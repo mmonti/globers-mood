@@ -5,21 +5,23 @@ import java.io.Serializable;
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
  */
-public class Sender implements Serializable {
+public class MailSettings implements Serializable {
 
     private static final long serialVersionUID = -6361519657742615375L;
 
     private String alias;
     private String mail;
+    private String subject;
 
     /**
-     *
      * @param alias
      * @param mail
+     * @param subject
      */
-    public Sender(final String alias, final String mail) {
+    public MailSettings(final String alias, final String mail, final String subject) {
         this.alias = alias;
         this.mail = mail;
+        this.subject = subject;
     }
 
     public String getAlias() {
@@ -30,4 +32,7 @@ public class Sender implements Serializable {
         return mail;
     }
 
+    public String getSubject() {
+        return subject;
+    }
 }

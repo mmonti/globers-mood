@@ -1,6 +1,7 @@
 package com.globant.labs.mood.service.mail.template.handlebars;
 
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.globant.labs.mood.exception.TechnicalException;
 import com.globant.labs.mood.model.mail.MailMessageTemplate;
@@ -20,6 +21,26 @@ public class HBMTemplateCompiler implements TemplateCompiler {
 
     public HBMTemplateCompiler(final TemplateLoader templateLoader) {
         this.handlebars = new Handlebars(templateLoader);
+    }
+
+    /**
+     * @param helperSource
+     * @return
+     */
+    public HBMTemplateCompiler register(final Class<?> helperSource) {
+        this.handlebars.registerHelpers(helperSource);
+        return this;
+    }
+
+    /**
+     * @param name
+     * @param helper
+     * @param <T>
+     * @return
+     */
+    public <T> HBMTemplateCompiler register(final String name, final Helper<T> helper) {
+        this.handlebars.registerHelper(name, helper);
+        return this;
     }
 
     @Override

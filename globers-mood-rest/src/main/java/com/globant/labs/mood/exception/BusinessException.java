@@ -9,7 +9,6 @@ public class BusinessException extends RuntimeException {
     private boolean redirectToView = false;
 
     /**
-     *
      * @param message
      * @param code
      * @param cause
@@ -21,7 +20,6 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      * @param code
      * @param cause
@@ -32,7 +30,6 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      * @param code
      * @param redirectToView
@@ -43,7 +40,6 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      * @param code
      */
@@ -53,7 +49,6 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-     *
      * @return
      */
     public boolean isRedirectToView() {
@@ -76,7 +71,6 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-     *
      * @return
      */
     public ErrorCode getErrorCode() {

@@ -5,22 +5,21 @@ import javax.ws.rs.core.Response;
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
  */
-public interface StatsResource {
-
-    /**
-     *
-     * @return
-     */
-    Response statistics();
+public interface StatisticsResource {
 
     /**
      * @return
      */
-    Response metadata();
+    Response datastoreEntities();
 
     /**
      * @return
      */
     Response weeklyFeedback();
+
+    /**
+     * @return
+     */
+    Response campaignStatistics(final Long campaignId);
 
 }

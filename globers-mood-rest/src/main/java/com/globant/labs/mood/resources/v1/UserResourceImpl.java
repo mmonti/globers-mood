@@ -33,23 +33,31 @@ public class UserResourceImpl extends AbstractResource implements UserResource {
     @POST
     @Override
     public Response addUser(@RequestBody final User user) {
-        Preconditions.checkNotNull(user, "user cannot be null");
-        Preconditions.checkNotNull(user.getName(), "user.name cannot be null");
-        Preconditions.checkNotNull(user.getEmail(), "user.email cannot be null");
+        Preconditions.checkNotNull(user, "user is null");
+        Preconditions.checkNotNull(user.getName(), "user.name is null");
+        Preconditions.checkNotNull(user.getEmail(), "user.email is null");
+
+        logger.info("method=addUser(), args=[user={}]", user);
+
         return notNullResponse(userService.store(user));
     }
 
     @GET
     @Override
     public Response users() {
+        logger.info("method=users()");
+
         return notNullResponse(userService.users(new PageRequest(0, 100)));
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/{userId}")
     @Override
-    public Response user(@PathParam("id") final long id) {
-        Preconditions.checkNotNull(id, "id cannot be null");
-        return notNullResponse(userService.user(id));
+    public Response user(@PathParam("userId") final Long userId) {
+        Preconditions.checkNotNull(userId, "userId is null");
+
+        logger.info("method=user(), args=[userId={}]", userId);
+
+        return notNullResponse(userService.user(userId));
     }
 }

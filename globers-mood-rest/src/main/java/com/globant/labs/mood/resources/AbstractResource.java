@@ -1,5 +1,6 @@
 package com.globant.labs.mood.resources;
 
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,6 @@ public abstract class AbstractResource {
     private static final Logger logger = LoggerFactory.getLogger(AbstractResource.class);
 
     /**
-     *
      * @param entity
      * @return
      */
@@ -29,7 +29,19 @@ public abstract class AbstractResource {
     }
 
     /**
-     *
+     * @param entity
+     * @param type
+     * @return
+     */
+    protected Response notNullResponse(final Object entity, final String type) {
+        Preconditions.checkNotNull(type, "type is null");
+        if (entity != null) {
+            return Response.ok(entity).type(type).build();
+        }
+        return noContent();
+    }
+
+    /**
      * @param entityList
      * @param <T>
      * @return
@@ -42,7 +54,6 @@ public abstract class AbstractResource {
     }
 
     /**
-     *
      * @param iterable
      * @param <T>
      * @return
@@ -55,7 +66,6 @@ public abstract class AbstractResource {
     }
 
     /**
-     *
      * @return
      */
     protected Response noContent() {

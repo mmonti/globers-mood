@@ -21,10 +21,10 @@ public interface UserService {
     User store(final User user);
 
     /**
-     * @param id
+     * @param userId
      * @return
      */
-    User user(final long id);
+    User user(final Long userId);
 
     /**
      * @param email

@@ -28,4 +28,9 @@ public abstract class AbstractService {
             }
         });
     }
+
+    protected void publish(final ApplicationEvent applicationEvent) {
+        eventPublisher.publish(applicationEvent);
+    }
+
 }

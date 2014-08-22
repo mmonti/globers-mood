@@ -3,13 +3,14 @@ package com.globant.labs.mood.service.impl;
 import ch.lambdaj.group.Group;
 import com.globant.labs.mood.model.persistent.CreatedDateType;
 import com.globant.labs.mood.model.persistent.Feedback;
-import com.globant.labs.mood.model.stats.WeeklyFeedback;
-import com.globant.labs.mood.repository.data.CampaignRepository;
+import com.globant.labs.mood.model.statistics.CampaignStatistics;
+import com.globant.labs.mood.model.statistics.WeeklyFeedback;
 import com.globant.labs.mood.repository.data.FeedbackRepository;
 import com.globant.labs.mood.service.AbstractService;
-import com.globant.labs.mood.service.StatsService;
+import com.globant.labs.mood.service.StatisticsService;
 import com.google.appengine.api.datastore.*;
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
@@ -32,41 +33,45 @@ import static org.joda.time.DateTime.now;
  * @author mauro.monti (monti.mauro@gmail.com)
  */
 @Service
-public class StatsServiceImpl extends AbstractService implements StatsService {
+public class StatisticsServiceImpl extends AbstractService implements StatisticsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(StatsServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(StatisticsServiceImpl.class);
 
-    private static final String DS_STATISTICS_TOTAL = "__Stat_Total__";
     private static final String PREFIX_RESERVED_ENTITY = "_";
     private static final String COUNT = "count";
 
-    private DatastoreService datastore;
-
-    @Inject
-    private CampaignRepository campaignRepository;
     @Inject
     private FeedbackRepository feedbackRepository;
 
+    private DatastoreService datastoreService;
+
     @PostConstruct
     public void init() {
-        datastore = DatastoreServiceFactory.getDatastoreService();
+        datastoreService = DatastoreServiceFactory.getDatastoreService();
     }
 
     @Override
-    public List<Entity> getMetaData() {
+    public List<Entity> datastoreEntities() {
+        logger.info("method=datastoreEntities()");
+
+        logger.info("method=datastoreEntities() - querying by [{}]", Entities.KIND_METADATA_KIND);
         final Query entityQuery = new Query(Entities.KIND_METADATA_KIND);
-        final Iterable<Entity> entities = datastore.prepare(entityQuery).asIterable();
+        final Iterable<Entity> entities = datastoreService.prepare(entityQuery).asIterable();
+
+        logger.info("method=datastoreEntities() - filtering entities prefixed with=[{}]", PREFIX_RESERVED_ENTITY);
         final Iterable<Entity> filtered = Iterables.filter(entities, new Predicate<Entity>() {
             @Override
             public boolean apply(Entity entity) {
                 return !entity.getKey().getName().startsWith(PREFIX_RESERVED_ENTITY);
             }
         });
+
+        logger.info("method=datastoreEntities() - fetching entities count");
         return newArrayList(Iterables.transform(filtered, new Function<Entity, Entity>() {
             @Override
             public Entity apply(Entity entity) {
                 final String kind = entity.getKey().getName();
-                final int count = datastore.prepare(new Query(kind)).countEntities(FetchOptions.Builder.withDefaults());
+                final int count = datastoreService.prepare(new Query(kind)).countEntities(FetchOptions.Builder.withDefaults());
                 entity.setProperty(COUNT, count);
                 return entity;
             }
@@ -74,17 +79,14 @@ public class StatsServiceImpl extends AbstractService implements StatsService {
     }
 
     @Override
-    public Entity getGlobalStatistics() {
-        final Entity entity = datastore.prepare(new Query(DS_STATISTICS_TOTAL)).asSingleEntity();
-        return entity;
-    }
-
-    @Override
     public List<WeeklyFeedback> weeklyFeedback() {
+        logger.info("method=weeklyFeedback()");
+
         final Date fromDate = now().minusDays(7).withTimeAtStartOfDay().toDate();
         final List<Feedback> feedbackFromDate = feedbackRepository.feedbackFromDate(fromDate);
 
         // == Grouped by Campaign and Date.
+        logger.info("method=weeklyFeedback() - grouping by date=[{}]", fromDate);
         final Group<Feedback> feedbackGroupedByDate = group(feedbackFromDate,
                 by(on(Feedback.class).getCampaign().getId()),
                 by(on(Feedback.class).getCreated(CreatedDateType.DATE, WeeklyFeedback.DAY_PATTERN)
@@ -104,4 +106,12 @@ public class StatsServiceImpl extends AbstractService implements StatsService {
         return weeklyStats;
     }
 
+    @Override
+    public CampaignStatistics campaignStatistics(final Long campaignId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+
+        logger.info("method=campaignStatistics(), args=[campaignId={}]", campaignId);
+
+        return new CampaignStatistics(campaignId);
+    }
 }

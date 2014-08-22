@@ -13,9 +13,7 @@ import java.io.IOException;
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
  */
-public class TemplateFileDeserializer extends JsonDeserializer<Blob> {
-
-    public static final String FILE_FIELD = "file";
+public class BlobDeserializer extends JsonDeserializer<Blob> {
 
     @Override
     public Blob deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException, JsonProcessingException {

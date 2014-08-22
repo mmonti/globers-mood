@@ -68,7 +68,7 @@ public class FeedbackServiceImplTest {
 
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = templateService.store(template);
 
@@ -97,7 +97,7 @@ public class FeedbackServiceImplTest {
 
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = templateService.store(template);
 
@@ -128,7 +128,7 @@ public class FeedbackServiceImplTest {
 
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = templateService.store(template);
 
@@ -146,9 +146,8 @@ public class FeedbackServiceImplTest {
         final FeedbackContent feedbackContainer = new FeedbackContent(storedCampaign.getId(), storedUser.getEmail(), token, Sets.newHashSet(new Attribute("key", "value")));
         final Feedback storedFeedback = feedbackService.store(feedbackContainer);
 
-        final Set<Feedback> storedFeedbackOfCampaign = feedbackService.feedbackOfUserCampaign(storedCampaign.getId(), storedUser.getId());
+        final Feedback storedFeedbackOfCampaign = feedbackService.feedbackOfUser(storedCampaign.getId(), storedUser.getId());
         Assert.notNull(storedFeedbackOfCampaign);
-        Assert.notEmpty(storedFeedbackOfCampaign);
     }
 
     @Test
@@ -158,7 +157,7 @@ public class FeedbackServiceImplTest {
 
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = templateService.store(template);
 
@@ -187,7 +186,7 @@ public class FeedbackServiceImplTest {
 
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = templateService.store(template);
 

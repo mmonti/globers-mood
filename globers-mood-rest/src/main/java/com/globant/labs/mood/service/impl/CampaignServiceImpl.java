@@ -1,17 +1,20 @@
 package com.globant.labs.mood.service.impl;
 
+import com.globant.labs.mood.events.DispatchCampaignEvent;
+import com.globant.labs.mood.events.DispatchUserEvent;
 import com.globant.labs.mood.exception.BusinessException;
-import com.globant.labs.mood.model.mail.DispatchResult;
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.CampaignStatus;
 import com.globant.labs.mood.model.persistent.Template;
+import com.globant.labs.mood.model.persistent.User;
 import com.globant.labs.mood.repository.data.CampaignRepository;
 import com.globant.labs.mood.repository.data.TemplateRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.CampaignService;
-import com.globant.labs.mood.service.mail.MailMessageFactory;
 import com.google.appengine.api.search.checkers.Preconditions;
-import com.google.appengine.repackaged.com.google.common.collect.Sets;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,12 +23,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.*;
+import static com.globant.labs.mood.model.persistent.CampaignStatus.*;
 import static com.globant.labs.mood.support.StringSupport.on;
+import static com.google.appengine.repackaged.com.google.common.collect.Lists.newArrayList;
+import static com.google.appengine.repackaged.com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Iterables.*;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -37,16 +44,14 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
 
     @Inject
     private CampaignRepository campaignRepository;
+
     @Inject
     private TemplateRepository templateRepository;
-    @Inject
-    private MailingServiceImpl mailingService;
-    @Inject
-    private MailMessageFactory mailMessageFactory;
 
     @Transactional(readOnly = true)
     @Override
     public Page<Campaign> campaigns(final Pageable pageable) {
+        logger.info("method=campaigns(), args=[pageable={}]", pageable);
         return campaignRepository.findAll(pageable);
     }
 
@@ -57,24 +62,26 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
         Preconditions.checkNotNull(campaign.getTargets(), "targets is null");
         Preconditions.checkNotNull(campaign.getTemplate(), "template is null");
 
+        logger.info("method=store(), args=[campaign={}]", campaign);
+
         if (campaign.getId() == null) {
             final Campaign storedCampaign = campaignRepository.campaignByName(campaign.getName());
             if (storedCampaign != null) {
-                logger.debug("store - campaign with name=[{}] already existent", campaign.getName());
-                throw new BusinessException(on("campaign with name=[{}] already existent.", campaign.getName()), EXPECTATION_FAILED);
+                logger.error("method=store() - campaign name=[{}] already exist", campaign.getName());
+                throw new BusinessException(on("Campaign with name=[{}] already exist.", campaign.getName()), EXPECTATION_FAILED);
             }
 
-            if (!CampaignStatus.CREATED.hasPreviousValidStatus(campaign.getStatus())) {
-                logger.error("store - campaign with name=[{}] is in an invalid status=[{}]", campaign.getName(), campaign.getStatus());
-                throw new BusinessException(on("campaign with name=[{}] is in an invalid status=[{}]", campaign.getName(), campaign.getStatus()), ILLEGAL_STATE);
+            if (!CREATED.hasPreviousValidStatus(campaign.getStatus())) {
+                logger.error("method=store() - campaignId=[{}] is in invalid state=[{}]", campaign.getId(), campaign.getStatus());
+                throw new BusinessException(on("Campaign with name=[{}] is in invalid status=[{}]", campaign.getName(), campaign.getStatus()), ILLEGAL_STATE);
             }
         }
 
         final Template template = campaign.getTemplate();
         final Template storedTemplate = templateRepository.findOne(template.getId());
         if (storedTemplate == null) {
-            logger.error("store - template with id=[{}] not found", template.getId());
-            throw new BusinessException(on("template with id=[{}] not found.", template.getId()), RESOURCE_NOT_FOUND);
+            logger.error("method=store() - templateId=[{}] of campaignId=[{}] not found", template.getId(), campaign.getId());
+            throw new BusinessException(on("Template with id=[{}] of Campaign with id=[{}] not found.", template.getId(), campaign.getId()), RESOURCE_NOT_FOUND);
         }
         campaign.setTemplate(storedTemplate);
 
@@ -83,95 +90,152 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
 
     @Transactional(readOnly = true)
     @Override
-    public Campaign campaign(final long id) {
-        Preconditions.checkNotNull(id, "id cannot be null");
-        logger.debug("campaign - querying campaign by id=[{}]", id);
-        return campaignRepository.findOne(id);
+    public Campaign campaign(final Long campaignId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+
+        logger.info("method=campaign(), args=[campaignId={}]", campaignId);
+        return campaignRepository.findOne(campaignId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Set<Campaign> recursiveCampaigns(final Long campaignId) {
+        Preconditions.checkNotNull(campaignId, "id cannot be null");
+
+        logger.info("method=recursiveCampaigns(), args=[campaignId={}]", campaignId);
+        return newHashSet(campaignRepository.recursiveCampaigns(campaignId));
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<Campaign> mostActive() {
+        logger.info("method=mostActive()");
         return campaignRepository.mostActive();
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     @Override
-    public void start(final long campaignId) {
-        final Campaign campaign = campaignRepository.findOne(campaignId);
+    public void waitForFeedback(final Long campaignId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+
+        logger.info("method=waitForFeedback(), args=[campaignId={}]", campaignId);
+        final Campaign campaign = campaign(campaignId);
         if (campaign == null) {
-            logger.error("start - campaign with id=[{}] not found", campaignId);
-            throw new BusinessException(on("campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
+            logger.error("method=waitForFeedback) - campaignId=[{}] not found", campaignId);
+            throw new BusinessException(on("Campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
         }
 
-        if (!CampaignStatus.STARTED.hasPreviousValidStatus(campaign.getStatus())) {
-            logger.error("start - campaign with id=[{}] has an invalid status=[{}]", campaignId, campaign.getStatus());
-            throw new BusinessException(on("campaign with campaignId=[{}] has an illegal state=[{}]", campaignId, campaign.getStatus()), ILLEGAL_STATE);
+        if (!WAITING_FOR_FEEDBACK.hasPreviousValidStatus(campaign.getStatus())) {
+            logger.error("method=waitForFeedback() - campaignId=[{}] is in invalid state=[{}]", campaignId, campaign.getStatus());
+            throw new BusinessException(on("Campaign with campaignId=[{}] is in invalid state=[{}]", campaignId, campaign.getStatus()), ILLEGAL_STATE);
         }
+
+        logger.info("method=waitForFeedback() - setting campaignId=[{}] to WAIT_FOR_FEEDBACK.", campaign);
+        campaignRepository.saveAndFlush(campaign.waitForFeedback());
 
         // == Recursive Campaign Handling.
         if (campaign.isRecursive()) {
-            logger.debug("campaign with id=[{}] is recursive - creating child.", campaignId);
-            final Campaign recursiveCampaign = new Campaign(campaign);
-            campaignRepository.saveAndFlush(recursiveCampaign);
+            logger.info("method=waitForFeedback() - campaignId=[{}] is recursive.", campaignId);
+            final Campaign recursiveCampaign = campaignRepository.saveAndFlush(new Campaign(campaign));
+
+            logger.info("method=waitForFeedback() - child campaign created with campaignId=[{}]", recursiveCampaign.getId());
         }
-
-        logger.debug("start - changing status of campaign with id=[{}] to START.", campaignId);
-        campaignRepository.saveAndFlush(campaign.start());
-
-        // == TODO: Has to be an AsynchTask.
-        logger.info("start - dispatching emails of campaign id=[{}]", campaignId);
-        final DispatchResult dispatchResult = mailingService.dispatch(mailMessageFactory.create(campaign));
-        if (dispatchResult.hasPendingNotifications()) {
-
-        }
-        logger.debug("start - changing status of campaign with id=[{}] to WAITING_FOR_FEEDBACK.", campaignId);
-        campaignRepository.saveAndFlush(campaign.waitForFeedback());
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     @Override
-    public void close(final long campaignId) {
-        final Campaign campaign = campaignRepository.findOne(campaignId);
+    public void start(final Long campaignId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+
+        logger.info("method=start(), args=[campaignId={}]", campaignId);
+
+        final Campaign campaign = campaign(campaignId);
         if (campaign == null) {
-            logger.debug("close - campaign with id=[{}] not found", campaignId);
-            throw new BusinessException(on("campaign with campaignId=[{}] already exist.", campaignId), EXPECTATION_FAILED);
+            logger.error("method=start() - campaignId=[{}] not found", campaignId);
+            throw new BusinessException(on("Campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
         }
 
-        if (!CampaignStatus.CLOSED.hasPreviousValidStatus(campaign.getStatus())) {
-            logger.debug("close - campaign with id=[{}] has an invalid status=[{}]", campaignId, campaign.getStatus());
-            throw new BusinessException(on("campaign with campaignId=[{}] in illegal state=[{}].", campaignId, campaign.getStatus()), ILLEGAL_STATE);
+        if (!STARTED.hasPreviousValidStatus(campaign.getStatus())) {
+            logger.error("method=start() - campaignId=[{}] is in invalid state=[{}]", campaignId, campaign.getStatus());
+            throw new BusinessException(on("Campaign with campaignId=[{}] is in invalid state=[{}]", campaignId, campaign.getStatus()), ILLEGAL_STATE);
         }
+
+        logger.info("method=start() - setting campaignId=[{}] to STARTED.", campaign);
+        campaignRepository.saveAndFlush(campaign.start());
+
+        // = Enqueue a task to dispatch emails
+        logger.info("method=start() - triggering dispatching event for campaignId=[{}].", campaignId);
+        publish(new DispatchCampaignEvent(this, campaign));
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void close(final Long campaignId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+
+        logger.info("method=close(), args=[campaignId={}]", campaignId);
+
+        final Campaign campaign = campaign(campaignId);
+        if (campaign == null) {
+            logger.error("method=close() - campaignId=[{}] not found", campaignId);
+            throw new BusinessException(on("Campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
+        }
+
+        if (!CLOSED.hasPreviousValidStatus(campaign.getStatus())) {
+            logger.error("method=close() - campaignId=[{}] is in invalid state=[{}]", campaignId, campaign.getStatus());
+            throw new BusinessException(on("Campaign with campaignId=[{}] is an invalid state=[{}]", campaignId, campaign.getStatus()), ILLEGAL_STATE);
+        }
+
+        logger.info("method=close() - setting campaignId=[{}] to CLOSED.", campaign);
         campaignRepository.saveAndFlush(campaign.close());
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     @Override
     public void scheduledReadyToStart() {
-        final Calendar now = Calendar.getInstance();
-        for (final Campaign currentScheduledCampaign : campaignRepository.scheduledReadyToStart(now.getTime())) {
-            final long campaignId = currentScheduledCampaign.getId();
-            logger.debug("scheduledReadyToStart - starting scheduled campaign=[id={}]", campaignId);
-            start(currentScheduledCampaign.getId());
+        logger.info("method=scheduleReadyToStart()");
+
+        for (final Campaign currentScheduledCampaign : Sets.filter(newHashSet(campaignRepository.scheduledReadyToStart(new Date())), new Predicate<Campaign>() {
+            @Override
+            public boolean apply(final Campaign campaign) {
+                return campaign.getStatus().equals(CREATED);
+            }
+        })) {
+            final Long campaignId = currentScheduledCampaign.getId();
+            logger.info("method=scheduleReadyToStart() - starting scheduled campaignId=[{}]", campaignId);
+            start(campaignId);
         }
     }
 
     @Transactional(readOnly = true)
     @Override
     public Set<Campaign> scheduledPendingToStart() {
-        final Calendar now = Calendar.getInstance();
-        final Set<Campaign> pendingToStartCampaigns = Sets.newHashSet(campaignRepository.scheduledPendingToStart(now.getTime()));
-        logger.debug("scheduledPendingToStart - size=[{}]", pendingToStartCampaigns.size());
+        logger.info("method=scheduledPendingToStart()");
+
+        final Set<Campaign> pendingToStartCampaigns = Sets.filter(newHashSet(campaignRepository.scheduledPendingToStart(new Date())), new Predicate<Campaign>() {
+            @Override
+            public boolean apply(Campaign campaign) {
+                return campaign.getStatus().equals(CREATED);
+            }
+        });
+        logger.info("method=scheduledPendingToStart() - found [{}] campaigns pending to start", pendingToStartCampaigns.size());
         return pendingToStartCampaigns;
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     @Override
     public void scheduledReadyToClose() {
-        final Calendar now = Calendar.getInstance();
-        for (final Campaign currentExpiredCampaign : campaignRepository.scheduledReadyToClose(now.getTime())) {
-            final long campaignId = currentExpiredCampaign.getId();
-            logger.debug("scheduledReadyToClose - closing expired campaign=[id={}]", campaignId);
+        logger.info("method=scheduledReadyToClose()");
+
+        final List<CampaignStatus> status = newArrayList(CREATED, STARTED, WAITING_FOR_FEEDBACK);
+        for (final Campaign currentExpiredCampaign : Sets.filter(newHashSet(campaignRepository.scheduledReadyToClose(new Date())), new Predicate<Campaign>() {
+            @Override
+            public boolean apply(final Campaign campaign) {
+                return status.contains(campaign.getStatus());
+            }
+        })) {
+            final Long campaignId = currentExpiredCampaign.getId();
+            logger.info("method=scheduledReadyToClose() - starting scheduled campaignId=[{}]", campaignId);
             close(campaignId);
         }
     }
@@ -179,9 +243,45 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
     @Transactional(readOnly = true)
     @Override
     public Set<Campaign> scheduledNextToExpire() {
-        final Calendar now = Calendar.getInstance();
-        final Set<Campaign> nextToExpireCampaigns = Sets.newHashSet(this.campaignRepository.scheduledNextToExpire(now.getTime()));
-        logger.debug("scheduledNextToExpire - size=[{}]", nextToExpireCampaigns.size());
+        logger.debug("method=scheduledNextToExpire()");
+
+        final List<CampaignStatus> status = newArrayList(CREATED, STARTED, WAITING_FOR_FEEDBACK);
+        final Set<Campaign> nextToExpireCampaigns = Sets.filter(newHashSet(campaignRepository.scheduledNextToExpire(new Date())), new Predicate<Campaign>() {
+            @Override
+            public boolean apply(final Campaign campaign) {
+                return status.contains(campaign.getStatus());
+            }
+        });
+        logger.info("method=scheduledNextToExpire() - found [{}] campaigns next to expire", nextToExpireCampaigns.size());
         return nextToExpireCampaigns;
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void remind(final Long campaignId, final Long userId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+        Preconditions.checkNotNull(userId, "userId is null");
+
+        logger.info("method=remind(), args=[campaignId={}, userId={}]", campaignId, userId);
+
+        final Campaign campaign = campaign(campaignId);
+        if (campaign == null) {
+            logger.error("method=close() - campaignId=[{}] not found", campaignId);
+            throw new BusinessException(on("Campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
+        }
+
+        final Optional<User> user = tryFind(campaign.getTargets(), new Predicate<User>() {
+            @Override
+            public boolean apply(User user) {
+                return user.getId().equals(userId);
+            }
+        });
+
+        if (!user.isPresent()) {
+            logger.error("method=remind() - userId=[{}] not found in the campaign targets", userId);
+            throw new BusinessException(on("User with userId=[{}] not found in the campaign targets.", userId), RESOURCE_NOT_FOUND);
+        }
+
+        publish(new DispatchUserEvent(this, campaign, user.get()));
     }
 }

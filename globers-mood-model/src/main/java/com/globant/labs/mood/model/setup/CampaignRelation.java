@@ -23,7 +23,6 @@ public class CampaignRelation implements Serializable {
     }
 
     /**
-     *
      * @param campaign
      * @param template
      * @param users

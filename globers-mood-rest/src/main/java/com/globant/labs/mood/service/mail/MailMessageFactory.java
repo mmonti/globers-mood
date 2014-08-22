@@ -1,8 +1,9 @@
 package com.globant.labs.mood.service.mail;
 
+import com.globant.labs.mood.exception.BusinessException;
 import com.globant.labs.mood.model.mail.MailMessage;
 import com.globant.labs.mood.model.mail.MailMessageTemplate;
-import com.globant.labs.mood.model.mail.Sender;
+import com.globant.labs.mood.model.mail.MailSettings;
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.PreferenceKey;
 import com.globant.labs.mood.model.persistent.Template;
@@ -18,6 +19,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
+import static com.globant.labs.mood.support.StringSupport.on;
+
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
  */
@@ -30,7 +34,6 @@ public class MailMessageFactory {
     private TokenGenerator tokenGenerator;
 
     /**
-     *
      * @param tokenGenerator
      * @param preferenceService
      * @param templateCompiler
@@ -46,11 +49,58 @@ public class MailMessageFactory {
     }
 
     /**
-     *
      * @param campaign
      * @return
      */
     public Set<MailMessage> create(final Campaign campaign) {
+        Preconditions.checkNotNull(campaign, "campaign is null");
+
+        final Set<User> targets = campaign.getTargets();
+        logger.debug("create - target(s) quantity=[{}]", targets.size());
+
+        final Set<MailMessage> messages = new HashSet();
+        for (final User target : targets) {
+            final MailMessage mailMessage = create(campaign, target);
+            messages.add(mailMessage);
+        }
+        return messages;
+    }
+
+    /**
+     * @param campaign
+     * @param target
+     * @return
+     */
+    public MailMessage create(final Campaign campaign, final User target) {
+        Preconditions.checkNotNull(campaign, "campaign is null");
+        Preconditions.checkNotNull(target, "target is null");
+
+        final MailSettings mailSettings = getMailSettings();
+
+        final Set<User> targets = campaign.getTargets();
+        if (!targets.contains(target)) {
+            throw new BusinessException(on("target with mail=[{}] is not a valid target in this campaign.", target.getEmail()), EXPECTATION_FAILED);
+        }
+
+        final MailMessageTemplate mailMessageTemplate = getMailTemplate(campaign.getTemplate());
+        final String token = ((UserTokenGenerator) tokenGenerator).getToken(campaign, target);
+
+        return new MailMessage(mailMessageTemplate, mailSettings, token, campaign, target);
+    }
+
+    /**
+     * @param mailTemplate
+     * @return
+     */
+    private MailMessageTemplate getMailTemplate(final Template mailTemplate) {
+        final String templateName = mailTemplate.getName();
+        return templateCompiler.compile(templateName);
+    }
+
+    /**
+     * @return
+     */
+    public MailSettings getMailSettings() {
         final String alias = preferenceService.preference(PreferenceKey.MAIL_SENDER_ALIAS);
         final String mail = preferenceService.preference(PreferenceKey.MAIL_SENDER);
         final String subject = preferenceService.preference(PreferenceKey.MAIL_SUBJECT);
@@ -60,27 +110,7 @@ public class MailMessageFactory {
         Preconditions.checkNotNull(alias, "alias is null");
         Preconditions.checkNotNull(mail, "mail is null");
         Preconditions.checkNotNull(subject, "subject is null");
-        final Sender sender = new Sender(alias, mail);
 
-        final Set<User> targets = campaign.getTargets();
-        logger.debug("create - target(s) amount=[{}]", targets.size());
-        final MailMessageTemplate mailMessageTemplate = getMailTemplate(campaign.getTemplate());
-
-        final Set<MailMessage> messages = new HashSet();
-        for (final User currentTarget : targets) {
-            final String token = ((UserTokenGenerator) tokenGenerator).getToken(campaign, currentTarget);
-            messages.add(new MailMessage(mailMessageTemplate, sender, subject, token, campaign, currentTarget));
-        }
-        return messages;
-    }
-
-    /**
-     *
-     * @param mailTemplate
-     * @return
-     */
-    private MailMessageTemplate getMailTemplate(final Template mailTemplate) {
-        final String templateName = mailTemplate.getName();
-        return templateCompiler.compile(templateName);
+        return new MailSettings(alias, mail, subject);
     }
 }

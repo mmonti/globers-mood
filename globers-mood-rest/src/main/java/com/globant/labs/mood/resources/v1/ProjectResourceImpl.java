@@ -33,38 +33,53 @@ public class ProjectResourceImpl extends AbstractResource implements ProjectReso
     @GET
     @Override
     public Response projects() {
+        logger.info("method=projects()");
+
         return notNullResponse(projectService.projects(new PageRequest(0, 100)));
     }
 
     @POST
     @Override
     public Response addProject(@RequestBody final Project project) {
-        Preconditions.checkNotNull(project, "project cannot be null");
+        Preconditions.checkNotNull(project, "project is null");
+
+        logger.info("method=addProject(), args=[project={}]", project);
+
         return notNullResponse(projectService.store(project));
     }
 
     @POST
     @Path("/{projectId}/assign/{userId}")
     @Override
-    public Response assignUser(@PathParam("projectId") final long projectId, @PathParam("userId") final long userId) {
-        Preconditions.checkNotNull(projectId, "projectId cannot be null");
-        Preconditions.checkNotNull(userId, "userId cannot be null");
+    public Response assignUser(@PathParam("projectId") final Long projectId, @PathParam("userId") final Long userId) {
+        Preconditions.checkNotNull(projectId, "projectId is null");
+        Preconditions.checkNotNull(userId, "userId is null");
+
+        logger.info("method=assignUser(), args=[projectId={}, userId={}]", projectId, userId);
+
         return notNullResponse(projectService.assign(projectId, userId));
     }
 
     @POST
     @Path("/{projectId}/release/{userId}")
     @Override
-    public Response releaseUser(@PathParam("projectId") final long projectId, @PathParam("userId") final long userId) {
+    public Response releaseUser(@PathParam("projectId") final Long projectId, @PathParam("userId") final Long userId) {
         Preconditions.checkNotNull(projectId, "projectId cannot be null");
         Preconditions.checkNotNull(userId, "userId cannot be null");
+
+        logger.info("method=releaseUser(), args=[projectId={}, userId={}]", projectId, userId);
+
         return notNullResponse(projectService.release(projectId, userId));
     }
 
     @GET
     @Path("/{projectId}/users")
     @Override
-    public Response usersOfProject(@PathParam("projectId") long projectId) {
+    public Response usersOfProject(@PathParam("projectId") Long projectId) {
+        Preconditions.checkNotNull(projectId, "projectId cannot be null");
+
+        logger.info("method=usersOfProject(), args=[projectId={}]", projectId);
+
         return notEmptyResponse(projectService.usersOfProject(projectId));
     }
 

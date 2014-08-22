@@ -2,13 +2,19 @@ package com.globant.labs.mood.model.persistent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.globant.labs.mood.support.jackson.TemplateFileDeserializer;
+import com.globant.labs.mood.support.jackson.BlobDeserializer;
 import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.datanucleus.annotations.Unowned;
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.google.common.collect.Iterables.tryFind;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -25,12 +31,29 @@ public class Template extends BaseEntity implements Serializable {
     private String description;
 
     @Basic
-    private Blob file;
+    private String filename;
 
+    @Unowned
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TemplateMetadata metadata;
+
+    @Basic
+    private Blob content;
+
+    @Unowned
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private Set<Attachment> attachments = new HashSet<Attachment>();
+
+    /**
+     *
+     */
     public Template() {
         super();
     }
 
+    /**
+     * @param name
+     */
     public Template(final String name) {
         this();
         this.name = name;
@@ -40,33 +63,69 @@ public class Template extends BaseEntity implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    @JsonIgnore
-    public Blob getFile() {
-        return file;
+    public String getFilename() {
+        return filename;
     }
 
-    public String getTemplate() {
-        if (file != null) {
-            return new String(file.getBytes(), Charsets.UTF_8);
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public TemplateMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(final TemplateMetadata metadata) {
+        this.metadata = metadata;
+    }
+
+    @JsonIgnore
+    public Blob getContent() {
+        return content;
+    }
+
+    public String getTemplateContent() {
+        if (content != null) {
+            return new String(content.getBytes(), Charsets.UTF_8);
         }
         return null;
     }
 
-    @JsonDeserialize(using = TemplateFileDeserializer.class)
-    public void setFile(Blob file) {
-        this.file = file;
+    @JsonDeserialize(using = BlobDeserializer.class)
+    public void setContent(final Blob content) {
+        this.content = content;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
+    }
+
+    public Set<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void addAttachment(final Attachment attachment) {
+        if (!attachments.contains(attachment)) {
+            attachments.add(attachment);
+        }
+    }
+
+    public Attachment getAttachment(final String filename) {
+        final Optional<Attachment> attachment = tryFind(attachments, new Predicate<Attachment>() {
+            @Override
+            public boolean apply(Attachment attachment) {
+                return filename.equals(attachment.getFilename());
+            }
+        });
+        return attachment.orNull();
     }
 
     @Override
@@ -86,15 +145,12 @@ public class Template extends BaseEntity implements Serializable {
     @Override
     public int hashCode() {
         int result = 0;
-
-        if(getId() != null) {
-          result = getId().hashCode() * 31;
+        if (getId() != null) {
+            result = getId().hashCode() * 31;
         }
-
-        if(getName() != null) {
-          result += getName().hashCode() * 64;
+        if (getName() != null) {
+            result += getName().hashCode() * 64;
         }
-
         return result + created.hashCode();
     }
 

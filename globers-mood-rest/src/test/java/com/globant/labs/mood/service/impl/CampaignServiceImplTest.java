@@ -25,6 +25,7 @@ import org.springframework.util.Assert;
 import javax.inject.Inject;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -60,7 +61,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
 
         final Template template = new Template();
         template.setName("Template");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         final Template storedTemplate = templateService.store(template);
 
@@ -80,6 +81,35 @@ public class CampaignServiceImplTest extends TransactionSupport {
     @After
     public void tearDown() {
         localServiceTestHelper.tearDown();
+    }
+
+    //    @Test
+    public void testAddRecursiveCampaign() throws Exception {
+        final User storedUser = userService.userByEmail("mauro.monti@globant.com");
+        final Template storedTemplate = templateService.templateByName("Template");
+
+        campaign = new Campaign("Campaign");
+        campaign.addTarget(storedUser);
+        campaign.setTemplate(storedTemplate);
+        campaign.setFrequency(Frequency.DAILY);
+        final Campaign storedCampaign = campaignService.store(campaign);
+
+        Assert.notNull(storedCampaign);
+        Assert.notNull(storedCampaign.getId());
+        Assert.isTrue(storedCampaign.getName().equals(campaign.getName()));
+        Assert.notEmpty(storedCampaign.getTargets());
+        Assert.notNull(storedCampaign.getTemplate());
+
+        campaignService.start(storedCampaign.getId());
+
+        final Page<Campaign> campaigns = campaignService.campaigns(new PageRequest(0, 100));
+        Assert.notNull(campaigns);
+        Assert.isTrue(campaigns.getNumberOfElements() == 2);
+
+        Set<Campaign> recursiveCampaigns = campaignService.recursiveCampaigns(storedCampaign.getId());
+        Assert.notNull(recursiveCampaigns);
+        Assert.isTrue(!recursiveCampaigns.isEmpty());
+        Assert.isTrue(recursiveCampaigns.size() == 1);
     }
 
     @Test
@@ -129,7 +159,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
 
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = templateService.store(template);
         campaign1.setTemplate(storedTemplate);
@@ -172,7 +202,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
         Assert.isTrue(campaigns.get(1).getFeedbacks().size() == 1);
     }
 
-    @Test
+    //    @Test
     public void testStartCampaign() throws Exception {
         final Campaign storedCampaign = campaignService.store(campaign);
         campaignService.start(storedCampaign.getId());
@@ -191,7 +221,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
 
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = templateService.store(template);
         campaign1.setTemplate(storedTemplate);
@@ -208,7 +238,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final FeedbackContent feedbackContainer1 = new FeedbackContent(storedCampaign1.getId(), storedUser1.getEmail(), token1, Sets.newHashSet(new Attribute("attribute-1", "5"), new Attribute("attribute-2", "2")));
         final Feedback storedFeedback1 = feedbackService.store(feedbackContainer1);
 
-        final FeedbackContent feedbackContainer2 = new FeedbackContent(storedCampaign1.getId(), storedUser2.getEmail(), token2, Sets.newHashSet(new Attribute("attribute-1", "4"),new Attribute("attribute-2", "6")));
+        final FeedbackContent feedbackContainer2 = new FeedbackContent(storedCampaign1.getId(), storedUser2.getEmail(), token2, Sets.newHashSet(new Attribute("attribute-1", "4"), new Attribute("attribute-2", "6")));
         final Feedback storedFeedback2 = feedbackService.store(feedbackContainer2);
 
         Assert.notNull(storedFeedback1);
@@ -219,7 +249,7 @@ public class CampaignServiceImplTest extends TransactionSupport {
         final Campaign campaign = campaignService.campaign(storedCampaign1.getId());
         Assert.notNull(campaign);
 
-        List<Double> attribute1Values =campaign.collect("attribute-1", Double.class);
+        List<Double> attribute1Values = campaign.collect("attribute-1", Double.class);
 
         Assert.notEmpty(attribute1Values);
         Assert.isTrue(attribute1Values.size() == 2);

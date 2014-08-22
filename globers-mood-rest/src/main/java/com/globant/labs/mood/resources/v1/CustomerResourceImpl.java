@@ -33,21 +33,29 @@ public class CustomerResourceImpl extends AbstractResource implements CustomerRe
     @GET
     @Override
     public Response customers() {
+        logger.info("method=customers()");
+
         return notNullResponse(customerService.customers(new PageRequest(0, 100)));
     }
 
     @POST
     @Override
     public Response addCustomer(@RequestBody final Customer customer) {
-        Preconditions.checkNotNull(customer, "customer cannot be null");
+        Preconditions.checkNotNull(customer, "customer is null");
+
+        logger.info("method=addCustomer(), args=[customer={}]", customer);
+
         return notNullResponse(customerService.store(customer));
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/{customerId}")
     @Override
-    public Response customer(@PathParam("id") final long id) {
-        Preconditions.checkNotNull(id, "id cannot be null");
-        return notNullResponse(customerService.customer(id));
+    public Response customer(@PathParam("customerId") final Long customerId) {
+        Preconditions.checkNotNull(customerId, "customerId is null");
+
+        logger.info("method=customer(), args=[customerId={}]", customerId);
+
+        return notNullResponse(customerService.customer(customerId));
     }
 }

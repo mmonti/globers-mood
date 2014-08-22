@@ -27,7 +27,6 @@ public class Preference extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      */
     public Preference(final String key) {
@@ -35,7 +34,6 @@ public class Preference extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      */
     public Preference(final PreferenceKey key) {
@@ -43,7 +41,6 @@ public class Preference extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      * @param value
      */
@@ -52,7 +49,6 @@ public class Preference extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param namespace
      * @param key
      * @param value
@@ -65,7 +61,6 @@ public class Preference extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      * @param value
      * @param namespace
@@ -77,7 +72,6 @@ public class Preference extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      * @param value
      */
@@ -86,7 +80,6 @@ public class Preference extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param namespace
      * @param key
      * @param value
@@ -136,7 +129,8 @@ public class Preference extends BaseEntity implements Serializable {
         Preference that = (Preference) o;
 
         if (!preferenceKey.equals(that.preferenceKey)) return false;
-        if (preferenceValue != null ? !preferenceValue.equals(that.preferenceValue) : that.preferenceValue != null) return false;
+        if (preferenceValue != null ? !preferenceValue.equals(that.preferenceValue) : that.preferenceValue != null)
+            return false;
 
         return true;
     }

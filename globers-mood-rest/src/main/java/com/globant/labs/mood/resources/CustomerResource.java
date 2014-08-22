@@ -10,22 +10,19 @@ import javax.ws.rs.core.Response;
 public interface CustomerResource {
 
     /**
-     *
      * @param customer
      * @return
      */
     Response addCustomer(final Customer customer);
 
     /**
-     *
      * @return
      */
     Response customers();
 
     /**
-     *
      * @param id
      * @return
      */
-    Response customer(final long id);
+    Response customer(final Long customerId);
 }

@@ -37,7 +37,6 @@ public enum Frequency {
     }
 
 
-
     public Date getScheduleDate(final Date date) {
         return getDate(date, 1);
     }

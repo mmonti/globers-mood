@@ -21,13 +21,12 @@ public class IllegalArgumentExceptionMapping implements ExceptionMapper<IllegalA
     private static final Logger logger = LoggerFactory.getLogger(IllegalArgumentExceptionMapping.class);
 
     /**
-     *
      * @param exception
      * @return
      */
     @Override
     public Response toResponse(final IllegalArgumentException exception) {
-        logger.error("Illegal argument exception detected", exception);
+        logger.debug("Illegal argument exception detected", exception);
         return BaseResourceException.createResponse(Response.Status.BAD_REQUEST, exception);
     }
 }

@@ -1,41 +1,53 @@
 package com.globant.labs.mood.model.mail;
 
-import com.google.common.base.Preconditions;
+import com.globant.labs.mood.model.persistent.Campaign;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author mauro.monti (monti.mauro@gmail.com)
+ * Created by mmonti on 8/17/14.
  */
-public class DispatchResult {
-
-    private Set<MailMessage> notifications;
-    private Set<MailMessage> pendingNotifications;
+public interface DispatchResult {
 
     /**
      *
-     * @param notifications
+     * @return
      */
-    public DispatchResult(final Set<MailMessage> notifications) {
-        this.notifications = notifications;
-        this.pendingNotifications = new HashSet<MailMessage>();
-    }
+    boolean hasPendings();
 
-    public boolean hasPendingNotifications() {
-        return this.getPendingNotifications().size() > 0;
-    }
+    /**
+     *
+     * @return
+     */
+    boolean hasDispatched();
 
-    public void addAsPendingNotification(final MailMessage mailMessage) {
-        Preconditions.checkNotNull(mailMessage);
-        this.pendingNotifications.add(mailMessage);
-    }
+    /**
+     *
+     * @param mailMessage
+     */
+    void addAsDispatched(final MailMessage mailMessage);
 
-    public Set<MailMessage> getNotifications() {
-        return notifications;
-    }
+    /**
+     *
+     * @param mailMessage
+     */
+    void addAsPendingToDispatch(final MailMessage mailMessage);
 
-    public Set<MailMessage> getPendingNotifications() {
-        return pendingNotifications;
-    }
+    /**
+     *
+     * @return
+     */
+    Set<MailMessage> getDispatched();
+
+    /**
+     *
+     * @return
+     */
+    Set<MailMessage> getDispatchPending();
+
+    /**
+     *
+     * @return
+     */
+    Campaign getCampaign();
 }

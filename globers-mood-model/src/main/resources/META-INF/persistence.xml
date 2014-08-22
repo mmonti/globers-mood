@@ -4,37 +4,39 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" version="1.0">
 
-	<persistence-unit name="transactions-optional">
-		<provider>org.datanucleus.api.jpa.PersistenceProviderImpl</provider>
+    <persistence-unit name="transactions-optional">
+        <provider>org.datanucleus.api.jpa.PersistenceProviderImpl</provider>
 
-		<class>com.globant.labs.mood.model.persistent.BaseEntity</class>
-		<class>com.globant.labs.mood.model.persistent.Campaign</class>
-		<class>com.globant.labs.mood.model.persistent.Customer</class>
-		<class>com.globant.labs.mood.model.persistent.Feedback</class>
-		<class>com.globant.labs.mood.model.persistent.Project</class>
-		<class>com.globant.labs.mood.model.persistent.User</class>
-		<class>com.globant.labs.mood.model.persistent.Template</class>
-		<class>com.globant.labs.mood.model.persistent.Preference</class>
+        <class>com.globant.labs.mood.model.persistent.BaseEntity</class>
+        <class>com.globant.labs.mood.model.persistent.Campaign</class>
+        <class>com.globant.labs.mood.model.persistent.Customer</class>
+        <class>com.globant.labs.mood.model.persistent.Feedback</class>
+        <class>com.globant.labs.mood.model.persistent.Project</class>
+        <class>com.globant.labs.mood.model.persistent.User</class>
+        <class>com.globant.labs.mood.model.persistent.Template</class>
+        <class>com.globant.labs.mood.model.persistent.TemplateMetadata</class>
+        <class>com.globant.labs.mood.model.persistent.Preference</class>
         <class>com.globant.labs.mood.model.persistent.Attribute</class>
-        <class>com.globant.labs.mood.model.persistent.Metadata</class>
+        <class>com.globant.labs.mood.model.persistent.ElementMetadata</class>
+        <class>com.globant.labs.mood.model.persistent.Attachment</class>
 
-		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
-		<properties>
-			<property name="datanucleus.NontransactionalRead" value="true"/>
-			<property name="datanucleus.NontransactionalWrite" value="true"/>
-			<property name="datanucleus.ConnectionURL" value="appengine"/>
-			<property name="datanucleus.singletonEMFForName" value="true"/>
-			<property name="datanucleus.appengine.autoCreateDatastoreTxns" value="false" />
-			<property name="datanucleus.appengine.storageVersion" value="WRITE_OWNED_CHILD_KEYS_TO_PARENTS"/>
-			<property name="datanucleus.appengine.query.inMemoryWhenUnsupported" value="true"/>
+        <properties>
+            <property name="datanucleus.NontransactionalRead" value="true"/>
+            <property name="datanucleus.NontransactionalWrite" value="true"/>
+            <property name="datanucleus.ConnectionURL" value="appengine"/>
+            <property name="datanucleus.singletonEMFForName" value="true"/>
+            <property name="datanucleus.appengine.autoCreateDatastoreTxns" value="false"/>
+            <property name="datanucleus.appengine.storageVersion" value="WRITE_OWNED_CHILD_KEYS_TO_PARENTS"/>
+            <property name="datanucleus.appengine.query.inMemoryWhenUnsupported" value="true"/>
             <!--<property name="datanucleus.appengine.ignorableMetaDataBehavior" value="true"/>-->
 
-			<property name="datanucleus.DetachAllOnCommit" value="false"/>
-			<property name="datanucleus.DetachOnClose" value="true"/>
+            <property name="datanucleus.DetachAllOnCommit" value="false"/>
+            <property name="datanucleus.DetachOnClose" value="true"/>
 
-		</properties>
+        </properties>
 
-	</persistence-unit>
+    </persistence-unit>
 
 </persistence>

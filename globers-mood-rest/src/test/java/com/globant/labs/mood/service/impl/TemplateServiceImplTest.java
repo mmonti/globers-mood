@@ -1,6 +1,7 @@
 package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.config.RootConfig;
+import com.globant.labs.mood.model.persistent.Attachment;
 import com.globant.labs.mood.model.persistent.Template;
 import com.globant.labs.mood.service.TemplateService;
 import com.google.appengine.api.datastore.Blob;
@@ -46,7 +47,7 @@ public class TemplateServiceImplTest {
     public void testAddTemplate() throws Exception {
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = service.store(template);
         Assert.notNull(storedTemplate);
@@ -57,7 +58,7 @@ public class TemplateServiceImplTest {
     public void testTemplates() throws Exception {
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = service.store(template);
         final Page<Template> templates = service.templates(new PageRequest(0, 100));
@@ -70,7 +71,7 @@ public class TemplateServiceImplTest {
     public void testTemplateById() throws Exception {
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = service.store(template);
         final Template loadedTemplate = service.template(storedTemplate.getId());
@@ -83,12 +84,31 @@ public class TemplateServiceImplTest {
     public void testTemplateByName() throws Exception {
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         Template storedTemplate = service.store(template);
         final Template loadedTemplate = service.templateByName(template.getName());
 
         Assert.notNull(loadedTemplate);
         Assert.isTrue(loadedTemplate.getId().equals(storedTemplate.getId()));
+    }
+
+    @Test
+    public void testTemplateAddWithAttachments() throws Exception {
+        final Template template = new Template();
+        template.setName("Template 1");
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
+
+        final Attachment attachment = new Attachment("logo.gif");
+        attachment.setContent(new Blob("This is an array of bytes".getBytes()));
+        template.addAttachment(attachment);
+
+        final Template storedTemplate = service.store(template);
+        final Template loadedTemplate = service.templateByName(template.getName());
+
+        Assert.notNull(loadedTemplate);
+        Assert.isTrue(loadedTemplate.getId().equals(storedTemplate.getId()));
+        Assert.notNull(loadedTemplate.getAttachments());
+        Assert.notEmpty(loadedTemplate.getAttachments());
     }
 }

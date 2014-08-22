@@ -23,6 +23,7 @@ public class PingResourceImpl extends AbstractResource implements PingResource {
     @Path("/ping")
     @Override
     public Response ping() {
+        logger.info("method=ping()");
         return Response.ok(System.currentTimeMillis()).build();
     }
 }

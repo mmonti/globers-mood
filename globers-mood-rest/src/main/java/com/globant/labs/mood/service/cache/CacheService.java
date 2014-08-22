@@ -8,7 +8,6 @@ import java.io.Serializable;
 public interface CacheService {
 
     /**
-     *
      * @param key
      * @param returningObject
      * @param <T>
@@ -17,14 +16,12 @@ public interface CacheService {
     <T> T get(final Serializable key, final Class<T> returningObject);
 
     /**
-     *
      * @param key
      * @param value
      */
     void store(final Serializable key, final Object value);
 
     /**
-     *
      * @param key
      * @param value
      */

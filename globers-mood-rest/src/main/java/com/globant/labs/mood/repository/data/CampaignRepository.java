@@ -12,6 +12,9 @@ import java.util.List;
  */
 public interface CampaignRepository extends GenericRepository<Campaign, Long> {
 
+    /**
+     * @return
+     */
     @Query("select campaign from Campaign campaign order by campaign.feedbackNumber desc")
     List<Campaign> mostActive();
 
@@ -31,30 +34,43 @@ public interface CampaignRepository extends GenericRepository<Campaign, Long> {
     List<Campaign> campaignFromDate(final Date fromDate, final Pageable pageable);
 
     /**
+     * @param campaignId
+     * @return
+     */
+    @Query("select campaign from Campaign campaign where campaign.parentId = ?1 order by campaign.created desc")
+    List<Campaign> recursiveCampaigns(final long campaignId);
+
+    /**
      * @param fromDate
      * @return
      */
-    @Query("select campaign from Campaign campaign where campaign.startDate is not null and campaign.startDate < ?1 and campaign.status in ('CREATED')")
+    @Query(value = "select campaign from Campaign campaign where campaign.scheduleDate is not null and campaign.scheduleDate < ?1")
     List<Campaign> scheduledReadyToStart(final Date fromDate);
 
     /**
-     * @param fromDate
+     * @param scheduleDate
      * @return
      */
-    @Query("select campaign from Campaign campaign where campaign.startDate is not null and campaign.startDate > :fromDate and campaign.status in ('CREATED')")
-    List<Campaign> scheduledPendingToStart(final Date fromDate);
+    @Query("select campaign from Campaign campaign where campaign.scheduleDate is not null and campaign.scheduleDate > ?1")
+    List<Campaign> scheduledPendingToStart(final Date scheduleDate);
 
     /**
      * @param fromDate
      * @return
      */
-    @Query("select campaign from Campaign campaign where campaign.endDate is not null and campaign.endDate < ?1 and campaign.status in ('CREATED', 'STARTED', 'WAITING_FOR_FEEDBACK')")
+    @Query("select campaign from Campaign campaign where campaign.expirationDate is not null and campaign.expirationDate < ?1")
     List<Campaign> scheduledReadyToClose(final Date fromDate);
 
     /**
      *
      */
-    @Query("select campaign from Campaign campaign where campaign.endDate is not null and campaign.endDate > ?1 and campaign.status in ('CREATED', 'STARTED', 'WAITING_FOR_FEEDBACK')")
+    @Query("select campaign from Campaign campaign where campaign.expirationDate is not null and campaign.expirationDate > ?1")
     List<Campaign> scheduledNextToExpire(final Date fromDate);
+
+    /**
+     *
+     */
+    @Query("select count(campaign) from Campaign campaign where campaign.template.id = ?1")
+    Long countCampaignsWithTemplate(final Long templateId);
 
 }

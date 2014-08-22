@@ -6,7 +6,6 @@ package com.globant.labs.mood.model.mail;
 public interface MailMessageTemplate {
 
     /**
-     *
      * @return
      */
     String eval(final Object context);

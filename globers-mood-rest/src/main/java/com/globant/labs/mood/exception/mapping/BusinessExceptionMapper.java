@@ -40,20 +40,19 @@ public class BusinessExceptionMapper implements ExceptionMapper<BusinessExceptio
         mappings.put(ILLEGAL_STATE, PRECONDITION_FAILED);
         mappings.put(NOT_SUPPORTED, NOT_ACCEPTABLE);
         mappings.put(NOT_ALLOWED, FORBIDDEN);
-        mappings.put(EXPECTATION_FAILED, INTERNAL_SERVER_ERROR);
+        mappings.put(EXPECTATION_FAILED, PRECONDITION_FAILED);
         mappings.put(INTERNAL_ERROR, INTERNAL_SERVER_ERROR);
         mappings.put(FEEDBACK_ALREADY_SUBMITTED, PRECONDITION_FAILED);
         mappings.put(CAMPAIGN_ALREADY_CLOSED, PRECONDITION_FAILED);
     }
 
     /**
-     *
      * @param exception
      * @return
      */
     @Override
     public Response toResponse(final BusinessException exception) {
-        logger.error("business precondition not met while processing the request", exception);
+        logger.debug("business precondition not met while processing the request", exception);
 
         final BusinessException.ErrorCode errorCode = exception.getErrorCode();
         if (exception.isRedirectToView()) {
@@ -63,7 +62,6 @@ public class BusinessExceptionMapper implements ExceptionMapper<BusinessExceptio
     }
 
     /**
-     *
      * @param errorCode
      * @return
      */
@@ -73,7 +71,6 @@ public class BusinessExceptionMapper implements ExceptionMapper<BusinessExceptio
     }
 
     /**
-     *
      * @param errorCode
      * @return
      */

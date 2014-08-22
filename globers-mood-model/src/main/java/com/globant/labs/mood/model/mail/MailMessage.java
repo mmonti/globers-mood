@@ -1,5 +1,6 @@
 package com.globant.labs.mood.model.mail;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.User;
 
@@ -12,8 +13,7 @@ public class MailMessage implements Serializable {
 
     private static final long serialVersionUID = 5114330117273764214L;
 
-    private Sender sender;
-    private String subject;
+    private MailSettings mailSettings;
     private String token;
     private Campaign campaign;
     private User target;
@@ -21,17 +21,13 @@ public class MailMessage implements Serializable {
     private MailMessageTemplate mailMessageTemplate;
 
     /**
-     *
      * @param mailMessageTemplate
-     * @param sender
-     * @param subject
-     * @param token
+     * @param mailSettings
      * @param campaign
      * @param target
      */
-    public MailMessage(final MailMessageTemplate mailMessageTemplate, final Sender sender, final String subject, final String token, final Campaign campaign, final User target) {
-        this.sender = sender;
-        this.subject = subject;
+    public MailMessage(final MailMessageTemplate mailMessageTemplate, final MailSettings mailSettings, final String token, final Campaign campaign, final User target) {
+        this.mailSettings = mailSettings;
         this.token = token;
         this.campaign = campaign;
         this.target = target;
@@ -39,8 +35,8 @@ public class MailMessage implements Serializable {
         this.context = ContextFactory.getInstance();
     }
 
-    public Sender getSender() {
-        return sender;
+    public MailSettings getMailSettings() {
+        return mailSettings;
     }
 
     public Campaign getCampaign() {
@@ -59,10 +55,7 @@ public class MailMessage implements Serializable {
         return token;
     }
 
-    public String getSubject() {
-        return subject;
-    }
-
+    @JsonIgnore
     public MailMessageTemplate getMailMessageTemplate() {
         return mailMessageTemplate;
     }

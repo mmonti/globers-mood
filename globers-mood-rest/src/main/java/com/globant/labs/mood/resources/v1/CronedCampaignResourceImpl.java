@@ -3,6 +3,7 @@ package com.globant.labs.mood.resources.v1;
 import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.CronedCampaignResource;
 import com.globant.labs.mood.service.CampaignService;
+import com.google.appengine.api.search.checkers.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,8 @@ public class CronedCampaignResourceImpl extends AbstractResource implements Cron
     @Path("/start")
     @Override
     public Response scheduledReadyToStart() {
+        logger.info("method=scheduledReadyToStart()");
+
         campaignService.scheduledReadyToStart();
         return Response.ok().build();
     }
@@ -36,6 +39,8 @@ public class CronedCampaignResourceImpl extends AbstractResource implements Cron
     @Path("/start/pending")
     @Override
     public Response scheduledPendingToStart() {
+        logger.info("method=scheduledPendingToStart()");
+
         return notEmptyResponse(campaignService.scheduledPendingToStart());
     }
 
@@ -43,6 +48,8 @@ public class CronedCampaignResourceImpl extends AbstractResource implements Cron
     @Path("/close")
     @Override
     public Response scheduledReadyToClose() {
+        logger.info("method=scheduledReadyToClose()");
+
         campaignService.scheduledReadyToClose();
         return Response.ok().build();
     }
@@ -51,6 +58,8 @@ public class CronedCampaignResourceImpl extends AbstractResource implements Cron
     @Path("/close/pending")
     @Override
     public Response scheduledNextToExpire() {
+        logger.info("method=scheduledNextToExpire()");
+
         return notEmptyResponse(campaignService.scheduledNextToExpire());
     }
 }

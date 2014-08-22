@@ -34,7 +34,6 @@ public enum CampaignStatus {
     }
 
     /**
-     *
      * @param status
      * @return
      */

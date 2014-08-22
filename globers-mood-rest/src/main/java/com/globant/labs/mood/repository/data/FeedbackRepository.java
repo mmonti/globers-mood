@@ -15,14 +15,6 @@ public interface FeedbackRepository extends GenericRepository<Feedback, Long> {
 
     /**
      * @param campaign
-     * @param user
-     * @return
-     */
-    @Query("select feedback from Feedback feedback where feedback.campaign = ?1 and feedback.user = ?2")
-    Feedback feedbackAlreadySubmitted(final Campaign campaign, final User user);
-
-    /**
-     * @param campaign
      * @return
      */
     @Query("select feedback from Feedback feedback where feedback.campaign = ?1")
@@ -36,11 +28,12 @@ public interface FeedbackRepository extends GenericRepository<Feedback, Long> {
     List<Feedback> feedbackOfUser(final User user);
 
     /**
+     * @param campaign
      * @param user
      * @return
      */
     @Query("select feedback from Feedback feedback where feedback.campaign = ?1 and feedback.user = ?2")
-    List<Feedback> feedbackOfUserCampaign(final Campaign campaign, final User user);
+    Feedback feedbackOfUser(final Campaign campaign, final User user);
 
     /**
      * @param fromDate

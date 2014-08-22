@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface ProjectRepository extends GenericRepository<Project, Long> {
 
     /**
-     *
      * @param customer
      * @return
      */
@@ -18,7 +17,6 @@ public interface ProjectRepository extends GenericRepository<Project, Long> {
     Project projectByCustomer(final Customer customer);
 
     /**
-     *
      * @param name
      * @return
      */

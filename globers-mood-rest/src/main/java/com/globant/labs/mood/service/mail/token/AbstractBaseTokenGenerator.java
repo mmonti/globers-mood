@@ -20,7 +20,6 @@ public abstract class AbstractBaseTokenGenerator implements TokenGenerator {
     }
 
     /**
-     *
      * @return
      */
     public String getSecret() {

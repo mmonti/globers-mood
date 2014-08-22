@@ -1,6 +1,7 @@
 package com.globant.labs.mood.service;
 
 import com.globant.labs.mood.model.persistent.Template;
+import com.globant.labs.mood.model.persistent.TemplateMetadata;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -30,10 +31,10 @@ public interface TemplateService {
     Template store(final String name, final InputStream inputStream);
 
     /**
-     * @param id
+     * @param templateId
      * @return
      */
-    Template template(final long id);
+    Template template(final Long templateId);
 
     /**
      * @param name
@@ -41,4 +42,22 @@ public interface TemplateService {
      */
     Template templateByName(final String name);
 
+    /**
+     * @param templateId
+     * @return
+     */
+    void remove(final Long templateId);
+
+    /**
+     * @param templateId
+     * @return
+     */
+    TemplateMetadata analyze(final Long templateId);
+
+    /**
+     *
+     * @param templateId
+     * @param metadata
+     */
+    void setMetadata(final Long templateId, final TemplateMetadata metadata);
 }

@@ -32,33 +32,43 @@ public class UserServiceImpl extends AbstractService implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Page<User> users(final Pageable pageable) {
+        logger.info("method=users(), args=[pageable={}]", pageable);
+
         return userRepository.findAll(pageable);
     }
 
     @Transactional
     @Override
     public User store(final User user) {
-        Preconditions.checkNotNull(user, "user cannot be null");
+        Preconditions.checkNotNull(user, "user is null");
+
+        logger.info("method=store(), args=[user={}]", user);
 
         final User existentUser = userByEmail(user.getEmail());
         if (existentUser != null) {
-            logger.debug("store - user with email=[{}] already existent", user.getEmail());
-            throw new BusinessException(on("user with email=[{}] already existent.", user.getEmail()), EXPECTATION_FAILED);
+            logger.error("method=store() - user email=[{}] already exist", user.getEmail());
+            throw new BusinessException(on("User with email=[{}] already exist.", user.getEmail()), EXPECTATION_FAILED);
         }
         return userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public User user(final long id) {
-        Preconditions.checkNotNull(id, "id cannot be null");
-        return userRepository.findOne(id);
+    public User user(final Long userId) {
+        Preconditions.checkNotNull(userId, "userId is null");
+
+        logger.info("method=user(), args=[userId={}]", userId);
+
+        return userRepository.findOne(userId);
     }
 
     @Transactional(readOnly = true)
     @Override
     public User userByEmail(final String email) {
-        Preconditions.checkNotNull(email, "email cannot be null");
+        Preconditions.checkNotNull(email, "email is null");
+
+        logger.info("method=userByEmail(), args=[email={}]", email);
+
         return userRepository.findByEmail(email);
     }
 

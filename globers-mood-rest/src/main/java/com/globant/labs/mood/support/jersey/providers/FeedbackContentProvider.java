@@ -17,8 +17,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
-* Created by mmonti on 7/31/14.
-*/
+ * Created by mmonti on 7/31/14.
+ */
 @Provider
 @Produces({"application/x-www-form-urlencoded", "*/*"})
 @Consumes({"application/x-www-form-urlencoded", "*/*"})
@@ -27,7 +27,6 @@ public final class FeedbackContentProvider extends BaseFormProvider<FeedbackCont
     private static final Logger logger = LoggerFactory.getLogger(FeedbackContentProvider.class);
 
     /**
-     *
      * @param type
      * @param genericType
      * @param annotations
@@ -44,7 +43,6 @@ public final class FeedbackContentProvider extends BaseFormProvider<FeedbackCont
     }
 
     /**
-     *
      * @param type
      * @param genericType
      * @param annotations
@@ -66,7 +64,6 @@ public final class FeedbackContentProvider extends BaseFormProvider<FeedbackCont
     }
 
     /**
-     *
      * @param type
      * @param genericType
      * @param annotations
@@ -83,7 +80,6 @@ public final class FeedbackContentProvider extends BaseFormProvider<FeedbackCont
     }
 
     /**
-     *
      * @param classType
      * @param type
      * @param genericType

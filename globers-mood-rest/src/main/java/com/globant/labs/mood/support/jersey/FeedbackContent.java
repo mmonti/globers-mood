@@ -19,15 +19,15 @@ public class FeedbackContent extends Form {
     private static final String EMAIL = "email";
     private static final String TOKEN = "token";
 
-    private static final String[] RESERVED_KEYS = { CAMPAIGN_ID, EMAIL, TOKEN };
+    private static final String[] RESERVED_KEYS = {CAMPAIGN_ID, EMAIL, TOKEN};
 
     /**
      *
      */
-    public FeedbackContent() {}
+    public FeedbackContent() {
+    }
 
     /**
-     *
      * @param campaignId
      * @param email
      * @param token
@@ -44,7 +44,6 @@ public class FeedbackContent extends Form {
     }
 
     /**
-     *
      * @return
      */
     public Long getCampaignId() {
@@ -52,7 +51,6 @@ public class FeedbackContent extends Form {
     }
 
     /**
-     *
      * @return
      */
     public String getEmail() {
@@ -60,7 +58,6 @@ public class FeedbackContent extends Form {
     }
 
     /**
-     *
      * @return
      */
     public String getToken() {
@@ -68,7 +65,6 @@ public class FeedbackContent extends Form {
     }
 
     /**
-     *
      * @return
      */
     public Set<Attribute> getAttributes() {

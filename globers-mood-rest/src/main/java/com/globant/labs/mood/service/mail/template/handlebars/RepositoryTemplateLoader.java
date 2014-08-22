@@ -22,6 +22,6 @@ public class RepositoryTemplateLoader extends AbstractTemplateLoader {
     @Override
     public TemplateSource sourceAt(final String location) throws IOException {
         final Template template = templateService.templateByName(location);
-        return new StringTemplateSource(template.getName(), template.getTemplate());
+        return new StringTemplateSource(template.getName(), template.getTemplateContent());
     }
 }

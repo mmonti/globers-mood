@@ -33,36 +33,45 @@ public class FeedbackResourceImpl extends AbstractResource implements FeedbackRe
     @Path("/submit")
     @Produces(MediaType.TEXT_HTML)
     @Override
-    public Response submitFeedback(final FeedbackContent feedbackContainer) {
-        Preconditions.checkNotNull(feedbackContainer.getCampaignId(), "campaignId cannot be null");
-        Preconditions.checkNotNull(feedbackContainer.getEmail(), "email cannot be null");
-        Preconditions.checkNotNull(feedbackContainer.getToken(), "token cannot be null");
+    public Response submitFeedback(final FeedbackContent feedbackContent) {
+        Preconditions.checkNotNull(feedbackContent, "feedbackContent is null");
 
-        return Response.ok(new Viewable(FEEDBACK_STORED, feedbackService.store(feedbackContainer))).build();
+        logger.info("method=submitFeedback(), args=[feedbackContent={}]", feedbackContent);
+
+        return Response.ok(new Viewable(FEEDBACK_STORED, feedbackService.store(feedbackContent))).build();
     }
 
     @GET
     @Path("/user/{userId}")
     @Override
-    public Response feedbackOfUser(@PathParam("userId") final long userId) {
-        Preconditions.checkNotNull(userId, "userId cannot be null");
+    public Response feedbackOfUser(@PathParam("userId") final Long userId) {
+        Preconditions.checkNotNull(userId, "userId is null");
+
+        logger.info("method=feedbackOfUser(), args=[userId={}]", userId);
+
         return notEmptyResponse(feedbackService.feedbackOfUser(userId));
     }
 
     @GET
     @Path("/campaign/{campaignId}")
     @Override
-    public Response feedbackOfCampaign(@PathParam("campaignId") final long campaignId) {
-        Preconditions.checkNotNull(campaignId, "campaignId cannot be null");
+    public Response feedbackOfCampaign(@PathParam("campaignId") final Long campaignId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+
+        logger.info("method=feedbackOfCampaign(), args=[campaignId={}]", campaignId);
+
         return notEmptyResponse(feedbackService.feedbackOfCampaign(campaignId));
     }
 
     @GET
     @Path("/campaign/{campaignId}/user/{userId}")
     @Override
-    public Response feedbackOfUserCampaign(@PathParam("campaignId") final long campaignId, @PathParam("userId") final long userId) {
-        Preconditions.checkNotNull(campaignId, "campaignId cannot be null");
-        Preconditions.checkNotNull(userId, "userId cannot be null");
-        return notEmptyResponse(feedbackService.feedbackOfUserCampaign(campaignId, userId));
+    public Response feedbackOfUser(@PathParam("campaignId") final Long campaignId, @PathParam("userId") final Long userId) {
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+        Preconditions.checkNotNull(userId, "userId is null");
+
+        logger.info("method=feedbackOfUser(), args=[campaignId={}, userId={}]", campaignId, userId);
+
+        return notNullResponse(feedbackService.feedbackOfUser(campaignId, userId));
     }
 }

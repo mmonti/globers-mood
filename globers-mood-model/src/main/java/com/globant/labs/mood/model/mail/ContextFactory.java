@@ -8,7 +8,6 @@ import com.globant.labs.mood.model.mail.impl.MapBackedContext;
 public class ContextFactory {
 
     /**
-     *
      * @return
      */
     public static Context getInstance() {

@@ -10,32 +10,28 @@ import javax.ws.rs.core.Response;
 public interface FeedbackResource {
 
     /**
-     *
-     * @param feedbackContainer
+     * @param feedbackContent
      * @return
      */
-    Response submitFeedback(final FeedbackContent feedbackContainer);
+    Response submitFeedback(final FeedbackContent feedbackContent);
 
     /**
-     *
      * @param userId
      * @return
      */
-    Response feedbackOfUser(final long userId);
+    Response feedbackOfUser(final Long userId);
 
     /**
-     *
      * @param campaignId
      * @param userId
      * @return
      */
-    Response feedbackOfUserCampaign(final long campaignId, final long userId);
+    Response feedbackOfUser(final Long campaignId, final Long userId);
 
     /**
-     *
      * @param campaignId
      * @return
      */
-    Response feedbackOfCampaign(final long campaignId);
+    Response feedbackOfCampaign(final Long campaignId);
 
 }

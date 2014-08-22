@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import java.util.Set;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.RESOURCE_NOT_FOUND;
 import static com.globant.labs.mood.support.StringSupport.on;
 
 /**
@@ -31,43 +32,54 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
 
     @Inject
     private ProjectRepository projectRepository;
+
     @Inject
     private UserRepository userRepository;
 
     @Transactional(readOnly = true)
     @Override
     public Page<Project> projects(final Pageable pageable) {
+        logger.info("method=projects(), args=[pageable=[{}]]", pageable);
+
         return projectRepository.findAll(pageable);
     }
 
     @Transactional
     @Override
     public Project store(final Project project) {
-        Preconditions.checkNotNull(project, "project cannot be null");
+        Preconditions.checkNotNull(project, "project is null");
+
+        logger.info("method=store(), args=[project=[{}]]", project);
+
         final Project storedProject = projectRepository.projectByName(project.getName());
         if (storedProject != null) {
-            logger.debug("store - project with name=[{}] already existent", project.getName());
-            throw new BusinessException(on("project with name=[{}] already existent.", project.getName()), EXPECTATION_FAILED);
+            logger.error("method=store() - project name=[{}] already exist", project.getName());
+            throw new BusinessException(on("Project with name=[{}] already exist.", project.getName()), EXPECTATION_FAILED);
         }
         return projectRepository.save(project);
     }
 
     @Transactional
     @Override
-    public boolean assign(final long projectId, final long userId) {
-        Preconditions.checkNotNull(projectId, "projectId cannot be null");
-        Preconditions.checkNotNull(userId, "userId cannot be null");
+    public boolean assign(final Long projectId, final Long userId) {
+        Preconditions.checkNotNull(projectId, "projectId is null");
+        Preconditions.checkNotNull(userId, "userId is null");
 
-        final Project project = projectRepository.findOne(projectId);
+        logger.info("method=assign(), args=[projectId=[{}], userId=[{}]]", projectId, userId);
+
+        final Project project = project(projectId);
         if (project == null) {
-            throw new BusinessException(on("project with id=[{}] not found", projectId), BusinessException.ErrorCode.RESOURCE_NOT_FOUND);
+            logger.error("method=assign() - projectId=[{}] not found", projectId);
+            throw new BusinessException(on("Project with id=[{}] not found.", projectId), RESOURCE_NOT_FOUND);
         }
 
         final User user = userRepository.findOne(userId);
         if (user == null) {
-            throw new BusinessException(on("user with id=[{}] not found", userId), BusinessException.ErrorCode.RESOURCE_NOT_FOUND);
+            logger.error("method=assign() - userId=[{}] not found", userId);
+            throw new BusinessException(on("User with id=[{}] not found.", userId), RESOURCE_NOT_FOUND);
         }
 
+        logger.info("method=assign() - assigning userId=[{}] to projectId=[{}]", userId, projectId);
         if (project.assign(user)) {
             projectRepository.saveAndFlush(project);
             return Boolean.TRUE;
@@ -77,20 +89,25 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
 
     @Transactional
     @Override
-    public boolean release(final long projectId, final long userId) {
-        Preconditions.checkNotNull(projectId, "projectId cannot be null");
-        Preconditions.checkNotNull(userId, "userId cannot be null");
+    public boolean release(final Long projectId, final Long userId) {
+        Preconditions.checkNotNull(projectId, "projectId is null");
+        Preconditions.checkNotNull(userId, "userId is null");
 
-        final Project project = projectRepository.findOne(projectId);
+        logger.info("method=release(), args=[projectId=[{}], userId=[{}]]", projectId, userId);
+
+        final Project project = project(projectId);
         if (project == null) {
-            throw new BusinessException(on("project with id=[{}] not found", projectId), BusinessException.ErrorCode.RESOURCE_NOT_FOUND);
+            logger.error("method=release() - projectId=[{}] not found", projectId);
+            throw new BusinessException(on("Project with id=[{}] not found.", projectId), RESOURCE_NOT_FOUND);
         }
 
         final User user = userRepository.findOne(userId);
         if (user == null) {
-            throw new BusinessException(on("user with id=[{}] not found", userId), BusinessException.ErrorCode.RESOURCE_NOT_FOUND);
+            logger.error("method=release() - userId=[{}] not found", userId);
+            throw new BusinessException(on("User with id=[{}] not found.", userId), RESOURCE_NOT_FOUND);
         }
 
+        logger.info("method=release() - releasing userId=[{}] from projectId=[{}]", userId, projectId);
         if (project.release(user)) {
             projectRepository.save(project);
             return Boolean.TRUE;
@@ -100,16 +117,22 @@ public class ProjectServiceImpl extends AbstractService implements ProjectServic
 
     @Transactional(readOnly = true)
     @Override
-    public Project project(final long id) {
-        Preconditions.checkNotNull(id, "id cannot be null");
-        return projectRepository.findOne(id);
+    public Project project(final Long projectId) {
+        Preconditions.checkNotNull(projectId, "projectId is null");
+
+        logger.info("method=project(), args=[projectId=[{}]]", projectId);
+
+        return projectRepository.findOne(projectId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Set<User> usersOfProject(final long id) {
-        Preconditions.checkNotNull(id, "id cannot be null");
-        final Project project = projectRepository.findOne(id);
+    public Set<User> usersOfProject(final Long projectId) {
+        Preconditions.checkNotNull(projectId, "projectId is null");
+
+        logger.info("method=usersOfProject(), args=[projectId=[{}]]", projectId);
+
+        final Project project = projectRepository.findOne(projectId);
         return project.getUsers();
     }
 }

@@ -20,7 +20,6 @@ public class NodeImpl implements Node, Serializable {
     private List<NodeImpl> childs;
 
     /**
-     *
      * @param key
      */
     public NodeImpl(final String key) {
@@ -31,7 +30,6 @@ public class NodeImpl implements Node, Serializable {
     }
 
     /**
-     *
      * @return
      */
     public String getKey() {
@@ -39,7 +37,6 @@ public class NodeImpl implements Node, Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Object getValue() {
@@ -47,7 +44,6 @@ public class NodeImpl implements Node, Serializable {
     }
 
     /**
-     *
      * @return
      */
     public List<NodeImpl> getChilds() {
@@ -55,7 +51,6 @@ public class NodeImpl implements Node, Serializable {
     }
 
     /**
-     *
      * @return
      */
     public NodeImpl getParent() {
@@ -63,7 +58,6 @@ public class NodeImpl implements Node, Serializable {
     }
 
     /**
-     *
      * @param name
      * @return
      */
@@ -83,7 +77,6 @@ public class NodeImpl implements Node, Serializable {
     }
 
     /**
-     *
      * @param value
      * @return
      */
@@ -111,7 +104,7 @@ public class NodeImpl implements Node, Serializable {
         }
 
         // = Forward search.
-        while(root.getValue() != null) {
+        while (root.getValue() != null) {
             if (root.getKey().equals(name)) {
                 return root;
             }
@@ -120,13 +113,13 @@ public class NodeImpl implements Node, Serializable {
                 root = NodeImpl.class.cast(root.getValue());
             } else if (root.getValue().getClass().isAssignableFrom(ArrayList.class)) {
                 return getMatchingNode(root.getChilds(), name);
-            };
+            }
+            ;
         }
         return null;
     }
 
     /**
-     *
      * @param nodes
      * @param name
      * @return

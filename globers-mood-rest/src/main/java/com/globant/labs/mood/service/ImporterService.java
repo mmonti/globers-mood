@@ -21,4 +21,15 @@ public interface ImporterService {
      */
     Map<String, Object> importData(final InputStream inputStream);
 
+    /**
+     * @param inputStream
+     * @return
+     */
+    boolean restore(final InputStream inputStream);
+
+    /**
+     * @param inputStream
+     * @return
+     */
+    boolean restoreCampaign(final InputStream inputStream);
 }

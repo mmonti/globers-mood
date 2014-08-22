@@ -59,7 +59,6 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
     }
 
     /**
-     *
      * @param entity
      * @param <S>
      * @return
@@ -76,7 +75,6 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
     }
 
     /**
-     *
      * @param entity
      * @return
      */
@@ -85,7 +83,6 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
     }
 
     /**
-     *
      * @param entities
      * @return
      */

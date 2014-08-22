@@ -21,13 +21,12 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
     private static final Logger logger = LoggerFactory.getLogger(GenericExceptionMapper.class);
 
     /**
-     *
      * @param exception
      * @return
      */
     @Override
     public Response toResponse(final Exception exception) {
-        logger.error("Unhandled exception detected", exception);
+        logger.debug("Unhandled exception detected", exception);
         return BaseResourceException.createResponse(Response.Status.INTERNAL_SERVER_ERROR, exception);
     }
 }

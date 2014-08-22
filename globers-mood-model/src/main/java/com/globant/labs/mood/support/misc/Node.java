@@ -6,21 +6,18 @@ package com.globant.labs.mood.support.misc;
 public interface Node {
 
     /**
-     *
      * @param name
      * @return
      */
     Node path(final String name);
 
     /**
-     *
      * @param value
      * @return
      */
     Node value(final Object value);
 
     /**
-     *
      * @param name
      * @return
      */

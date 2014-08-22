@@ -25,10 +25,16 @@ public interface CampaignService {
     Campaign store(final Campaign campaign);
 
     /**
-     * @param id
+     * @param campaignId
      * @return
      */
-    Campaign campaign(final long id);
+    Campaign campaign(final Long campaignId);
+
+    /**
+     * @param campaignId
+     * @return
+     */
+    Set<Campaign> recursiveCampaigns(final Long campaignId);
 
     /**
      * @return
@@ -38,12 +44,17 @@ public interface CampaignService {
     /**
      * @param campaignId
      */
-    void start(final long campaignId);
+    void waitForFeedback(final Long campaignId);
 
     /**
      * @param campaignId
      */
-    void close(final long campaignId);
+    void start(final Long campaignId);
+
+    /**
+     * @param campaignId
+     */
+    void close(final Long campaignId);
 
     /**
      * @return
@@ -64,5 +75,12 @@ public interface CampaignService {
      * @return
      */
     Set<Campaign> scheduledNextToExpire();
+
+    /**
+     *
+     * @param campaignId
+     * @param userId
+     */
+    void remind(final Long campaignId, final Long userId);
 
 }

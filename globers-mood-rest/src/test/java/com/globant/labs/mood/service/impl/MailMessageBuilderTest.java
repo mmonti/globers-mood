@@ -72,11 +72,11 @@ public class MailMessageBuilderTest extends TransactionSupport {
 
         final Template template1 = new Template();
         template1.setName("template-1");
-        template1.setFile(new Blob("name=[{{target.name}}]".getBytes()));
+        template1.setContent(new Blob("name=[{{target.name}}]".getBytes()));
 
         final Template template2 = new Template();
         template2.setName("template-2");
-        template2.setFile(new Blob("name=[{{target.name}}, date={{context.date}}]".getBytes()));
+        template2.setContent(new Blob("name=[{{target.name}}, date={{context.date}}]".getBytes()));
 
         final Template storedTemplate1 = templateService.store(template1);
         final Template storedTemplate2 = templateService.store(template2);

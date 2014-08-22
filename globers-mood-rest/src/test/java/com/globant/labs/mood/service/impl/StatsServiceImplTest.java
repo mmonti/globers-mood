@@ -2,7 +2,7 @@ package com.globant.labs.mood.service.impl;
 
 import com.globant.labs.mood.config.RootConfig;
 import com.globant.labs.mood.model.persistent.*;
-import com.globant.labs.mood.model.stats.WeeklyFeedback;
+import com.globant.labs.mood.model.statistics.WeeklyFeedback;
 import com.globant.labs.mood.service.*;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
 import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
@@ -42,7 +42,7 @@ public class StatsServiceImplTest {
     @Inject
     private TemplateService templateService;
     @Inject
-    private StatsService statsService;
+    private StatisticsService statsService;
     @Inject
     private TokenGenerator tokenGenerator;
 
@@ -59,7 +59,7 @@ public class StatsServiceImplTest {
 
         final Template template = new Template();
         template.setName("Template");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
         final Template storedTemplate = templateService.store(template);
 
         final Campaign campaign1 = new Campaign("Campaign1");

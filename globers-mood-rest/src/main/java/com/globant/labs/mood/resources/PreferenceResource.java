@@ -10,21 +10,18 @@ import javax.ws.rs.core.Response;
 public interface PreferenceResource {
 
     /**
-     *
      * @param preferenceKey
      * @return
      */
     Response preference(final PreferenceKey preferenceKey);
 
     /**
-     *
      * @param ns
      * @return
      */
     Response preferenceByNamespace(final String ns);
 
     /**
-     *
      * @param preferenceKey
      * @param value
      * @return
@@ -32,7 +29,6 @@ public interface PreferenceResource {
     Response update(final PreferenceKey preferenceKey, final String value);
 
     /**
-     *
      * @return
      */
     Response preferences();

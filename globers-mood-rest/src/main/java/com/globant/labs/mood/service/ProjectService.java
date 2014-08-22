@@ -27,25 +27,25 @@ public interface ProjectService {
      * @param userId
      * @return
      */
-    boolean assign(final long projectId, final long userId);
+    boolean assign(final Long projectId, final Long userId);
 
     /**
      * @param projectId
      * @param userId
      * @return
      */
-    boolean release(final long projectId, final long userId);
+    boolean release(final Long projectId, final Long userId);
 
     /**
-     * @param id
+     * @param projectId
      * @return
      */
-    Project project(final long id);
+    Project project(final Long projectId);
 
     /**
-     * @param id
+     * @param projectId
      * @return
      */
-    Set<User> usersOfProject(final long id);
+    Set<User> usersOfProject(final Long projectId);
 
 }

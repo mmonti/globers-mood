@@ -19,7 +19,6 @@ public class GenericRepositoryFactory<M, ID extends Serializable> extends JpaRep
     private EntityManager entityManager;
 
     /**
-     *
      * @param entityManager
      */
     public GenericRepositoryFactory(final EntityManager entityManager) {
@@ -28,7 +27,6 @@ public class GenericRepositoryFactory<M, ID extends Serializable> extends JpaRep
     }
 
     /**
-     *
      * @param metadata
      * @return
      */
@@ -41,7 +39,6 @@ public class GenericRepositoryFactory<M, ID extends Serializable> extends JpaRep
     }
 
     /**
-     *
      * @param metadata
      * @return
      */
@@ -53,7 +50,6 @@ public class GenericRepositoryFactory<M, ID extends Serializable> extends JpaRep
     }
 
     /**
-     *
      * @param repositoryInterface
      * @return
      */
@@ -62,7 +58,6 @@ public class GenericRepositoryFactory<M, ID extends Serializable> extends JpaRep
     }
 
     /**
-     *
      * @param key
      * @return
      */

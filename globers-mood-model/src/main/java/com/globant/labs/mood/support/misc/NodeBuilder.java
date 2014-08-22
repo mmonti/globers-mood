@@ -6,7 +6,6 @@ package com.globant.labs.mood.support.misc;
 public class NodeBuilder {
 
     /**
-     *
      * @param name
      * @return
      */

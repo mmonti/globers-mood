@@ -2,10 +2,7 @@ package com.globant.labs.mood.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-
-import javax.inject.Inject;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -14,15 +11,11 @@ import javax.inject.Inject;
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = {
         "com.globant.labs.mood.events",
-        "com.globant.labs.mood.aspects",
         "com.globant.labs.mood.exception.mapping",
         "com.globant.labs.mood.resources"
 })
 @Import({PropertiesConfig.class, RepositoryConfig.class, ServiceConfig.class})
 public class RootConfig {
-
-    @Inject
-    private Environment environment;
 
     @Bean
     public MappingJacksonHttpMessageConverter mappingJacksonHttpMessageConverter() {
@@ -33,4 +26,5 @@ public class RootConfig {
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
+
 }

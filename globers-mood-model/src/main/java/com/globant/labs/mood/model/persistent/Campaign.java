@@ -1,6 +1,8 @@
 package com.globant.labs.mood.model.persistent;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.globant.labs.mood.support.jackson.FrequencyDeserializer;
 import com.globant.labs.mood.support.jackson.TemplateSerializer;
 import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.datanucleus.annotations.Unowned;
@@ -44,29 +46,31 @@ public class Campaign extends BaseEntity implements Serializable {
     private CampaignStatus status;
 
     @Unowned
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Template template;
 
     @Unowned
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Set<User> targets = new HashSet<User>();
 
     @Unowned
-    @OneToMany(mappedBy =  "campaign", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "campaign", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Feedback> feedbacks = new HashSet<Feedback>();
 
     @Basic
     private int feedbackNumber = 0;
 
     @Enumerated(EnumType.STRING)
-    private Frequency frequency;
+    private Frequency frequency = Frequency.ONCE;
 
     @Basic
     private int index = 0;
 
+    @Basic
+    private long parentId = 0;
+
     protected Campaign() {
         this(new Date(), CampaignStatus.CREATED);
-        this.frequency = Frequency.ONCE;
         this.feedbackNumber = 0;
     }
 
@@ -82,8 +86,10 @@ public class Campaign extends BaseEntity implements Serializable {
         this.setDescription(parent.getDescription());
         this.addTargets(parent.getTargets());
         this.setTemplate(parent.getTemplate());
-        this.setScheduleDate(frequency.getScheduleDate(parent.getStartDate()));
-        this.setExpirationDate(frequency.getExpirationDate(parent.getExpirationDate()));
+        this.setFrequency(parent.getFrequency());
+        this.setScheduleDate(parent.getFrequency().getScheduleDate(parent.getStartDate()));
+        this.setExpirationDate(parent.getFrequency().getExpirationDate(parent.getExpirationDate()));
+        this.setParentId(parent.getParentId() == 0 ? parent.getId() : parent.getParentId());
         this.setIndex(parent.getIndex() + 1);
     }
 
@@ -166,6 +172,7 @@ public class Campaign extends BaseEntity implements Serializable {
         this.feedbackNumber++;
     }
 
+    @JsonDeserialize(using = FrequencyDeserializer.class)
     public void setFrequency(final Frequency frequency) {
         this.frequency = frequency;
     }
@@ -214,18 +221,37 @@ public class Campaign extends BaseEntity implements Serializable {
         this.expirationDate = expirationDate;
     }
 
-    public boolean isCampaignComplete() {
+    public boolean isComplete() {
         return (this.targets.size() == this.feedbackNumber);
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
+    }
+
+    public boolean isScheduled() {
+        return (this.scheduleDate != null & this.startDate == null);
+    }
+
+    public boolean isMaster() {
+        if (!isRecursive()) {
+            return true;
+        }
+        return (this.index == 0);
     }
 
     public Campaign start() {
         setStatus(CampaignStatus.STARTED);
+        setStartDate(new Date());
         return this;
     }
 
     public Campaign waitForFeedback() {
         setStatus(CampaignStatus.WAITING_FOR_FEEDBACK);
-        setStartDate(new Date());
         return this;
     }
 

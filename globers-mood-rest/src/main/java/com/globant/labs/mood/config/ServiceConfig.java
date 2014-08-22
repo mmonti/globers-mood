@@ -7,8 +7,10 @@ import com.globant.labs.mood.service.mail.MailMessageFactory;
 import com.globant.labs.mood.service.mail.template.TemplateCompiler;
 import com.globant.labs.mood.service.mail.template.handlebars.HBMTemplateCompiler;
 import com.globant.labs.mood.service.mail.template.handlebars.RepositoryTemplateLoader;
+import com.globant.labs.mood.service.mail.template.handlebars.helpers.ContentIDHelper;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
 import com.globant.labs.mood.service.mail.token.impl.UserTokenGeneratorImpl;
+import com.globant.labs.mood.service.template.*;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import org.springframework.context.annotation.Bean;
@@ -50,7 +52,8 @@ public class ServiceConfig {
 
     @Bean
     public TemplateCompiler templateCompiler() {
-        return new HBMTemplateCompiler(repositoryTemplateLoader());
+        final HBMTemplateCompiler hbmTemplateCompiler = new HBMTemplateCompiler(repositoryTemplateLoader());
+        return hbmTemplateCompiler.register("contentID", new ContentIDHelper());
     }
 
     @Bean
@@ -67,6 +70,18 @@ public class ServiceConfig {
     public TokenGenerator tokenGenerator() {
         final String secret = environment.getProperty(MAIL_TOKEN_SECRET);
         return new UserTokenGeneratorImpl(secret);
+    }
+
+    @Bean
+    public TemplateProcessor templateProcessor() {
+        final TemplateProcessor templateProcessor = new TemplateProcessorImpl();
+        templateProcessor.addExtractor(new MultilineExtractor());
+        templateProcessor.addExtractor(new TextExtractor());
+        templateProcessor.addExtractor(new ChoiceExtractor());
+        templateProcessor.addExtractor(new FormExtractor());
+        templateProcessor.addExtractor(new HiddenExtractor());
+
+        return templateProcessor;
     }
 
 }

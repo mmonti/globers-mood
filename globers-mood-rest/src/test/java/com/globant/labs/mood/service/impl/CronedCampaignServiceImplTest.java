@@ -11,6 +11,7 @@ import com.globant.labs.mood.support.TransactionSupport;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,7 @@ import java.util.Set;
 @ContextConfiguration(classes = RootConfig.class, loader = AnnotationConfigContextLoader.class)
 public class CronedCampaignServiceImplTest extends TransactionSupport {
 
-    private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+    private final LocalServiceTestHelper localServiceTestHelper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(), new LocalTaskQueueTestConfig());
 
     @Inject
     private CampaignService campaignService;
@@ -56,7 +57,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
 
         final Template template = new Template();
         template.setName("Template 1");
-        template.setFile(new Blob("This is an array of bytes".getBytes()));
+        template.setContent(new Blob("This is an array of bytes".getBytes()));
 
         final Template storedTemplate = templateService.store(template);
 
@@ -84,13 +85,13 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         calendar.add(Calendar.DATE, -1);
 
         // = Sets the startDate;
-        campaign.setStartDate(calendar.getTime());
+        campaign.setScheduleDate(calendar.getTime());
 
         Campaign storedCampaign = campaignService.store(campaign);
         campaignService.scheduledReadyToStart();
 
         storedCampaign = campaignService.campaign(campaign.getId());
-        Assert.isTrue(CampaignStatus.WAITING_FOR_FEEDBACK.equals(storedCampaign.getStatus()));
+        Assert.isTrue(CampaignStatus.STARTED.equals(storedCampaign.getStatus()));
     }
 
     @Test
@@ -99,7 +100,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         calendar.add(Calendar.DATE, 1);
 
         // = Sets the startDate;
-        campaign.setStartDate(calendar.getTime());
+        campaign.setScheduleDate(calendar.getTime());
 
         Campaign storedCampaign = campaignService.store(campaign);
         campaignService.scheduledReadyToStart();
@@ -123,7 +124,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         calendar.add(Calendar.DATE, -1);
 
         // = Sets the endDate;
-        campaign.setEndDate(calendar.getTime());
+        campaign.setExpirationDate(calendar.getTime());
         Campaign storedCampaign = campaignService.store(campaign);
 
         storedCampaign.start();
@@ -143,7 +144,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         calendar.add(Calendar.DATE, 1);
 
         // = Sets the endDate;
-        campaign.setEndDate(calendar.getTime());
+        campaign.setExpirationDate(calendar.getTime());
         Campaign storedCampaign = campaignService.store(campaign);
 
         storedCampaign.start();
@@ -177,7 +178,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         calendar.add(Calendar.MINUTE, 10);
 
         // = Sets the startDate;
-        campaign.setStartDate(calendar.getTime());
+        campaign.setScheduleDate(calendar.getTime());
 
         Campaign storedCampaign = campaignService.store(campaign);
         Set<Campaign> pendingToStart = campaignService.scheduledPendingToStart();
@@ -190,7 +191,7 @@ public class CronedCampaignServiceImplTest extends TransactionSupport {
         calendar.add(Calendar.DATE, 10);
 
         // = Sets the startDate;
-        campaign.setEndDate(calendar.getTime());
+        campaign.setExpirationDate(calendar.getTime());
 
         Campaign storedCampaign = campaignService.store(campaign);
         Set<Campaign> nextToExpire = campaignService.scheduledNextToExpire();

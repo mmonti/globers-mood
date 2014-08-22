@@ -36,21 +36,27 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
     @Transactional(readOnly = true)
     @Override
     public Set<Preference> preferences() {
+        logger.info("method=preferences()");
         return new HashSet<Preference>(preferenceRepository.findAll());
     }
 
     @Override
     public Page<Preference> preferences(final Pageable pageable) {
+        logger.info("method=preferences(), args=[pageable=[{}]]", pageable);
         return preferenceRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = false)
     @Override
     public Preference store(final Preference preference) {
+        Preconditions.checkNotNull(preference, "preference is null");
+
+        logger.info("method=preferences(), args=[preference=[{}]]", preference);
+
         final Preference storedPreference = this.preferenceRepository.findByPreferenceKey(preference.getPreferenceKey());
         if (storedPreference != null) {
-            logger.debug("store - preference with key=[{}] already existent", preference.getPreferenceKey());
-            throw new BusinessException(on("preference with preferenceKey=[{}] already existent.", preference.getPreferenceKey()), EXPECTATION_FAILED);
+            logger.error("method=preferences() - preference key=[{}] already exist", preference.getPreferenceKey());
+            throw new BusinessException(on("Preference with key=[{}] already exist.", preference.getPreferenceKey()), EXPECTATION_FAILED);
         }
         return preferenceRepository.save(preference);
     }
@@ -58,11 +64,17 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
     @Transactional(readOnly = false)
     @Override
     public Preference update(final PreferenceKey preferenceKey, final String value) {
+        Preconditions.checkNotNull(preferenceKey, "preferenceKey is null");
         Preconditions.checkNotNull(value, "value is null");
+
+        logger.info("method=update(), args=[preferenceKey=[{}], value=[{}]]", preferenceKey, value);
+
         Preference preference = preferenceRepository.findByPreferenceKey(preferenceKey.getValue());
         if (null != preference) {
+            logger.info("method=update() - preferenceKey=[{}] existent, updating with value=[{}]]", preferenceKey, value);
             preference.setPreferenceValue(value);
         } else {
+            logger.info("method=update() - preferenceKey=[{}] inexistent, creating preference with value=[{}]]", preferenceKey, value);
             preference = new Preference(preferenceKey, value);
         }
         return preferenceRepository.saveAndFlush(preference);
@@ -70,15 +82,25 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
 
     @Transactional(readOnly = true)
     @Override
-    public Preference preference(long id) {
-        return preferenceRepository.findOne(id);
+    public Preference preference(final Long preferenceId) {
+        Preconditions.checkNotNull(preferenceId, "preferenceId is null");
+
+        logger.info("method=preference(), args=[preferenceId=[{}]]", preferenceId);
+
+        return preferenceRepository.findOne(preferenceId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public <T> T preference(final String key, final Class<T> type) {
-        final Preference preference = preferenceRepository.findByPreferenceKey(key);
+    public <T> T preference(final String preferenceKey, final Class<T> type) {
+        Preconditions.checkNotNull(preferenceKey, "preferenceKey is null");
+        Preconditions.checkNotNull(type, "type is null");
+
+        logger.info("method=preference(), args=[preferenceKey=[{}], type=[{}]]", preferenceKey, type);
+
+        final Preference preference = preferenceRepository.findByPreferenceKey(preferenceKey);
         if (null != preference) {
+            logger.info("method=preference() - preferenceKey=[{}] found", preferenceKey);
             return (T) preference.getPreferenceValue();
         }
         return null;
@@ -86,9 +108,14 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
 
     @Transactional(readOnly = true)
     @Override
-    public String preference(final String key) {
-        final Preference preference = preferenceRepository.findByPreferenceKey(key);
+    public String preference(final String preferenceKey) {
+        Preconditions.checkNotNull(preferenceKey, "preferenceKey is null");
+
+        logger.info("method=preference(), args=[preferenceKey=[{}]]", preferenceKey);
+
+        final Preference preference = preferenceRepository.findByPreferenceKey(preferenceKey);
         if (null != preference) {
+            logger.info("method=preference() - preferenceKey=[{}] found", preferenceKey);
             return preference.getPreferenceValue();
         }
         return null;
@@ -96,19 +123,32 @@ public class PreferenceServiceImpl extends AbstractService implements Preference
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Preference> preferenceByNamespace(final String ns) {
-        return Sets.newHashSet(preferenceRepository.findByNamespaceLike(ns));
+    public Set<Preference> preferenceByNamespace(final String namespace) {
+        Preconditions.checkNotNull(namespace, "namespace is null");
+
+        logger.info("method=preferenceByNamespace(), args=[namespace=[{}]]", namespace);
+
+        return Sets.newHashSet(preferenceRepository.findByNamespaceLike(namespace));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public String preference(final PreferenceKey key) {
-        return preference(key.getValue());
+    public String preference(final PreferenceKey preferenceKey) {
+        Preconditions.checkNotNull(preferenceKey, "preferenceKey is null");
+
+        logger.info("method=preference(), args=[preferenceKey=[{}]]", preferenceKey);
+
+        return preference(preferenceKey.getValue());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public <T> T preference(final PreferenceKey key, final Class<T> type) {
-        return preference(key.getValue(), type);
+    public <T> T preference(final PreferenceKey preferenceKey, final Class<T> type) {
+        Preconditions.checkNotNull(preferenceKey, "preferenceKey is null");
+        Preconditions.checkNotNull(type, "type is null");
+
+        logger.info("method=preference(), args=[preferenceKey=[{}], type=[{}]]", preferenceKey, type);
+
+        return preference(preferenceKey.getValue(), type);
     }
 }

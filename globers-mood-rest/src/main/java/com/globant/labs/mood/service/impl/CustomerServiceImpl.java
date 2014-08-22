@@ -32,25 +32,33 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
     @Transactional(readOnly = true)
     @Override
     public Page<Customer> customers(final Pageable pageable) {
+        logger.info("method=customers(), args=[pageable={}]", pageable);
+
         return customerRepository.findAll(pageable);
     }
 
     @Transactional
     @Override
     public Customer store(final Customer customer) {
-        Preconditions.checkNotNull(customer, "customer cannot be null");
+        Preconditions.checkNotNull(customer, "customer is null");
+
+        logger.info("method=store(), args=[customer={}]", customer);
+
         final Customer storedCustomer = customerRepository.findByName(customer.getName());
         if (storedCustomer != null) {
-            logger.debug("store - customer with name=[{}] already existent", customer.getName());
-            throw new BusinessException(on("customer with name=[{}] already existent.", customer.getName()), EXPECTATION_FAILED);
+            logger.error("method=store() - customer name=[{}] already exist", customer.getName());
+            throw new BusinessException(on("Customer with name=[{}] already exist.", customer.getName()), EXPECTATION_FAILED);
         }
+
         return customerRepository.save(customer);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Customer customer(final long id) {
-        Preconditions.checkNotNull(id, "id cannot be null");
-        return customerRepository.findOne(id);
+    public Customer customer(final Long customerId) {
+        Preconditions.checkNotNull(customerId, "customerId is null");
+
+        logger.info("method=customer(), args=[customerId={}]", customerId);
+        return customerRepository.findOne(customerId);
     }
 }

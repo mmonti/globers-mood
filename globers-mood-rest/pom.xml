@@ -34,6 +34,8 @@
         <handlebars.version>1.1.2</handlebars.version>
         <commons-math3.version>3.3</commons-math3.version>
         <jsoup.version>1.7.3</jsoup.version>
+        <gmaven.version>1.5</gmaven.version>
+        <groovy.version>2.3.6</groovy.version>
     </properties>
 
     <dependencies>
@@ -180,15 +182,20 @@
             </exclusions>
         </dependency>
 
+        <!--<dependency>-->
+        <!--<groupId>javax.jdo</groupId>-->
+        <!--<artifactId>jdo-api</artifactId>-->
+        <!--<version>${jdo.api.version}</version>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>javax.jdo</groupId>
-            <artifactId>jdo-api</artifactId>
-            <version>${jdo.api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jpa_2.0_spec</artifactId>
-            <version>${jpa.spec.version}</version>
+            <!--<groupId>org.apache.geronimo.specs</groupId>-->
+            <!--<artifactId>geronimo-jpa_2.0_spec</artifactId>-->
+            <!--<version>${jpa.spec.version}</version>-->
+
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
         </dependency>
 
         <dependency>
@@ -344,6 +351,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.3.6</version>
+        </dependency>
+
+        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.3</version>
@@ -366,6 +379,47 @@
     <build>
         <finalName>globers-mood-rest</finalName>
         <plugins>
+
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>${gmaven.version}</version>
+                <configuration>
+                    <providerSelection>1.7</providerSelection>
+                    <source/>
+                    <sources>
+                        <fileset>
+                            <directory>${pom.basedir}/src/main/java</directory>
+                            <includes>
+                                <include>**/*.groovy</include>
+                            </includes>
+                        </fileset>
+                    </sources>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.gmaven.runtime</groupId>
+                        <artifactId>gmaven-runtime-1.8</artifactId>
+                        <version>${gmaven.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>${groovy.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.datanucleus</groupId>
                 <artifactId>datanucleus-maven-plugin</artifactId>

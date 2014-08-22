@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-* @author mauro.monti (monti.mauro@gmail.com)
-*/
+ * @author mauro.monti (monti.mauro@gmail.com)
+ */
 public class ProjectRelation implements Serializable {
 
     private static final long serialVersionUID = -4838989147865815040L;
@@ -23,7 +23,6 @@ public class ProjectRelation implements Serializable {
     }
 
     /**
-     *
      * @param users
      * @param project
      * @param customer

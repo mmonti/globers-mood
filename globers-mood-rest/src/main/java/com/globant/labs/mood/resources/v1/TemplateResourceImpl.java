@@ -53,16 +53,18 @@ public class TemplateResourceImpl extends AbstractResource implements TemplateRe
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Override
     public Response addTemplate(
-            @FormDataParam("data") final Template template,
+            @FormDataParam("name") final String name,
+            @FormDataParam("description") final String description,
             @FormDataParam("file") final InputStream inputStream,
             @FormDataParam("file") final FormDataContentDisposition formDataContentDisposition) {
-        Preconditions.checkNotNull(template, "template is null");
+        Preconditions.checkNotNull(name, "name is null");
+        Preconditions.checkNotNull(description, "description is null");
         Preconditions.checkNotNull(inputStream, "inputStream is null");
         Preconditions.checkNotNull(formDataContentDisposition, "formDataContentDisposition is null");
 
-        logger.info("method=addTemplate(), args=[template={}, inputStream={}, formDataContentDisposition={}]", template, inputStream, formDataContentDisposition);
+        logger.info("method=addTemplate(), args=[name={}, description={} inputStream={}, formDataContentDisposition={}]", name, description, inputStream, formDataContentDisposition);
 
-        return notNullResponse(templateService.store(formDataContentDisposition.getName(), inputStream));
+        return notNullResponse(templateService.store(name, description, formDataContentDisposition.getFileName(), inputStream));
     }
 
     @DELETE
@@ -78,14 +80,14 @@ public class TemplateResourceImpl extends AbstractResource implements TemplateRe
     }
 
     @GET
-    @Path("/{templateId}/analyze")
+    @Path("/{templateId}/metadata")
     @Override
-    public Response analyze(@PathParam("templateId") final Long templateId) {
+    public Response metadata(@PathParam("templateId") final Long templateId) {
         Preconditions.checkNotNull(templateId, "templateId is null");
 
-        logger.info("method=analyze(), args=[templateId={}]", templateId);
+        logger.info("method=metadata(), args=[templateId={}]", templateId);
 
-        return notNullResponse(templateService.analyze(templateId));
+        return notNullResponse(templateService.getMetadata(templateId));
     }
 
     @PUT
@@ -97,7 +99,6 @@ public class TemplateResourceImpl extends AbstractResource implements TemplateRe
 
         logger.info("method=metadata(), args=[templateId={}, metadata={}]", templateId, metadata);
 
-        templateService.setMetadata(templateId, metadata);
-        return Response.ok().build();
+        return notNullResponse(templateService.setMetadata(templateId, metadata));
     }
 }

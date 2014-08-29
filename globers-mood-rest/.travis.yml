@@ -1,0 +1,5 @@
+language: java
+jdk:
+  - openjdk7
+
+script: mvn -f globers-mood-parent/pom.xml clean package

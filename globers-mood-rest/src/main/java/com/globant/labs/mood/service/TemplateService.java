@@ -24,11 +24,23 @@ public interface TemplateService {
     Template store(final Template template);
 
     /**
+     *
      * @param name
+     * @param filename
      * @param inputStream
      * @return
      */
-    Template store(final String name, final InputStream inputStream);
+    Template store(final String name, final String filename, final InputStream inputStream);
+
+    /**
+     *
+     * @param name
+     * @param description
+     * @param filename
+     * @param inputStream
+     * @return
+     */
+    Template store(final String name, final String description, final String filename, final InputStream inputStream);
 
     /**
      * @param templateId
@@ -52,12 +64,12 @@ public interface TemplateService {
      * @param templateId
      * @return
      */
-    TemplateMetadata analyze(final Long templateId);
+    TemplateMetadata getMetadata(final Long templateId);
 
     /**
      *
      * @param templateId
      * @param metadata
      */
-    void setMetadata(final Long templateId, final TemplateMetadata metadata);
+    TemplateMetadata setMetadata(final Long templateId, final TemplateMetadata metadata);
 }

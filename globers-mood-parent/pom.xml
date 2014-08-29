@@ -13,7 +13,6 @@
 	<modules>
 		<module>./../globers-mood-model</module>
 		<module>./../globers-mood-rest</module>
-		<!--<module>./../globers-mood-web</module>-->
 	</modules>
 
 	<properties>

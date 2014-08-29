@@ -1,11 +1,17 @@
 package com.globant.labs.mood.model.persistent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.appengine.datanucleus.annotations.Unowned;
-import org.w3c.dom.Attr;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,7 +32,14 @@ public class ElementMetadata extends BaseEntity implements Serializable {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private ElementType type;
+    private ElementType elementType;
+
+    @Basic
+    private String valueType;
+
+    @Unowned
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ValueMapping> values = new ArrayList<ValueMapping>();
 
     @Unowned
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -78,13 +91,13 @@ public class ElementMetadata extends BaseEntity implements Serializable {
      * @param key
      * @param name
      * @param description
-     * @param type
+     * @param elementType
      */
-    public ElementMetadata(final String key, final String name, final String description, final ElementType type) {
+    public ElementMetadata(final String key, final String name, final String description, final ElementType elementType) {
         this.key = key;
         this.name = name;
         this.description = description;
-        this.type = type;
+        this.elementType = elementType;
     }
 
     public String getKey() {
@@ -107,12 +120,48 @@ public class ElementMetadata extends BaseEntity implements Serializable {
         this.description = description;
     }
 
-    public ElementType getType() {
-        return type;
+    public ElementType getElementType() {
+        return elementType;
     }
 
-    public void setType(final ElementType type) {
-        this.type = type;
+    public void setElementType(final ElementType type) {
+        this.elementType = type;
+    }
+
+    @JsonIgnore
+    public List<String> getValues() {
+        return Lists.newArrayList(Iterables.transform(values, new Function<ValueMapping, String>() {
+            @Override
+            public String apply(final ValueMapping valueMapping) {
+                return valueMapping.getKey();
+            }
+        }));
+    }
+
+    public List<ValueMapping> getValueMappings() {
+        return this.values;
+    }
+
+    public void addValue(final ValueMapping valueMapping) {
+        this.values.add(valueMapping);
+    }
+
+    public void addValue(final String key, final String value) {
+        this.values.add(new ValueMapping(key, value));
+    }
+
+    public void addValues(final List<String> values) {
+        for (final String currentValue : values) {
+            addValue(currentValue, currentValue);
+        }
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
     }
 
     public void addAttribute(final Attribute attribute) {
@@ -134,6 +183,9 @@ public class ElementMetadata extends BaseEntity implements Serializable {
 
         ElementMetadata metadata = (ElementMetadata) o;
 
+        if (getId() == null) {
+            return false;
+        }
         if (!getId().equals(metadata.getId())) return false;
         if (!key.equals(metadata.key)) return false;
 
@@ -142,7 +194,11 @@ public class ElementMetadata extends BaseEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        return key.hashCode();
+        int result = 0;
+        if (getId() != null) {
+            result = getId().hashCode() * 31;
+        }
+        return result + created.hashCode();
     }
 
 }

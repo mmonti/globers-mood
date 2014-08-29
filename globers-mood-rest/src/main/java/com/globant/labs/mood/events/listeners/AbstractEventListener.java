@@ -9,11 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-import static com.globant.labs.mood.support.StringSupport.on;
 import static com.google.appengine.api.taskqueue.QueueFactory.getDefaultQueue;
 import static com.google.appengine.api.taskqueue.RetryOptions.Builder.withTaskRetryLimit;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withTaskName;
-import static com.google.appengine.api.taskqueue.TaskOptions.Method.POST;
 
 /**
  * Created by mmonti on 8/13/14.

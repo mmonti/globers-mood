@@ -1,18 +1,13 @@
 package com.globant.labs.mood.events.listeners;
 
 import com.globant.labs.mood.events.DispatchCampaignEvent;
-import com.globant.labs.mood.events.DispatchUserEvent;
 import com.globant.labs.mood.model.persistent.Campaign;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import static com.globant.labs.mood.support.StringSupport.on;
-import static com.google.appengine.api.taskqueue.QueueFactory.getDefaultQueue;
-import static com.google.appengine.api.taskqueue.RetryOptions.Builder.withTaskRetryLimit;
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withTaskName;
 import static com.google.appengine.api.taskqueue.TaskOptions.Method.POST;
 
 /**

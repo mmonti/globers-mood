@@ -1,6 +1,7 @@
 package com.globant.labs.mood.service.template;
 
 import com.globant.labs.mood.model.persistent.TemplateMetadata;
+
 import org.jsoup.nodes.Document;
 
 /**
@@ -18,4 +19,5 @@ public interface Extractor {
      * @param document
      */
     void process(final TemplateMetadata metadata, final Document document);
+
 }

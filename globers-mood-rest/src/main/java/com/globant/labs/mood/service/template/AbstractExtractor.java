@@ -1,6 +1,9 @@
 package com.globant.labs.mood.service.template;
 
+import com.globant.labs.mood.model.persistent.ElementMetadata;
+import com.globant.labs.mood.model.persistent.ElementType;
 import com.globant.labs.mood.model.persistent.TemplateMetadata;
+import com.google.common.collect.ArrayListMultimap;
 import org.jsoup.nodes.Document;
 
 /**
@@ -29,6 +32,15 @@ public abstract class AbstractExtractor implements Extractor {
         }
     }
 
+    protected void register(final TemplateMetadata collector, final ElementMetadata metadata) {
+        collector.addElementMetadata(metadata);
+    }
+
+    protected boolean hasValidKey(final String key) {
+        return (key != null && !key.isEmpty());
+    }
+
     @Override
     public abstract void process(final TemplateMetadata metadata, final Document document);
+
 }

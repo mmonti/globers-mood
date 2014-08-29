@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Globers Mood - Your feedback!</title>
+    <title>Project Survey - Your feedback</title>
     <style>
         html {
             height: 100%;

@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import static com.globant.labs.mood.support.StringSupport.on;
-
 /**
  * Created by mmonti on 8/13/14.
  */

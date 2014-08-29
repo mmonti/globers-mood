@@ -2,6 +2,7 @@ package com.globant.labs.mood.model.mail;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globant.labs.mood.model.persistent.Campaign;
+import com.globant.labs.mood.model.persistent.MailSettings;
 import com.globant.labs.mood.model.persistent.User;
 
 import java.io.Serializable;

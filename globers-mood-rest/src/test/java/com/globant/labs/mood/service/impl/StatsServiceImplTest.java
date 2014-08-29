@@ -45,10 +45,15 @@ public class StatsServiceImplTest {
     private StatisticsService statsService;
     @Inject
     private TokenGenerator tokenGenerator;
+    @Inject
+    private PreferenceService preferenceService;
 
     @Before
     public void setUp() {
         localServiceTestHelper.setUp();
+
+        final Preference preference = new Preference(PreferenceKey.MAIL_SENDER, "mail@globant.com");
+        preferenceService.store(preference);
 
         final User user = new User("Mauro Monti", "mauro.monti@globant.com");
         final User storedUser = userService.store(user);

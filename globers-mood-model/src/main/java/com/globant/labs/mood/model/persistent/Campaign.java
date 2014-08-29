@@ -46,6 +46,10 @@ public class Campaign extends BaseEntity implements Serializable {
     private CampaignStatus status;
 
     @Unowned
+    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
+    private MailSettings mailSettings = null;
+
+    @Unowned
     @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Template template;
 
@@ -69,9 +73,14 @@ public class Campaign extends BaseEntity implements Serializable {
     @Basic
     private long parentId = 0;
 
+    @Basic
+    private boolean tokenEnabled;
+
     protected Campaign() {
         this(new Date(), CampaignStatus.CREATED);
+        this.mailSettings = new MailSettings();
         this.feedbackNumber = 0;
+        this.tokenEnabled = Boolean.TRUE;
     }
 
     protected Campaign(final Date created, final CampaignStatus status) {
@@ -123,6 +132,10 @@ public class Campaign extends BaseEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public MailSettings getMailSettings() {
+        return mailSettings;
     }
 
     public CampaignStatus getStatus() {
@@ -233,17 +246,6 @@ public class Campaign extends BaseEntity implements Serializable {
         this.parentId = parentId;
     }
 
-    public boolean isScheduled() {
-        return (this.scheduleDate != null & this.startDate == null);
-    }
-
-    public boolean isMaster() {
-        if (!isRecursive()) {
-            return true;
-        }
-        return (this.index == 0);
-    }
-
     public Campaign start() {
         setStatus(CampaignStatus.STARTED);
         setStartDate(new Date());
@@ -259,6 +261,33 @@ public class Campaign extends BaseEntity implements Serializable {
         setStatus(CampaignStatus.CLOSED);
         setEndDate(new Date());
         return this;
+    }
+
+    public boolean isClosed() {
+        return (CampaignStatus.CLOSED.equals(this.getStatus()));
+    }
+
+    public boolean isStarted() {
+        return (CampaignStatus.STARTED.equals(this.getStatus()));
+    }
+
+    public boolean isWaitingForFeedback() {
+        return (CampaignStatus.WAITING_FOR_FEEDBACK.equals(this.getStatus()));
+    }
+
+    public boolean isScheduled() {
+        return (this.scheduleDate != null & this.startDate == null);
+    }
+
+    public boolean isMaster() {
+        if (!isRecursive()) {
+            return true;
+        }
+        return (this.index == 0);
+    }
+
+    public boolean isTokenEnabled() {
+        return tokenEnabled;
     }
 
     public <T> List<T> collect(final String key, final Class<T> type) {

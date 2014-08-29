@@ -1,5 +1,6 @@
 package com.globant.labs.mood.service.template
 
+import com.globant.labs.mood.model.persistent.Attribute
 import com.globant.labs.mood.model.persistent.ElementMetadata
 import com.globant.labs.mood.model.persistent.ElementType
 import com.globant.labs.mood.model.persistent.TemplateMetadata
@@ -12,15 +13,31 @@ class ChoiceExtractor extends AbstractExtractor {
 
     private static final String CONSTANT_TYPE_RADIO = "[type=radio]";
 
+    private static final String CONSTANT_NUMBER = Double.class.getCanonicalName();
+    private static final String CONSTANT_TEXT = String.class.getCanonicalName();
+
     @Override
-    public void process(final TemplateMetadata metadata, final Document document) {
+    public void process(final TemplateMetadata collector, final Document document) {
         document.select(CONSTANT_TYPE_RADIO).groupBy(
+
                 { element -> element.attr(CONSTANT_NAME) },
                 { element -> element.attr(CONSTANT_VALUE) }
-        ).each() { attribute ->
-            metadata.addElementMetadata(new ElementMetadata(attribute.key, ElementType.CHOICE));
+
+        ).each() {
+
+            attribute ->
+                if (!hasValidKey(attribute.key)) {
+                    return
+                }
+
+                def values = attribute.getValue().collect { item -> item.key } as List<String>
+                def elementMetadata = new ElementMetadata(attribute.key, ElementType.CHOICE)
+                elementMetadata.setValueType(values.first().isNumber() ? CONSTANT_NUMBER : CONSTANT_TEXT)
+                elementMetadata.addValues(values)
+
+                register(collector, elementMetadata)
         };
-        processNext(metadata, document);
+        processNext(collector, document);
     }
 
 }

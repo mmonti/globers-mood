@@ -19,6 +19,8 @@
         <class>com.globant.labs.mood.model.persistent.Attribute</class>
         <class>com.globant.labs.mood.model.persistent.ElementMetadata</class>
         <class>com.globant.labs.mood.model.persistent.Attachment</class>
+        <class>com.globant.labs.mood.model.persistent.ValueMapping</class>
+        <class>com.globant.labs.mood.model.persistent.MailSettings</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

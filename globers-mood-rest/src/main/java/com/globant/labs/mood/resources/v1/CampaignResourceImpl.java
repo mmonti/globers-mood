@@ -1,8 +1,6 @@
 package com.globant.labs.mood.resources.v1;
 
 import com.globant.labs.mood.model.persistent.Campaign;
-import com.globant.labs.mood.model.persistent.Template;
-import com.globant.labs.mood.model.persistent.TemplateMetadata;
 import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.CampaignResource;
 import com.globant.labs.mood.service.CampaignService;
@@ -31,9 +29,6 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
 
     @Inject
     private CampaignService campaignService;
-
-    @Inject
-    private TemplateService templateService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

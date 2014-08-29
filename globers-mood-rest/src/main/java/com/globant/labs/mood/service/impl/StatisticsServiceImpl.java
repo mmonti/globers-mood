@@ -1,18 +1,20 @@
 package com.globant.labs.mood.service.impl;
 
 import ch.lambdaj.group.Group;
-import com.globant.labs.mood.model.persistent.CreatedDateType;
-import com.globant.labs.mood.model.persistent.Feedback;
+import com.globant.labs.mood.exception.BusinessException;
+import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.model.statistics.CampaignStatistics;
 import com.globant.labs.mood.model.statistics.WeeklyFeedback;
+import com.globant.labs.mood.repository.data.CampaignRepository;
 import com.globant.labs.mood.repository.data.FeedbackRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.StatisticsService;
+import com.globant.labs.mood.support.StatisticsSupport;
+import com.globant.labs.mood.support.StringSupport;
 import com.google.appengine.api.datastore.*;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,15 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
+import static com.globant.labs.mood.exception.BusinessException.ErrorCode.RESOURCE_NOT_FOUND;
 import static com.google.appengine.repackaged.com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.transform;
 import static org.joda.time.DateTime.now;
 
 /**
@@ -39,9 +45,14 @@ public class StatisticsServiceImpl extends AbstractService implements Statistics
 
     private static final String PREFIX_RESERVED_ENTITY = "_";
     private static final String COUNT = "count";
+    private static final String[] SUMMARY_STATISTICS_PROPERTIES = { "min", "max", "mean", "geometricMean", "n", "sum", "sumsq", "standardDeviation", "variance" };
+    private static final String[] FREQUENCY_PROPERTIES = { "count", "cumFreq", "cumPct", "pct", "sumFreq" };
 
     @Inject
     private FeedbackRepository feedbackRepository;
+
+    @Inject
+    private CampaignRepository campaignRepository;
 
     private DatastoreService datastoreService;
 
@@ -59,7 +70,7 @@ public class StatisticsServiceImpl extends AbstractService implements Statistics
         final Iterable<Entity> entities = datastoreService.prepare(entityQuery).asIterable();
 
         logger.info("method=datastoreEntities() - filtering entities prefixed with=[{}]", PREFIX_RESERVED_ENTITY);
-        final Iterable<Entity> filtered = Iterables.filter(entities, new Predicate<Entity>() {
+        final Iterable<Entity> filtered = filter(entities, new Predicate<Entity>() {
             @Override
             public boolean apply(Entity entity) {
                 return !entity.getKey().getName().startsWith(PREFIX_RESERVED_ENTITY);
@@ -67,7 +78,7 @@ public class StatisticsServiceImpl extends AbstractService implements Statistics
         });
 
         logger.info("method=datastoreEntities() - fetching entities count");
-        return newArrayList(Iterables.transform(filtered, new Function<Entity, Entity>() {
+        return newArrayList(transform(filtered, new Function<Entity, Entity>() {
             @Override
             public Entity apply(Entity entity) {
                 final String kind = entity.getKey().getName();
@@ -112,6 +123,33 @@ public class StatisticsServiceImpl extends AbstractService implements Statistics
 
         logger.info("method=campaignStatistics(), args=[campaignId={}]", campaignId);
 
-        return new CampaignStatistics(campaignId);
+        final Campaign campaign = campaignRepository.findOne(campaignId);
+        if (campaign == null) {
+            logger.error("method=waitForFeedback) - campaignId=[{}] not found", campaignId);
+            throw new BusinessException(StringSupport.on("Campaign with campaignId=[{}] not found.", campaignId), RESOURCE_NOT_FOUND);
+        }
+
+        final CampaignStatistics statistics = new CampaignStatistics(campaign);
+        StatisticsSupport.calculateFrequencies(statistics);
+
+        return statistics;
     }
+
+    /**
+     *
+     * @param elements
+     * @param elementType
+     * @return
+     */
+    private Iterable<ElementMetadata> ofType(final Set<ElementMetadata> elements, final ElementType elementType) {
+        return filter(elements, new Predicate<ElementMetadata>() {
+            @Override
+            public boolean apply(final ElementMetadata elementMetadata) {
+                return elementMetadata.getElementType().equals(elementType);
+            }
+        });
+    }
+
 }
+
+

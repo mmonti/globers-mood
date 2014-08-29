@@ -3,7 +3,7 @@ package com.globant.labs.mood.service.mail;
 import com.globant.labs.mood.exception.BusinessException;
 import com.globant.labs.mood.model.mail.MailMessage;
 import com.globant.labs.mood.model.mail.MailMessageTemplate;
-import com.globant.labs.mood.model.mail.MailSettings;
+import com.globant.labs.mood.model.persistent.MailSettings;
 import com.globant.labs.mood.model.persistent.Campaign;
 import com.globant.labs.mood.model.persistent.PreferenceKey;
 import com.globant.labs.mood.model.persistent.Template;
@@ -75,7 +75,7 @@ public class MailMessageFactory {
         Preconditions.checkNotNull(campaign, "campaign is null");
         Preconditions.checkNotNull(target, "target is null");
 
-        final MailSettings mailSettings = getMailSettings();
+        final MailSettings mailSettings = getMailSettings(campaign);
 
         final Set<User> targets = campaign.getTargets();
         if (!targets.contains(target)) {
@@ -99,18 +99,27 @@ public class MailMessageFactory {
 
     /**
      * @return
+     * @param campaign
      */
-    public MailSettings getMailSettings() {
-        final String alias = preferenceService.preference(PreferenceKey.MAIL_SENDER_ALIAS);
-        final String mail = preferenceService.preference(PreferenceKey.MAIL_SENDER);
-        final String subject = preferenceService.preference(PreferenceKey.MAIL_SUBJECT);
+    public MailSettings getMailSettings(final Campaign campaign) {
+        final MailSettings mailSettings = campaign.getMailSettings();
 
-        logger.debug("create - preferences loaded(alias=[{}], mail=[{}], subject=[{}])", alias, mail, subject);
+        if (mailSettings.getAlias() == null) {
+            final String alias = preferenceService.preference(PreferenceKey.MAIL_SENDER_ALIAS);
+            logger.info("method=getMailSettings() - settings [mail.alias={}]", alias);
+            mailSettings.setAlias(alias);
+        }
+        if (mailSettings.getSubject() == null) {
+            final String subject = preferenceService.preference(PreferenceKey.MAIL_SUBJECT);
+            logger.info("method=getMailSettings() - settings [mail.subject={}]", subject);
+            mailSettings.setSubject(subject);
+        }
+        if (mailSettings.getMail() == null) {
+            final String mail = preferenceService.preference(PreferenceKey.MAIL_SENDER);
+            logger.info("method=getMailSettings() - settings [mail.sender={}]", mail);
+            mailSettings.setMail(mail);
+        }
 
-        Preconditions.checkNotNull(alias, "alias is null");
-        Preconditions.checkNotNull(mail, "mail is null");
-        Preconditions.checkNotNull(subject, "subject is null");
-
-        return new MailSettings(alias, mail, subject);
+        return mailSettings;
     }
 }

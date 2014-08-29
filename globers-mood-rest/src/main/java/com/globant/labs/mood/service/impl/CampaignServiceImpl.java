@@ -3,11 +3,9 @@ package com.globant.labs.mood.service.impl;
 import com.globant.labs.mood.events.DispatchCampaignEvent;
 import com.globant.labs.mood.events.DispatchUserEvent;
 import com.globant.labs.mood.exception.BusinessException;
-import com.globant.labs.mood.model.persistent.Campaign;
-import com.globant.labs.mood.model.persistent.CampaignStatus;
-import com.globant.labs.mood.model.persistent.Template;
-import com.globant.labs.mood.model.persistent.User;
+import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.repository.data.CampaignRepository;
+import com.globant.labs.mood.repository.data.PreferenceRepository;
 import com.globant.labs.mood.repository.data.TemplateRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.CampaignService;
@@ -32,7 +30,7 @@ import static com.globant.labs.mood.model.persistent.CampaignStatus.*;
 import static com.globant.labs.mood.support.StringSupport.on;
 import static com.google.appengine.repackaged.com.google.common.collect.Lists.newArrayList;
 import static com.google.appengine.repackaged.com.google.common.collect.Sets.newHashSet;
-import static com.google.common.collect.Iterables.*;
+import static com.google.common.collect.Iterables.tryFind;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -47,6 +45,9 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
 
     @Inject
     private TemplateRepository templateRepository;
+
+    @Inject
+    private PreferenceRepository preferenceRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -83,6 +84,8 @@ public class CampaignServiceImpl extends AbstractService implements CampaignServ
             logger.error("method=store() - templateId=[{}] of campaignId=[{}] not found", template.getId(), campaign.getId());
             throw new BusinessException(on("Template with id=[{}] of Campaign with id=[{}] not found.", template.getId(), campaign.getId()), RESOURCE_NOT_FOUND);
         }
+
+        logger.info("method=store() - setting templateId=[{}].", storedTemplate.getId());
         campaign.setTemplate(storedTemplate);
 
         return campaignRepository.save(campaign);

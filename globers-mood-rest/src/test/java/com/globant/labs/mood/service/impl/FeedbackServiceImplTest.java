@@ -4,10 +4,7 @@ import com.globant.labs.mood.config.RootConfig;
 import com.globant.labs.mood.exception.BusinessException;
 import com.globant.labs.mood.model.persistent.*;
 import com.globant.labs.mood.repository.data.CampaignRepository;
-import com.globant.labs.mood.service.CampaignService;
-import com.globant.labs.mood.service.FeedbackService;
-import com.globant.labs.mood.service.TemplateService;
-import com.globant.labs.mood.service.UserService;
+import com.globant.labs.mood.service.*;
 import com.globant.labs.mood.service.mail.token.TokenGenerator;
 import com.globant.labs.mood.service.mail.token.UserTokenGenerator;
 import com.globant.labs.mood.support.jersey.FeedbackContent;
@@ -44,7 +41,8 @@ public class FeedbackServiceImplTest {
     private CampaignService campaignService;
     @Inject
     private TemplateService templateService;
-
+    @Inject
+    private PreferenceService preferenceService;
     @Inject
     private CampaignRepository campaignRepository;
 
@@ -54,6 +52,9 @@ public class FeedbackServiceImplTest {
     @Before
     public void setUp() {
         localServiceTestHelper.setUp();
+
+        final Preference preference = new Preference(PreferenceKey.MAIL_SENDER, "mail@globant.com");
+        preferenceService.store(preference);
     }
 
     @After

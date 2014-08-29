@@ -37,8 +37,6 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
     private static final Logger logger = LoggerFactory.getLogger(FeedbackServiceImpl.class);
 
-    private static final String FEEDBACK_TOKEN_VALIDATE = "${feedback.token.validate:true}";
-
     @Inject
     private FeedbackRepository feedbackRepository;
 
@@ -50,9 +48,6 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
 
     @Inject
     private TokenGenerator tokenGenerator;
-
-    @Value(value = FEEDBACK_TOKEN_VALIDATE)
-    private boolean validateToken = true;
 
     @Transactional
     @Override
@@ -87,7 +82,7 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
         }
 
         // = Check for token validation (false for DEV / true for PROD).
-        if (shouldValidateToken()) {
+        if (campaign.isTokenEnabled()) {
             final String generatedToken = ((UserTokenGenerator) tokenGenerator).getToken(campaign, user);
             if (!token.equals(generatedToken)) {
                 logger.error("method=store() - invalid token=[{}]", token);
@@ -176,10 +171,4 @@ public class FeedbackServiceImpl extends AbstractService implements FeedbackServ
         return new HashSet(feedbackRepository.feedbackOfUser(user));
     }
 
-    /**
-     * @return
-     */
-    public boolean shouldValidateToken() {
-        return validateToken;
-    }
 }

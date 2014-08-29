@@ -9,7 +9,7 @@ import java.util.Date;
  * @author mauro.monti (monti.mauro@gmail.com)
  */
 @Entity
-public class Attribute extends BaseEntity implements Serializable {
+public class ValueMapping extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -7608867209235862065L;
 
@@ -19,14 +19,14 @@ public class Attribute extends BaseEntity implements Serializable {
     @Basic
     private String value;
 
-    public Attribute() {
+    public ValueMapping() {
         super();
     }
 
     /**
      * @param key
      */
-    public Attribute(final String key) {
+    public ValueMapping(final String key) {
         this(key, null);
     }
 
@@ -34,7 +34,7 @@ public class Attribute extends BaseEntity implements Serializable {
      * @param key
      * @param value
      */
-    public Attribute(final String key, final String value) {
+    public ValueMapping(final String key, final String value) {
         this();
         this.key = key;
         this.value = value;
@@ -61,8 +61,7 @@ public class Attribute extends BaseEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Attribute attribute = (Attribute) o;
-
+        ValueMapping attribute = (ValueMapping) o;
         if (getId() == null) {
             return false;
         }
@@ -76,7 +75,7 @@ public class Attribute extends BaseEntity implements Serializable {
     public int hashCode() {
         int result = key.hashCode();
         result = 31 * result;
-        return result;
+        return result + created.hashCode();
     }
 
 }

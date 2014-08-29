@@ -13,10 +13,17 @@ class TextExtractor extends AbstractExtractor {
     private static final String CONSTANT_TYPE_TEXT = "[type=text]";
 
     @Override
-    public void process(final TemplateMetadata metadata, final Document document) {
-        document.select(CONSTANT_TYPE_TEXT).groupBy({ element -> element.attr(CONSTANT_NAME) })
-                .each() { attribute -> metadata.addElementMetadata(new ElementMetadata(attribute.key, ElementType.TEXT));
+    public void process(final TemplateMetadata collector, final Document document) {
+        document.select(CONSTANT_TYPE_TEXT).groupBy({
+            element -> element.attr(CONSTANT_NAME)
+
+        }).each() {
+            attribute ->
+                if (!hasValidKey(attribute.key)) {
+                    return
+                }
+                register(collector, new ElementMetadata(attribute.key, ElementType.TEXT));
         };
-        processNext(metadata, document);
+        processNext(collector, document);
     }
 }

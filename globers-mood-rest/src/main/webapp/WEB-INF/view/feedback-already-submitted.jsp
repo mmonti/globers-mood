@@ -28,7 +28,7 @@
                     )
                 </td>
                 <td valign="middle" style="padding-top: 5px;">
-                    We already received your feedback for this campaign.
+                    We already received your feedback for this survey.
                     <br>
                     <strong>Thanks!</strong>
                 </td>

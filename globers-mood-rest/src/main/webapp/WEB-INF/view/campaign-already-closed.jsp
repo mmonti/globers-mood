@@ -22,7 +22,7 @@
                     O
                 </td>
                 <td valign="middle" style="padding-top: 5px;">
-                    This campaign is already closed. We are no longer accepting feedback.
+                    This survey is already closed. We are no longer accepting feedback.
                     <br>
                     <strong>Thanks!</strong>
                 </td>

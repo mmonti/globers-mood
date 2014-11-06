@@ -16,27 +16,8 @@ public interface ProjectResource {
     Response addProject(final Project project);
 
     /**
-     * @param projectId
-     * @param userId
-     * @return
-     */
-    Response assignUser(final Long projectId, final Long userId);
-
-    /**
-     * @param projectId
-     * @param userId
-     * @return
-     */
-    Response releaseUser(final Long projectId, final Long userId);
-
-    /**
      * @return
      */
     Response projects();
 
-    /**
-     * @param projectId
-     * @return
-     */
-    Response usersOfProject(final Long projectId);
 }

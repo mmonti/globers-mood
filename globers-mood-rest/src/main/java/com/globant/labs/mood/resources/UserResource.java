@@ -2,6 +2,7 @@ package com.globant.labs.mood.resources;
 
 import com.globant.labs.mood.model.persistent.User;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 /**
@@ -26,4 +27,10 @@ public interface UserResource {
      */
     Response user(final Long id);
 
+    /**
+     *
+     * @param projectId
+     * @return
+     */
+    Response usersOfProject(final Long projectId);
 }

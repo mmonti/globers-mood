@@ -107,52 +107,51 @@ public class ProjectServiceImplTest {
         Assert.isTrue(storedProject.getName().equals(result.getName()));
     }
 
-
-    @Test
-    public void testAssignUserToProject() throws Exception {
-        final User user = new User("Mauro Monti", "mauro.monti@globant.com");
-        final User storedUser = userService.store(user);
-
-        final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project = new Project("Project", storedCustomer);
-        final Project storedProject = projectService.store(project);
-
-        final Boolean result = projectService.assign(storedProject.getId(), storedUser.getId());
-        Assert.notNull(result);
-        Assert.isTrue(result);
-
-//        final Project resultProject = projectService.project(storedProject.getKey().getId());
-//        Assert.notEmpty(resultProject.getUsers());
-//        Assert.isTrue(resultProject.getUsers().contains(user));
-    }
-
-    @Test
-    public void testReleaseUserFromProject() throws Exception {
-        final User user = new User("Mauro Monti", "mauro.monti@globant.com");
-        final User storedUser = userService.store(user);
-
-        final Customer customer = new Customer("Customer");
-        final Customer storedCustomer = customerService.store(customer);
-
-        final Project project = new Project("Project", storedCustomer);
-        final Project storedProject = projectService.store(project);
-
-        final Boolean assignResult = projectService.assign(storedProject.getId(), storedUser.getId());
-        Assert.notNull(assignResult);
-        Assert.isTrue(assignResult);
-
-//        final Project assignResultProject = projectService.project(storedProject.getKey().getId());
-//        Assert.notEmpty(assignResultProject.getUsers());
-//        Assert.isTrue(assignResultProject.getUsers().contains(user));
-
-        final Boolean releaseResult = projectService.release(storedProject.getId(), storedUser.getId());
-        Assert.notNull(releaseResult);
-        Assert.isTrue(releaseResult);
-
-//        final Project releaseResultProject = projectService.project(storedProject.getKey().getId());
-//        Assert.isTrue(!releaseResultProject.getUsers().contains(user));
-//        Assert.isTrue(releaseResultProject.getUsers().size() == 0);
-    }
+//    @Test
+//    public void testAssignUserToProject() throws Exception {
+//        final User user = new User("Mauro Monti", "mauro.monti@globant.com");
+//        final User storedUser = userService.store(user);
+//
+//        final Customer customer = new Customer("Customer");
+//        final Customer storedCustomer = customerService.store(customer);
+//
+//        final Project project = new Project("Project", storedCustomer);
+//        final Project storedProject = projectService.store(project);
+//
+//        final Boolean result = projectService.assign(storedProject.getId(), storedUser.getId());
+//        Assert.notNull(result);
+//        Assert.isTrue(result);
+//
+////        final Project resultProject = projectService.project(storedProject.getKey().getId());
+////        Assert.notEmpty(resultProject.getUsers());
+////        Assert.isTrue(resultProject.getUsers().contains(user));
+//    }
+//
+//    @Test
+//    public void testReleaseUserFromProject() throws Exception {
+//        final User user = new User("Mauro Monti", "mauro.monti@globant.com");
+//        final User storedUser = userService.store(user);
+//
+//        final Customer customer = new Customer("Customer");
+//        final Customer storedCustomer = customerService.store(customer);
+//
+//        final Project project = new Project("Project", storedCustomer);
+//        final Project storedProject = projectService.store(project);
+//
+//        final Boolean assignResult = projectService.assign(storedProject.getId(), storedUser.getId());
+//        Assert.notNull(assignResult);
+//        Assert.isTrue(assignResult);
+//
+////        final Project assignResultProject = projectService.project(storedProject.getKey().getId());
+////        Assert.notEmpty(assignResultProject.getUsers());
+////        Assert.isTrue(assignResultProject.getUsers().contains(user));
+//
+//        final Boolean releaseResult = projectService.release(storedProject.getId(), storedUser.getId());
+//        Assert.notNull(releaseResult);
+//        Assert.isTrue(releaseResult);
+//
+////        final Project releaseResultProject = projectService.project(storedProject.getKey().getId());
+////        Assert.isTrue(!releaseResultProject.getUsers().contains(user));
+////        Assert.isTrue(releaseResultProject.getUsers().size() == 0);
+//    }
 }

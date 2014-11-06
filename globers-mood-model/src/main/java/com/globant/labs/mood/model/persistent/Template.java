@@ -41,7 +41,7 @@ public class Template extends BaseEntity implements Serializable {
     private Blob content;
 
     @Unowned
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Attachment> attachments = new HashSet<Attachment>();
 
     /**

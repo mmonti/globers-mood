@@ -48,39 +48,4 @@ public class ProjectResourceImpl extends AbstractResource implements ProjectReso
         return notNullResponse(projectService.store(project));
     }
 
-    @POST
-    @Path("/{projectId}/assign/{userId}")
-    @Override
-    public Response assignUser(@PathParam("projectId") final Long projectId, @PathParam("userId") final Long userId) {
-        Preconditions.checkNotNull(projectId, "projectId is null");
-        Preconditions.checkNotNull(userId, "userId is null");
-
-        logger.info("method=assignUser(), args=[projectId={}, userId={}]", projectId, userId);
-
-        return notNullResponse(projectService.assign(projectId, userId));
-    }
-
-    @POST
-    @Path("/{projectId}/release/{userId}")
-    @Override
-    public Response releaseUser(@PathParam("projectId") final Long projectId, @PathParam("userId") final Long userId) {
-        Preconditions.checkNotNull(projectId, "projectId cannot be null");
-        Preconditions.checkNotNull(userId, "userId cannot be null");
-
-        logger.info("method=releaseUser(), args=[projectId={}, userId={}]", projectId, userId);
-
-        return notNullResponse(projectService.release(projectId, userId));
-    }
-
-    @GET
-    @Path("/{projectId}/users")
-    @Override
-    public Response usersOfProject(@PathParam("projectId") Long projectId) {
-        Preconditions.checkNotNull(projectId, "projectId cannot be null");
-
-        logger.info("method=usersOfProject(), args=[projectId={}]", projectId);
-
-        return notEmptyResponse(projectService.usersOfProject(projectId));
-    }
-
 }

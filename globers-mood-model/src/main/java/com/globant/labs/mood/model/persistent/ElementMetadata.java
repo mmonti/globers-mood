@@ -3,7 +3,6 @@ package com.globant.labs.mood.model.persistent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.appengine.datanucleus.annotations.Unowned;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -60,7 +59,6 @@ public class ElementMetadata extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      * @param attributeType
      */
@@ -77,7 +75,6 @@ public class ElementMetadata extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      * @param name
      * @param description
@@ -87,7 +84,6 @@ public class ElementMetadata extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param key
      * @param name
      * @param description

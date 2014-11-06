@@ -157,11 +157,11 @@ public class ImporterServiceImpl extends AbstractService implements ImporterServ
 
             final Project projectPrototype = new Project(name, storedCustomer);
 
-            final List<Integer> userIndexes = relation.getUsers();
-            for (final Integer currentUserIndex : userIndexes) {
-                final User user = storedUsers.get(currentUserIndex);
-                projectPrototype.assign(user);
-            }
+//            final List<Integer> userIndexes = relation.getUsers();
+//            for (final Integer currentUserIndex : userIndexes) {
+//                final User user = storedUsers.get(currentUserIndex);
+//                projectPrototype.assign(user);
+//            }
             storedProjects.add(projectRepository.saveAndFlush(projectPrototype));
         }
     }

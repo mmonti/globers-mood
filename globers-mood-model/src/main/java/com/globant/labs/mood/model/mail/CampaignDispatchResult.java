@@ -10,7 +10,6 @@ public class CampaignDispatchResult extends AbstractDispatchResult {
     private Campaign campaign;
 
     /**
-     *
      * @param campaign
      */
     public CampaignDispatchResult(final Campaign campaign) {

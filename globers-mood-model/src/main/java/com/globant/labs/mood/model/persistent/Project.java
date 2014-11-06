@@ -1,16 +1,12 @@
 package com.globant.labs.mood.model.persistent;
 
-import com.google.appengine.api.search.checkers.Preconditions;
 import com.google.appengine.datanucleus.annotations.Unowned;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author mauro.monti (monti.mauro@gmail.com)
@@ -24,15 +20,8 @@ public class Project extends BaseEntity implements Serializable {
     private String name;
 
     @Unowned
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Customer customer;
-
-    @Unowned
-    @OneToMany
-    private Set<User> users = new HashSet<User>();
-
-    @Basic
-    private int userNumber = 0;
 
     public Project() {
         super();
@@ -56,30 +45,8 @@ public class Project extends BaseEntity implements Serializable {
         this.name = name;
     }
 
-    public boolean assign(final User user) {
-        Preconditions.checkNotNull(user, "user cannot be null");
-        final boolean userAdded = this.users.add(user);
-        this.userNumber++;
-
-        return userAdded;
-    }
-
-    public boolean release(User user) {
-        Preconditions.checkNotNull(user, "user cannot be null");
-        this.userNumber--;
-        return this.users.remove(user);
-    }
-
-    public Set<User> getUsers() {
-        return Collections.unmodifiableSet(users);
-    }
-
     public Customer getCustomer() {
         return customer;
-    }
-
-    public int getUserNumber() {
-        return userNumber;
     }
 
     @Override

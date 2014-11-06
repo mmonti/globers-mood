@@ -14,7 +14,7 @@ import org.springframework.http.converter.json.MappingJacksonHttpMessageConverte
         "com.globant.labs.mood.exception.mapping",
         "com.globant.labs.mood.resources"
 })
-@Import({PropertiesConfig.class, RepositoryConfig.class, ServiceConfig.class})
+@Import({PropertiesConfig.class, RepositoryConfig.class, ServiceConfig.class, SecurityConfig.class})
 public class RootConfig {
 
     @Bean

@@ -4,11 +4,13 @@ import com.google.appengine.datanucleus.annotations.Unowned;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Sets;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +36,6 @@ public class TemplateMetadata extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param elements
      */
     public TemplateMetadata(final Set<ElementMetadata> elements) {
@@ -42,7 +43,6 @@ public class TemplateMetadata extends BaseEntity implements Serializable {
     }
 
     /**
-     *
      * @param elementMetadata
      */
     public void addElementMetadata(final ElementMetadata elementMetadata) {
@@ -66,7 +66,7 @@ public class TemplateMetadata extends BaseEntity implements Serializable {
         final Set<ElementType> types = getElementTypes();
         return (
                 (!types.isEmpty() && types.contains(ElementType.FORM) && hasRequiredSurveyFields()) &&
-                (types.contains(ElementType.CHOICE) || types.contains(ElementType.TEXT) || types.contains(ElementType.MULTILINE_TEXT))
+                        (types.contains(ElementType.CHOICE) || types.contains(ElementType.TEXT) || types.contains(ElementType.MULTILINE_TEXT))
         );
     }
 
@@ -82,11 +82,10 @@ public class TemplateMetadata extends BaseEntity implements Serializable {
                 return (elementMetadata.getElementType().equals(ElementType.HIDDEN) || elementMetadata.getElementType().equals(ElementType.TEXT)) && (requiredFields.contains(elementMetadata.getKey()));
             }
         }));
-        return (requiredElements.size()==requiredFields.size());
+        return (requiredElements.size() == requiredFields.size());
     }
 
     /**
-     *
      * @return
      */
     public Set<ElementMetadata> getElements() {

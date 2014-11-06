@@ -6,6 +6,7 @@ import com.globant.labs.mood.repository.data.UserRepository;
 import com.globant.labs.mood.service.AbstractService;
 import com.globant.labs.mood.service.UserService;
 import com.google.appengine.api.search.checkers.Preconditions;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+
+import java.util.Set;
 
 import static com.globant.labs.mood.exception.BusinessException.ErrorCode.EXPECTATION_FAILED;
 import static com.globant.labs.mood.support.StringSupport.on;
@@ -72,4 +75,13 @@ public class UserServiceImpl extends AbstractService implements UserService {
         return userRepository.findByEmail(email);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Set<User> usersOfProject(final Long projectId) {
+        Preconditions.checkNotNull(projectId, "projectId is null");
+
+        logger.info("method=usersOfProject(), args=[projectId={}]", projectId);
+
+        return Sets.newHashSet(userRepository.findByProject(projectId));
+    }
 }

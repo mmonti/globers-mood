@@ -1,6 +1,7 @@
 package com.globant.labs.mood.resources.v1;
 
 import com.globant.labs.mood.model.persistent.Campaign;
+import com.globant.labs.mood.model.persistent.CampaignStatus;
 import com.globant.labs.mood.resources.AbstractResource;
 import com.globant.labs.mood.resources.CampaignResource;
 import com.globant.labs.mood.service.CampaignService;
@@ -99,6 +100,20 @@ public class CampaignResourceImpl extends AbstractResource implements CampaignRe
         logger.info("method=closeCampaign(), args=[campaignId={}]", campaignId);
 
         campaignService.close(campaignId);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/{campaignId}/waitForFeedback")
+    @Override
+    public Response waitForFeedback(
+        @PathParam("campaignId") final Long campaignId) {
+
+        Preconditions.checkNotNull(campaignId, "campaignId is null");
+
+        logger.info("method=waitForFeedback(), args=[campaignId={}]", campaignId);
+
+        campaignService.waitForFeedback(campaignId);
         return Response.ok().build();
     }
 }

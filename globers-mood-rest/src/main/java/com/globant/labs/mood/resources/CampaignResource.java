@@ -1,8 +1,10 @@
 package com.globant.labs.mood.resources;
 
 import com.globant.labs.mood.model.persistent.Campaign;
+import com.globant.labs.mood.model.persistent.CampaignStatus;
 import org.springframework.data.domain.Sort;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 /**
@@ -49,4 +51,11 @@ public interface CampaignResource {
      * @return
      */
     Response closeCampaign(final Long campaignId);
+
+    /**
+     *
+     * @param campaignId
+     * @return
+     */
+    Response waitForFeedback(final Long campaignId);
 }

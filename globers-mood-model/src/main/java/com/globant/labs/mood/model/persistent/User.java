@@ -1,7 +1,11 @@
 package com.globant.labs.mood.model.persistent;
 
+import com.google.appengine.datanucleus.annotations.Unowned;
+
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,6 +23,10 @@ public class User extends BaseEntity implements Serializable {
     @Basic
     private String email;
 
+    @Unowned
+    @OneToOne(cascade = CascadeType.ALL)
+    private Project project;
+
     public User() {
         super();
     }
@@ -31,6 +39,16 @@ public class User extends BaseEntity implements Serializable {
         this();
         this.name = name;
         this.email = email;
+    }
+
+    /**
+     * @param name
+     * @param email
+     * @param project
+     */
+    public User(final String name, final String email, final Project project) {
+        this(name, email);
+        setProject(project);
     }
 
     public String getName() {
@@ -47,6 +65,14 @@ public class User extends BaseEntity implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public Date getCreated() {

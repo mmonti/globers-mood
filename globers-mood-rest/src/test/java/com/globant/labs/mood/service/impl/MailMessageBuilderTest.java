@@ -59,16 +59,15 @@ public class MailMessageBuilderTest extends TransactionSupport {
     public void setUp() {
         localServiceTestHelper.setUp();
 
-        final User user = new User("Mauro Monti", "mauro.monti@globant.com");
-        final User storedUser = userService.store(user);
-
         final Customer customer = new Customer("Customer");
         final Customer storedCustomer = customerService.store(customer);
 
         final Project project = new Project("Project", storedCustomer);
-        project.assign(storedUser);
-
         final Project storedProject = projectService.store(project);
+
+        final User user = new User("Mauro Monti", "mauro.monti@globant.com");
+        user.setProject(storedProject);
+        final User storedUser = userService.store(user);
 
         final Template template1 = new Template();
         template1.setName("template-1");

@@ -2,13 +2,9 @@ package com.globant.labs.mood.model.statistics;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globant.labs.mood.model.persistent.Campaign;
-import com.globant.labs.mood.model.persistent.TemplateMetadata;
-import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +19,6 @@ public class CampaignStatistics implements Serializable {
     private Map<String, Object> statistics;
 
     /**
-     *
      * @param campaign
      */
     public CampaignStatistics(final Campaign campaign) {

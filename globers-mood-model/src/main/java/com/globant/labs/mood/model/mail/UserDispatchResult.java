@@ -11,7 +11,6 @@ public class UserDispatchResult extends CampaignDispatchResult {
     private User user;
 
     /**
-     *
      * @param campaign
      * @param user
      */

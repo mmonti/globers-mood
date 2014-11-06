@@ -20,7 +20,6 @@ public class WeeklyFeedback {
     private Map<String, Integer> entries;
 
     /**
-     *
      * @param campaignId
      * @param fromDate
      * @param toDate
@@ -34,7 +33,6 @@ public class WeeklyFeedback {
     }
 
     /**
-     *
      * @param entries
      */
     private void initialize(final Map<String, Integer> entries) {

@@ -60,4 +60,16 @@ public class UserResourceImpl extends AbstractResource implements UserResource {
 
         return notNullResponse(userService.user(userId));
     }
+
+    @GET
+    @Path("/project/{projectId}")
+    @Override
+    public Response usersOfProject(@PathParam("projectId") Long projectId) {
+        Preconditions.checkNotNull(projectId, "projectId cannot be null");
+
+        logger.info("method=usersOfProject(), args=[projectId={}]", projectId);
+
+        return notEmptyResponse(userService.usersOfProject(projectId));
+    }
+
 }

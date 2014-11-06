@@ -20,9 +20,10 @@ public class AbstractEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractEventListener.class);
 
+    protected static final String X_AUTH_TOKEN_NAME = "X-Auth-Token";
     protected static final String DASH_CONSTANT = "-";
     protected static final Long CONSTANT_TASK_COUNTDOWN = 10000L;
-    protected static final Long CONSTANT_TASK_MAX_BACKOFF_SECONDS = 60L;
+    protected static final Long CONSTANT_TASK_MAX_BACKOFF_SECONDS = 10 * 60L;
     protected static final Integer CONSTANT_TASK_RETRY_LIMIT = 3;
 
     @Inject
@@ -63,7 +64,7 @@ public class AbstractEventListener {
         task.method(method);
         task.countdownMillis(CONSTANT_TASK_COUNTDOWN);
         task.retryOptions(withTaskRetryLimit(CONSTANT_TASK_RETRY_LIMIT).maxBackoffSeconds(CONSTANT_TASK_MAX_BACKOFF_SECONDS));
-
+        task.header(X_AUTH_TOKEN_NAME, "pR0j3c7-5urv3y5");
         getDefaultQueue().add(task);
     }
 }

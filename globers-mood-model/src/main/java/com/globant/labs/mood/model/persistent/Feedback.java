@@ -6,7 +6,6 @@ import com.google.appengine.repackaged.com.google.common.base.Optional;
 import com.google.appengine.repackaged.com.google.common.base.Predicate;
 import org.apache.commons.beanutils.BeanUtilsBean2;
 import org.apache.commons.beanutils.ConvertUtilsBean;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,7 +28,7 @@ public class Feedback extends BaseEntity implements Serializable {
     private static final ConvertUtilsBean converter = BeanUtilsBean2.getInstance().getConvertUtils();
 
     @Unowned
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Campaign campaign;
 
     @Unowned

@@ -21,6 +21,7 @@
         <class>com.globant.labs.mood.model.persistent.Attachment</class>
         <class>com.globant.labs.mood.model.persistent.ValueMapping</class>
         <class>com.globant.labs.mood.model.persistent.MailSettings</class>
+        <class>com.globant.labs.mood.model.persistent.PendingMail</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

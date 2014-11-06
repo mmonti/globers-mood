@@ -46,15 +46,15 @@ public class Campaign extends BaseEntity implements Serializable {
     private CampaignStatus status;
 
     @Unowned
-    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, optional = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, optional = true)
     private MailSettings mailSettings = null;
 
     @Unowned
-    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Template template;
 
     @Unowned
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<User> targets = new HashSet<User>();
 
     @Unowned

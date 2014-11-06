@@ -24,28 +24,8 @@ public interface ProjectService {
 
     /**
      * @param projectId
-     * @param userId
-     * @return
-     */
-    boolean assign(final Long projectId, final Long userId);
-
-    /**
-     * @param projectId
-     * @param userId
-     * @return
-     */
-    boolean release(final Long projectId, final Long userId);
-
-    /**
-     * @param projectId
      * @return
      */
     Project project(final Long projectId);
-
-    /**
-     * @param projectId
-     * @return
-     */
-    Set<User> usersOfProject(final Long projectId);
 
 }
